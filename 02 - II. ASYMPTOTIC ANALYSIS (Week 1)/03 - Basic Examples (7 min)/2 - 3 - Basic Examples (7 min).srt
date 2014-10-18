@@ -1,0 +1,473 @@
+1
+00:00:00,000 --> 00:00:02,854
+Having slogged through the formal
+definition of big O notation, I wanna
+
+2
+00:00:02,854 --> 00:00:05,860
+quickly turn to a couple of examples. Now,
+I wanna warn you up front, these are
+
+3
+00:00:05,860 --> 00:00:08,598
+pretty basic examples. They're not really
+gonna provide us with any insight that we
+
+4
+00:00:08,598 --> 00:00:12,735
+don't already have. But they serve as a
+sanity check that the big O notation's
+
+5
+00:00:12,735 --> 00:00:17,075
+doing what its intended purpose is. Namely
+to supress constant factors and low order
+
+6
+00:00:17,075 --> 00:00:21,720
+terms. Obviously, these simple examples
+will also give us some, facility with the
+
+7
+00:00:21,720 --> 00:00:25,920
+definition. So the first example's going
+to be to prove formally the following
+
+8
+00:00:25,970 --> 00:00:33,016
+claim. The claim states that if T(n) is
+some polynomial of degree "k", so namely
+
+9
+00:00:33,016 --> 00:00:41,032
+a<u>k  n^k. Plus all the way up to a<u>1  N +
+a<u>0. For any integer "k", positive</u></u></u>
+
+10
+00:00:41,032 --> 00:00:47,346
+integer "k" and any coefficients a<u>i's
+positive or negative. Then: T(n) is big</u>
+
+11
+00:00:47,346 --> 00:00:51,009
+O of n^k. So this claim is a
+mathematical statement and something we'll
+
+12
+00:00:51,009 --> 00:00:54,529
+be able to prove. As far as, you know, what
+this claim is saying, it's just saying big O
+
+13
+00:00:54,529 --> 00:00:58,826
+notation really does suppress constant
+factors and lower order terms. If you have a
+
+14
+00:00:58,826 --> 00:01:02,530
+polynomial then all you have to worry
+about is what is the highest power in that
+
+15
+00:01:02,530 --> 00:01:07,598
+polynomial and that dominates its growth
+as "n" goes to infinity. So, recall how one
+
+16
+00:01:07,598 --> 00:01:11,784
+goes about showing that one function is
+big O of another. The whole key is to find
+
+17
+00:01:11,784 --> 00:01:15,714
+this pair of constants, c and n<u>0,
+where c quantifies the constant multiple</u>
+
+18
+00:01:15,714 --> 00:01:20,002
+of the function you're trying to prove big
+O of, and n<u>0 quantifies what you mean</u>
+
+19
+00:01:20,002 --> 00:01:24,290
+by "for all sufficiently large n." Now, for
+this proof, to keep things very simple to
+
+20
+00:01:24,290 --> 00:01:27,761
+follow, but admittedly a little
+mysterious, I'm just gonna pull these
+
+21
+00:01:27,761 --> 00:01:31,896
+constants, c and n<u>0, out of a hat. So,
+I'm not gonna tell you how I derived them,</u>
+
+22
+00:01:31,896 --> 00:01:36,359
+but it'll be easy to check that they work.
+So let's work with the constants n<u>0</u>
+
+23
+00:01:36,359 --> 00:01:41,178
+equal to one, so it's very simple choice
+of n<u>0 and then "c" we are gonna pick to</u>
+
+24
+00:01:41,178 --> 00:01:46,000
+be sum of the absolute values of the
+coefficients. So the absolute value of "a<u>k"</u>
+
+25
+00:01:46,000 --> 00:01:50,431
+plus the absolute value of "a<u>(k-1)",
+and so on. Remember I didn't assume that</u>
+
+26
+00:01:50,431 --> 00:01:54,861
+the pol..., the original polynomial,
+had non-negative coefficients. So I claim
+
+27
+00:01:54,861 --> 00:01:59,292
+these constants work, in the sense that
+we'll be able to prove to that, assert,
+
+28
+00:01:59,292 --> 00:02:03,534
+you know, establish the definition of big O
+notation. What does that mean? Well we
+
+29
+00:02:03,534 --> 00:02:08,584
+need to show that for all "n" at least one
+(cause remember we chose n<u>0 equal to</u>
+
+30
+00:02:08,584 --> 00:02:15,908
+one), T(n) (this polynomial up here) is
+bounded above by "c" times "n^k",
+
+31
+00:02:15,908 --> 00:02:22,066
+where "c" is the way we chose it here,
+underlined in red. So let's just check why
+
+32
+00:02:22,066 --> 00:02:26,644
+this is true. So, for every positive
+integer "n" at least one, what do we need
+
+33
+00:02:26,644 --> 00:02:29,960
+to prove? We need to prove T(n) is upper bounded
+by something else. So we're gonna start on
+
+34
+00:02:29,960 --> 00:02:34,354
+the left hand side with T(n). And
+now we need a sequence of upper bounds
+
+35
+00:02:34,354 --> 00:02:40,673
+terminating with "c" times "n^k" (our
+choice of c underlined in red). So T(n)
+
+36
+00:02:40,673 --> 00:02:45,479
+is given as equal to this polynomial
+underlined in green. So what happens when
+
+37
+00:02:45,479 --> 00:02:48,649
+we replace each of the coefficients with
+the absolute value of that coefficient?
+
+38
+00:02:48,649 --> 00:02:52,317
+Well, you take the absolute value of a
+number, either it stays the same as it was
+
+39
+00:02:52,317 --> 00:02:57,160
+before, or it flips from negative to
+positive. Now, "n" here, we know is at least
+
+40
+00:02:57,160 --> 00:03:01,300
+one. So if any coefficient flips from
+negative to positive, then the overall
+
+41
+00:03:01,300 --> 00:03:05,934
+number only goes up. So if we apply the
+absolute value of each of the coefficients we
+
+42
+00:03:05,934 --> 00:03:12,853
+get an only bigger number. So T(n) is
+bounded above by the new polynomial
+
+43
+00:03:12,853 --> 00:03:18,670
+where the coefficients are the absolute
+values of those that we had before. So why was
+
+44
+00:03:18,670 --> 00:03:22,792
+that a useful step? Well now what we can
+do is we can play the same trick but with "n".
+
+45
+00:03:22,792 --> 00:03:26,056
+So it's sort of annoying how right now
+we have these different powers of "n".
+
+46
+00:03:26,056 --> 00:03:30,432
+It would be much nicer if we just had a
+common power of "n", so let's just replace
+
+47
+00:03:30,432 --> 00:03:35,600
+all of these different "n"s by "n^k",
+the biggest power of "n" that shows up anywhere.
+
+48
+00:03:35,600 --> 00:03:40,547
+So if you replace each of these lower
+powers of "n" with the higher power "n^k",
+
+49
+00:03:40,547 --> 00:03:45,149
+that number only goes up. Now, the coefficients are all non negative so the
+
+50
+00:03:45,149 --> 00:03:51,344
+overall number only goes up. So this is
+bounded above by "the absolute value of a<u>k"  "n^k"</u>
+
+51
+00:03:51,344 --> 00:03:58,235
+...up to "absolute value of a<u>1"  "n^k" ...plus "a<u>0"  "n^k".</u></u>
+
+52
+00:03:58,235 --> 00:04:01,887
+I'm using here that "n" is at least one, so
+higher powers of "n" are only bigger. And
+
+53
+00:04:01,887 --> 00:04:07,437
+now you'll notice this, by our choice of "c"
+underlined in red, this is exactly equal
+
+54
+00:04:07,437 --> 00:04:12,648
+to "c" times "n^k". And that's what we
+have to prove. We have to prove that
+
+55
+00:04:12,648 --> 00:04:18,062
+T(n) is at most "c" times "n^k", given our choice of "c" for every "n" at least one.
+
+56
+00:04:18,062 --> 00:04:22,744
+And we just proved that, so,
+end of proof. Now there remains the
+
+57
+00:04:22,744 --> 00:04:26,577
+question of how did I know what the
+correct, what a workable value of "c" and "n<u>0"</u>
+
+58
+00:04:26,577 --> 00:04:30,377
+were? And if you yourself want to
+prove that something is big O of something else,
+
+59
+00:04:30,377 --> 00:04:33,875
+usually what you do is you reverse
+engineer constants that work. So you would
+
+60
+00:04:33,875 --> 00:04:37,945
+go through a proof like this with a
+generic value of "c" and "n<u>0" and then</u>
+
+61
+00:04:37,945 --> 00:04:42,685
+you'd say, "Ahh, well if only I choose "c" in this
+way, I can push the proof through." And
+
+62
+00:04:42,685 --> 00:04:46,105
+that tells you what "c" you should use. If
+you look at the optional video on further
+
+63
+00:04:46,105 --> 00:04:50,817
+examples of asymptotic notation, you'll
+see some examples where we derive the
+
+64
+00:04:50,817 --> 00:04:54,637
+constants via this reverse engineering
+method. But now let's turn to a second
+
+65
+00:04:54,637 --> 00:04:59,532
+example, or really I should say, a non-example. So what we're going to prove now
+
+66
+00:04:59,532 --> 00:05:04,208
+is that something is not big O of
+something else. So I claim that for every
+
+67
+00:05:04,208 --> 00:05:12,824
+"k" at least 1, "n^k" is not O(n^(k-1)).  And again, this is
+
+68
+00:05:12,824 --> 00:05:16,872
+something you would certainly hope would
+be true. If this was false, there'd be
+
+69
+00:05:16,872 --> 00:05:21,231
+something wrong with our definition of big
+O notation and so really this is just to
+
+70
+00:05:21,231 --> 00:05:25,054
+get further comfort with the definition,
+how to prove something is not big O of
+
+71
+00:05:25,054 --> 00:05:29,690
+something else, and to verify that indeed
+you don't have any collapse of distinctive
+
+72
+00:05:29,690 --> 00:05:33,635
+powers of ploynomials, which would be a
+bad thing. So how would we prove that
+
+73
+00:05:33,635 --> 00:05:37,988
+something is not big O of something else?
+The most...frequently useful proof method
+
+74
+00:05:37,988 --> 00:05:41,846
+is gonna be by contradiction. So,
+remember, proof by contradiction, you
+
+75
+00:05:41,846 --> 00:05:46,726
+assume what you're trying to, establish is
+actually false, and, from that, you do a
+
+76
+00:05:46,726 --> 00:05:51,265
+sequence of logical steps, culminating in
+something which is just patently false,
+
+77
+00:05:51,265 --> 00:05:55,009
+which contradicts basic axioms of
+mathematics, or of arithmetic. So,
+
+78
+00:05:55,009 --> 00:05:59,548
+suppose, in fact, n^k was big O of
+n^(k-1), so that's assuming
+
+79
+00:05:59,548 --> 00:06:03,972
+the opposite of what we're trying to
+prove. What would that mean? Well, we just
+
+80
+00:06:03,972 --> 00:06:08,483
+referred to the definition of Big O
+notation. If in fact "n^k"
+
+81
+00:06:08,483 --> 00:06:13,422
+hypothetically were Big O of n^(k-1) then by definition
+
+82
+00:06:13,422 --> 00:06:18,967
+there would be two constants, a winning
+strategy if you like, "c" and "n<u>0" such</u>
+
+83
+00:06:18,967 --> 00:06:26,641
+that for all sufficiently large "n", we
+have a constant multiple "c" times "n^(k-1)"
+
+84
+00:06:26,641 --> 00:06:30,449
+upper bounding "n^k". So
+from this, we need to derive something
+
+85
+00:06:30,449 --> 00:06:35,808
+which is patently false that will complete
+the proof. And the way, the easiest way to
+
+86
+00:06:35,808 --> 00:06:40,943
+do that is to cancel "n^(k-1)"
+from both sides of this inequality. And
+
+87
+00:06:40,943 --> 00:06:44,615
+remember since "n" is at least one and "k"
+is at least one, it's legitimate to cancel
+
+88
+00:06:44,615 --> 00:06:48,910
+this "n^(k-1)" from both
+sides. And when we do that we get the
+
+89
+00:06:48,910 --> 00:06:57,023
+assertion that "n" is at most some constant
+"c" for all "n" at least "n<u>0". And this now</u>
+
+90
+00:06:57,023 --> 00:07:01,660
+is a patently false statement. It is not
+the case that all positive integers are
+
+91
+00:07:01,660 --> 00:07:05,543
+bounded above by a constant "c". In
+particular, "c+1", or the integer right
+
+92
+00:07:05,543 --> 00:07:10,354
+above that, is not bigger than "c". So that
+provides the contradiction that shows that
+
+93
+00:07:10,354 --> 00:07:15,107
+our original assumption that "n^k" is
+big O of "n^(k-1)" is false. And
+
+94
+00:07:15,107 --> 00:07:19,098
+that proves the claim. "n^k" is not
+big O of "n^(k-1)", for
+
+95
+00:07:19,098 --> 00:07:23,335
+every value of "k". So different powers of
+polynomials do not collapse. They really
+
+96
+00:07:23,335 --> 00:07:27,163
+are distinct, with respect to big O
+notation.

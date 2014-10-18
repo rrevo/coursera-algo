@@ -1,0 +1,550 @@
+1
+00:00:01,690 --> 00:00:05,230
+Sometime when you were a kid, maybe say 
+third grade or so, you learned an 
+
+2
+00:00:05,230 --> 00:00:10,110
+Algorithm for multiplying two numbers. 
+Maybe your third grade teacher didn't 
+
+3
+00:00:10,110 --> 00:00:12,610
+call it that, maybe that's not how you 
+thought about it. 
+
+4
+00:00:12,610 --> 00:00:16,965
+But you learned a well defined set of 
+rules for transforming input, namely two 
+
+5
+00:00:16,965 --> 00:00:21,070
+numbers into an output, namely their 
+product. 
+
+6
+00:00:21,070 --> 00:00:24,900
+So, that is an algorithm for solving a 
+computational problem. 
+
+7
+00:00:24,900 --> 00:00:31,112
+Let's pause and be precise about it. 
+Many of the lectures in this course will 
+
+8
+00:00:31,112 --> 00:00:35,630
+follow a pattern. 
+We'll define a computational problem. 
+
+9
+00:00:35,630 --> 00:00:39,190
+We'll say what the input is, and then 
+we'll say what the desired output is. 
+
+10
+00:00:39,190 --> 00:00:42,496
+Then we will proceed to giving a 
+solution, to giving an algorithm that 
+
+11
+00:00:42,496 --> 00:00:47,690
+transforms the input to the output. 
+When the integer multiplication problem, 
+
+12
+00:00:47,690 --> 00:00:55,394
+the input is just two, n-digit numbers. 
+So the length, n, of the two input 
+
+13
+00:00:55,394 --> 00:00:59,424
+integers x and y could be anything, but 
+for motivation you might want to think of 
+
+14
+00:00:59,424 --> 00:01:03,268
+n as large, in the thousands or even 
+more, perhaps we're implementing some 
+
+15
+00:01:03,268 --> 00:01:10,490
+kind of cryptographic application which 
+has to manipulate very large numbers. 
+
+16
+00:01:12,240 --> 00:01:16,796
+We also need to explain what is desired 
+output in this simple problem it's simply 
+
+17
+00:01:16,796 --> 00:01:21,406
+the product x times y. 
+So a quick digression so back in 3rd 
+
+18
+00:01:21,406 --> 00:01:27,163
+grade around the same I was learning the 
+Integer Multiplication Algorithm. 
+
+19
+00:01:27,163 --> 00:01:32,870
+I got a C in penmanship and I don't think 
+my handwriting has improved much since. 
+
+20
+00:01:32,870 --> 00:01:35,670
+Many people tell me by the end of the 
+course. 
+
+21
+00:01:35,670 --> 00:01:38,850
+They think of it fondly as a sort of 
+acquired taste, but if you're feeling 
+
+22
+00:01:38,850 --> 00:01:43,039
+impatient, please note there are typed 
+versions of these slides. 
+
+23
+00:01:43,039 --> 00:01:46,378
+Which I encourage you to use as you go 
+through the lectures, if you don't want 
+
+24
+00:01:46,378 --> 00:01:50,360
+to take the time deciphering the 
+handwriting. 
+
+25
+00:01:50,360 --> 00:01:54,265
+Returning to the Integer Multiplication 
+problem, having now specified the problem 
+
+26
+00:01:54,265 --> 00:01:59,048
+precisely, the input, the desired output. 
+We'll move on to discussing an algorithm 
+
+27
+00:01:59,048 --> 00:02:04,010
+that solves it, namely, the same 
+algorithm you learned in third grade. 
+
+28
+00:02:04,010 --> 00:02:08,164
+The way we will assess the performance of 
+this algorithm is through the number of 
+
+29
+00:02:08,164 --> 00:02:13,290
+basic operations that it performs. 
+And for the moment, let's think of a 
+
+30
+00:02:13,290 --> 00:02:17,490
+basic operation as simply adding two 
+single-digit numbers together or 
+
+31
+00:02:17,490 --> 00:02:23,880
+multiplying two single digit numbers. 
+We're going to then move on to counting 
+
+32
+00:02:23,880 --> 00:02:30,231
+the number of these basic operations 
+performed by the third grade algorithm. 
+
+33
+00:02:30,231 --> 00:02:34,229
+As a function of the number n of digits 
+in the input. 
+
+34
+00:02:36,380 --> 00:02:40,156
+Here's the integer multiplication 
+algorithm that you learned back in third 
+
+35
+00:02:40,156 --> 00:02:45,352
+grade Illustrated on a concrete example. 
+Let's take say the numbers 1, 2, 3, 4 and 
+
+36
+00:02:45,352 --> 00:02:49,475
+5, 6, 7, 8. 
+As we go through this algorithm quickly, 
+
+37
+00:02:49,475 --> 00:02:54,689
+let me remind you that our focus should 
+be on the number of basic operations this 
+
+38
+00:02:54,689 --> 00:03:00,655
+algorithm performs. 
+As a function of the length of the input 
+
+39
+00:03:00,655 --> 00:03:03,704
+numbers. 
+Which, in this particular example, is 
+
+40
+00:03:03,704 --> 00:03:07,982
+four digits long. 
+So as you'll recall, we just compute one 
+
+41
+00:03:07,982 --> 00:03:11,300
+partial product for each digit of the 
+second number. 
+
+42
+00:03:11,300 --> 00:03:16,460
+So we start by just multiplying 4 times 
+the upper number 5, 6, 7, 8. 
+
+43
+00:03:16,460 --> 00:03:21,234
+So, you know, 4 times 8 is 32, 2 carry to 
+3, 4 times 7 is 28, with the 3 that's 31, 
+
+44
+00:03:21,234 --> 00:03:28,956
+write down the 1, carry the 3, and so on. 
+When we do the next partial product, we 
+
+45
+00:03:28,956 --> 00:03:32,076
+do a shift effectively, we add a 0 at the 
+end, and then we just do exactly the same 
+
+46
+00:03:32,076 --> 00:03:37,448
+thing. 
+And so on for the final two partial 
+
+47
+00:03:37,448 --> 00:03:43,464
+products. 
+[SOUND] And finally, we just add 
+
+48
+00:03:43,464 --> 00:03:51,140
+everything up. 
+[SOUND], what you probably realized back 
+
+49
+00:03:51,140 --> 00:03:59,570
+in third grade, is that this algorithm is 
+what we would call correct. 
+
+50
+00:03:59,570 --> 00:04:03,718
+That is, no matter what integers x and y 
+you start with If you carry out this 
+
+51
+00:04:03,718 --> 00:04:08,568
+procedure, this algorithm. 
+And all of your intermediate computations 
+
+52
+00:04:08,568 --> 00:04:12,180
+are done properly. 
+Then the algorithm will eventually 
+
+53
+00:04:12,180 --> 00:04:17,770
+terminate with the product, x times y, of 
+the two input numbers. 
+
+54
+00:04:17,770 --> 00:04:21,303
+You're never going to get a wrong answer. 
+You're always going to get the actual 
+
+55
+00:04:21,303 --> 00:04:24,475
+product. 
+Well, you probably didn't think about was 
+
+56
+00:04:24,475 --> 00:04:28,507
+the amount of time needed to carry out 
+this algorithm out to its conclusion to 
+
+57
+00:04:28,507 --> 00:04:32,860
+termination. 
+That is the number of basic operations, 
+
+58
+00:04:32,860 --> 00:04:38,940
+additions or multiplications of single 
+digit numbers needed before finishing. 
+
+59
+00:04:38,940 --> 00:04:43,838
+So let's now quickly give an informal 
+analyses of the number of operations 
+
+60
+00:04:43,838 --> 00:04:48,440
+required as a function of the input 
+length n. 
+
+61
+00:04:50,420 --> 00:04:53,350
+Let's begin with the first partial 
+product, the top row. 
+
+62
+00:04:53,350 --> 00:04:59,884
+How did we compute this number 22,712? 
+Well we multiplied 4 times each of the 
+
+63
+00:04:59,884 --> 00:05:05,010
+numbers 5, 6, 7 and 8. 
+So that was for basic operations. 
+
+64
+00:05:05,010 --> 00:05:09,130
+One for each digit at the top number, 
+plus we had to do these carries. 
+
+65
+00:05:09,130 --> 00:05:12,840
+So those were some extra additions. 
+But in any case, this is at most twice 
+
+66
+00:05:12,840 --> 00:05:16,740
+times the number of digits in the first 
+number. 
+
+67
+00:05:16,740 --> 00:05:22,250
+At most two end basic operations to form 
+this first partial product. 
+
+68
+00:05:22,250 --> 00:05:26,855
+And if you think about it there's nothing 
+special about the first partial product. 
+
+69
+00:05:26,855 --> 00:05:30,265
+The same argument says that we need at 
+most 2 n operations to form each of the 
+
+70
+00:05:30,265 --> 00:05:33,730
+partial products of which there are again 
+n, one for each digit of the second 
+
+71
+00:05:33,730 --> 00:05:38,894
+number. 
+Well if we need at most two n operations 
+
+72
+00:05:38,894 --> 00:05:43,380
+to compute each partial product and we 
+have n partial products. 
+
+73
+00:05:43,380 --> 00:05:47,345
+That's a total of at most two n squared 
+operations to form all of these blue 
+
+74
+00:05:47,345 --> 00:05:52,410
+numbers, all of the partial products. 
+Now we're not done at that point. 
+
+75
+00:05:52,410 --> 00:05:57,224
+We still have to add all of those up to 
+get the final answer, in this case 
+
+76
+00:05:57,224 --> 00:06:01,668
+7,006,652. 
+And that's final addition requires a 
+
+77
+00:06:01,668 --> 00:06:07,344
+comparable number of operations. 
+Roughly, another say two n squared, at 
+
+78
+00:06:07,344 --> 00:06:11,798
+most operations. 
+So, the upshot, the high level point that 
+
+79
+00:06:11,798 --> 00:06:15,218
+I want you to focus on, is that as we 
+think about the input numbers getting 
+
+80
+00:06:15,218 --> 00:06:19,429
+bigger and bigger. 
+That is as a function of n the number of 
+
+81
+00:06:19,429 --> 00:06:23,692
+digits in the input numbers. 
+The number of operations that the 
+
+82
+00:06:23,692 --> 00:06:29,580
+Grade-School Multiplication Algorithm 
+performs, grows like some constant. 
+
+83
+00:06:29,580 --> 00:06:36,377
+Roughly 4 say times n squared. 
+That is it's quadratic in the input 
+
+84
+00:06:36,377 --> 00:06:40,060
+length n. 
+For example, if you double the size of 
+
+85
+00:06:40,060 --> 00:06:43,840
+the input, if you double the number of 
+digits in each of the two integers that 
+
+86
+00:06:43,840 --> 00:06:48,056
+you're given. 
+Then the number of operations you will 
+
+87
+00:06:48,056 --> 00:06:52,765
+have to perform using this algorithm has 
+to go up by a factor of four. 
+
+88
+00:06:52,765 --> 00:06:56,923
+Similarly, if you quadruple the input 
+length, the number of operations going, 
+
+89
+00:06:56,923 --> 00:07:00,700
+is going to go up by a factor of 16, and 
+so on. 
+
+90
+00:07:02,380 --> 00:07:05,420
+Now, depending on what type of third 
+grader you were. 
+
+91
+00:07:05,420 --> 00:07:10,316
+You might well of accepted this procedure 
+as the unique or at least the optimal way 
+
+92
+00:07:10,316 --> 00:07:15,670
+of multiplying two numbers together to 
+form their product. 
+
+93
+00:07:15,670 --> 00:07:18,030
+Now if you want to be a serious algorithm 
+designer. 
+
+94
+00:07:18,030 --> 00:07:21,750
+That kind of obedient tumidity is a 
+quality you're going to have to grow out 
+
+95
+00:07:21,750 --> 00:07:25,293
+of. 
+And early and extremely important 
+
+96
+00:07:25,293 --> 00:07:30,459
+textbook on the design and analysis of 
+algorithms was by Aho, Hopcroft, and 
+
+97
+00:07:30,459 --> 00:07:34,050
+Ullman. 
+It's about 40 years old now. 
+
+98
+00:07:34,050 --> 00:07:37,678
+And there's the following quote, which I 
+absolutely adore. 
+
+99
+00:07:37,678 --> 00:07:42,302
+So after iterating through a number of 
+the algorithm design paradigms covered in 
+
+100
+00:07:42,302 --> 00:07:46,772
+the textbook. 
+They say the following, perhaps the most 
+
+101
+00:07:46,772 --> 00:07:51,842
+important principle of all, for the good 
+algorithm designer is to refuse to be 
+
+102
+00:07:51,842 --> 00:07:57,930
+content. 
+And I think this is a spot on comment. 
+
+103
+00:07:57,930 --> 00:08:00,855
+I might summarize it a little bit more 
+succinctly. 
+
+104
+00:08:00,855 --> 00:08:07,153
+As, as an algorithm designer you should 
+adopt as your Mantra the question, can we 
+
+105
+00:08:07,153 --> 00:08:12,100
+do better? 
+This question is particularly apropos 
+
+106
+00:08:12,100 --> 00:08:16,204
+when your'e faced with a naive or 
+straight-forward solution to a 
+
+107
+00:08:16,204 --> 00:08:20,940
+computation problem. 
+Like for example, the third grade 
+
+108
+00:08:20,940 --> 00:08:25,749
+algorithm for integer multiplication. 
+The question you perhaps did not ask 
+
+109
+00:08:25,749 --> 00:08:29,112
+yourself in third grade was, can we do 
+better than the straight forward 
+
+110
+00:08:29,112 --> 00:08:35,130
+multiplication algorithm? 
+And now is the time for an answer. 
+

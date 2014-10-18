@@ -1,0 +1,518 @@
+1
+00:00:00,000 --> 00:00:04,283
+This video is for those of you who want
+some additional practice with asymptotic
+
+2
+00:00:04,283 --> 00:00:08,672
+notation. And we're gonna go through three
+additional optional examples. Let's start
+
+3
+00:00:08,672 --> 00:00:12,955
+with the first one. So the point of this
+first example is to show how to formally
+
+4
+00:00:12,955 --> 00:00:16,921
+prove that one function is big O of
+another. So the function that I want to
+
+5
+00:00:16,921 --> 00:00:21,733
+work with is two raised to the N plus ten,
+okay, so it's the two to the N function
+
+6
+00:00:21,733 --> 00:00:26,740
+that you're all familiar with, we're going
+to shift it by ten and the claim is that
+
+7
+00:00:26,740 --> 00:00:31,808
+this function is big O of two to the N,
+so without the ten. So how would one prove
+
+8
+00:00:31,808 --> 00:00:36,273
+such a claim? Well lets go back to the
+definition of what it means for one
+
+9
+00:00:36,273 --> 00:00:41,099
+function to be big O over another, what we
+have to prove is we need to show that
+
+10
+00:00:41,099 --> 00:00:45,986
+there exists two constants, so that for
+all sufficiently large N meaning N bigger
+
+11
+00:00:45,986 --> 00:00:51,487
+than N-nought, our left hand side, so the
+function should be N plus ten is bounded
+
+12
+00:00:51,487 --> 00:00:57,120
+above by a constant multiple C times the
+function on right hand side to the N.
+
+13
+00:00:57,120 --> 00:01:01,537
+Right so for all sufficiently large N the
+function is bounded above by a constant
+
+14
+00:01:01,537 --> 00:01:06,223
+multiple of two to the N. So unlike the
+first basic example where I just pulled the
+
+15
+00:01:06,223 --> 00:01:10,748
+two constants out of a hat let's actually
+start the proof and see how you'd reverse
+
+16
+00:01:10,748 --> 00:01:14,967
+engineer the suitable choice of these two
+constants. So, what a proof would
+
+17
+00:01:14,967 --> 00:01:18,700
+look like, it would start with two to the
+N plus ten, on the left-hand side, and
+
+18
+00:01:18,700 --> 00:01:22,527
+then there'd be a chain of inequalities,
+terminating in this, C times two to the N.
+
+19
+00:01:22,527 --> 00:01:26,307
+So, let's just go ahead and start such a
+proof, and see what we might do. So, if we
+
+20
+00:01:26,307 --> 00:01:30,134
+start with two to the N plus ten on the
+left-hand side, what would our first step
+
+21
+00:01:30,134 --> 00:01:33,631
+look like? Well, this 10's really
+annoying, so it makes sense to separate it
+
+22
+00:01:33,631 --> 00:01:37,613
+out. So you could write two to the N plus
+ten as the product of two terms. Two to
+
+23
+00:01:37,613 --> 00:01:42,531
+the ten, and then the two to the N. Also
+known as just 1024 times two to the N. And
+
+24
+00:01:42,531 --> 00:01:47,741
+now we're in, looking in really good
+shape. So if you look at where we are so
+
+25
+00:01:47,741 --> 00:01:53,636
+far, and where we want to get to, it seems
+like we should be choosing our constant C
+
+26
+00:01:53,636 --> 00:01:58,762
+to be 1024. So if we choose C to be 1024
+and we don't have to be clever with N-nought
+
+27
+00:01:58,762 --> 00:02:03,560
+we can just set that equal to one, then indeed
+star holds to the desired inequality and
+
+28
+00:02:03,560 --> 00:02:08,662
+remember to prove that one function is big
+O of another all you gotta do is come up
+
+29
+00:02:08,662 --> 00:02:13,521
+with one pair of constants that works and
+we've just reverse engineered it just
+
+30
+00:02:13,521 --> 00:02:18,623
+choosing the constant C to be 1024 and N-nought
+to be one works so this proves that
+
+31
+00:02:18,623 --> 00:02:23,532
+two to the N plus ten is big O over two
+to the N. Next let's turn to another non
+
+32
+00:02:23,532 --> 00:02:28,364
+example how, of a function which is not
+big O over another. And so this will look
+
+33
+00:02:28,364 --> 00:02:33,076
+superficially similar to the previous one.
+Instead of taking, adding ten in the
+
+34
+00:02:33,076 --> 00:02:37,908
+exponent of the function two to the N, I'm
+gonna multiply by ten in the exponent. And
+
+35
+00:02:37,908 --> 00:02:42,619
+the claim is if you multiply by ten in the
+exponent then this is not the same
+
+36
+00:02:42,619 --> 00:02:47,452
+asymptotically as two to the N. So once
+again, usually the way you prove one thing
+
+37
+00:02:47,452 --> 00:02:51,502
+is not big O of another is by
+contridiction. So we're going to assume
+
+38
+00:02:51,502 --> 00:02:55,901
+the contrary, that two to the ten N is in
+fact big O of two to the N. What would it
+
+39
+00:02:55,901 --> 00:03:00,077
+mean if that were true? Well, by the
+definition of big O notation, that would
+
+40
+00:03:00,077 --> 00:03:04,755
+mean there are constant C and N-nought.
+So that for all large N, two to the ten
+
+41
+00:03:04,755 --> 00:03:09,074
+N is bounded above by C times 2 to the
+N. So to complete the proof what we have
+
+42
+00:03:09,074 --> 00:03:13,025
+to do is go from this assumption and
+derive something which is obviously false
+
+43
+00:03:13,025 --> 00:03:17,230
+but that's easy to do just by cancelling
+this 2 of the N terms from both sides.
+
+44
+00:03:17,230 --> 00:03:22,137
+So if we divide both sides by 2 to the
+N, which is a positive number since N is
+
+45
+00:03:22,137 --> 00:03:26,924
+positive, what we find would be a logical
+consequence of our assumption would be
+
+46
+00:03:26,924 --> 00:03:31,938
+that two raised to the nine N is bounded
+above by some fixed constant C for all N
+
+47
+00:03:31,938 --> 00:03:36,825
+at least N-nought. But this inequality of
+course is certainly false. The right hand
+
+48
+00:03:36,825 --> 00:03:41,892
+side is some fixed constant independent of
+N. The left hand side is going to infinity
+
+49
+00:03:41,892 --> 00:03:46,720
+as N grows large. So there's no way this
+inequality holds for arbitrarily large N.
+
+50
+00:03:46,720 --> 00:03:50,818
+So that concludes the proof by
+contradiction. This means our assumption
+
+51
+00:03:50,818 --> 00:03:55,493
+was not the case, and indeed it is not the case
+that two to the ten N is big O of two to
+
+52
+00:03:55,493 --> 00:03:59,801
+the N. So our third and final example is a
+little bit more complicated than the first
+
+53
+00:03:59,801 --> 00:04:03,813
+two. It'll give us some practice using
+theta notation. Recall that while big O is
+
+54
+00:04:03,813 --> 00:04:07,875
+analogous to saying one function is less
+than or equal to another, theta notation
+
+55
+00:04:07,875 --> 00:04:12,137
+is in the spirit of saying one function is
+equal asymptotically to another. So here's
+
+56
+00:04:12,137 --> 00:04:16,049
+gonna be the formal claim we're gonna
+prove, for every pair of functions F and
+
+57
+00:04:16,049 --> 00:04:20,111
+G, both of these functions are defined on
+the positive integers, the claim is that
+
+58
+00:04:20,111 --> 00:04:23,621
+it doesn't matter, up to a constant
+factors, whether we take point wise
+
+59
+00:04:23,621 --> 00:04:27,533
+maximum of the two functions or whether we
+take the point wise sum of the two
+
+60
+00:04:27,533 --> 00:04:32,407
+functions. So let me make sure it's clear
+that you know I mean by the point wise
+
+61
+00:04:32,407 --> 00:04:38,710
+maximum by max F and G. So, if you look at
+the two functions, both functions of N,
+
+62
+00:04:38,710 --> 00:04:45,262
+maybe we have F being this green function
+here and we have g hooked to this red
+
+63
+00:04:45,262 --> 00:04:49,704
+function. Then by the point wise maximum
+max(F,G) just means the upper
+
+64
+00:04:49,704 --> 00:04:54,172
+envelope of these two functions. So that's
+gonna be this blue function. So lets now
+
+65
+00:04:54,172 --> 00:04:58,694
+turn to the proof of this claim that the
+point wise function of these two function
+
+66
+00:04:58,694 --> 00:05:03,307
+is theta of the sum of two functions. So
+let's recall what theta means formally.
+
+67
+00:05:03,307 --> 00:05:08,070
+What it means is that the function on the
+left can be sandwiched between the
+
+68
+00:05:08,070 --> 00:05:12,956
+constant multiples of the function on the
+right. So we need to exhibit both the
+
+69
+00:05:12,956 --> 00:05:17,657
+usual N-nought but also two constants, the
+small one, C1, and the big one, C2, so
+
+70
+00:05:17,657 --> 00:05:22,543
+that the point wise maximum(F,G),
+whatever that may be, is wedged in between
+
+71
+00:05:22,543 --> 00:05:26,254
+C1 and C2 times F(N) plus G(N),
+respectively. So to see where these
+
+72
+00:05:26,254 --> 00:05:30,645
+constants C1 and C2 are going to come
+from, let's observe the following
+
+73
+00:05:30,645 --> 00:05:35,658
+inequalities. So no matter what N is, any
+positive integer N, we have the following.
+
+74
+00:05:35,658 --> 00:05:40,671
+Suppose we take the larger of F of N and G
+of N. And remember now, we've fixed the
+
+75
+00:05:40,671 --> 00:05:45,560
+value of N, and it's just some integer,
+you know, like 23. And now F of N and G of
+
+76
+00:05:45,560 --> 00:05:50,511
+N are theirselves, just numbers. You know,
+maybe they're 57 and 74, or whatever. And
+
+77
+00:05:50,511 --> 00:05:55,648
+if you take the larger of F of N and G of
+N, that's certainly no more than the sum
+
+78
+00:05:55,648 --> 00:05:59,424
+of F of N plus G of N. Now, I'm using, in
+this inequality, that F and G are
+
+79
+00:05:59,424 --> 00:06:03,190
+positive. And that's something I've been
+assuming throughout the course so far.
+
+80
+00:06:03,190 --> 00:06:07,004
+Here, I wanna be explicit about it, we're
+assuming that F and G cannot output
+
+81
+00:06:07,004 --> 00:06:10,722
+negative numbers. Whatever integer you
+feed in, you get out something positive.
+
+82
+00:06:10,722 --> 00:06:14,005
+Now, the functions we care about are
+things like the running time of
+
+83
+00:06:14,005 --> 00:06:17,626
+algorithms, so there's really no reason
+for us to pollute our thinking with
+
+84
+00:06:17,626 --> 00:06:21,441
+negative numbers. So, we're just gonna
+always be assuming in this class, positive
+
+85
+00:06:21,441 --> 00:06:25,158
+numbers. And I'm actually using it here,
+the right hand side is the sum of two
+
+86
+00:06:25,158 --> 00:06:29,382
+things, is bigger than just either one of
+the constituent summants. Secondly. If we
+
+87
+00:06:29,382 --> 00:06:34,598
+double the larger of F of N and G of N
+well that's going to exceed the sum of F of N
+
+88
+00:06:34,598 --> 00:06:38,831
+plus G of N, right? Because on the right
+hand side we have a big number plus a
+
+89
+00:06:38,831 --> 00:06:43,283
+small number and then on the left hand
+side we have two copies of the big number
+
+90
+00:06:43,283 --> 00:06:47,846
+so that is going to be something larger,
+now it's gonna be convenient it's gonna be
+
+91
+00:06:47,846 --> 00:06:52,244
+more obvious what's going on if I divide
+both of these sides by two so that the
+
+92
+00:06:52,244 --> 00:06:56,807
+maximum of F of N and G of N is at least half of
+F of N plus G of N that is at least half
+
+93
+00:06:56,807 --> 00:07:01,150
+of the average and now we're pretty much
+home free right so what does this say.
+
+94
+00:07:01,150 --> 00:07:06,641
+This says that for every possible N, the
+maximums wedged between suitable multiples
+
+95
+00:07:06,641 --> 00:07:11,201
+of the sum. So one-half of F of N plus G
+of N. There's a lower bound on the
+
+96
+00:07:11,201 --> 00:07:15,502
+maximum. This is just the second
+inequality that we derived. And by the
+
+97
+00:07:15,502 --> 00:07:20,294
+first inequality that's bounded above by
+once times the sum. And this holds no
+
+98
+00:07:20,294 --> 00:07:25,148
+matter what N is, [inaudible] at least
+one. And this is exactly what it means to
+
+99
+00:07:25,148 --> 00:07:29,755
+prove that one function is theta of
+another. We've shown that for all N, not
+
+100
+00:07:29,755 --> 00:07:34,732
+just for insuffiently large, but in fact
+for all N. The pointwise maximum of F and
+
+101
+00:07:34,732 --> 00:07:39,717
+G is wedged between suitable constant
+multiples of their sum. And again, just to
+
+102
+00:07:39,717 --> 00:07:44,803
+be explicit, the certifying choices of
+constants are N-nought equals one. The
+
+103
+00:07:44,803 --> 00:07:49,821
+smaller constant is one half. And the
+bigger constant equals one. And that
+
+104
+00:07:49,821 --> 00:07:51,196
+completes the proof.
