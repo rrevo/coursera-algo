@@ -1,0 +1,624 @@
+1
+00:00:00,000 --> 00:00:04,130
+So having motivated and hyped up the, the
+generality of the master method, and it's
+
+2
+00:00:04,130 --> 00:00:08,311
+used for analyzing recursive algorithms.
+Let's move on to it's precise mathematical
+
+3
+00:00:08,311 --> 00:00:12,139
+statement. Now the master method is, in
+some sense, exactly what you want. It's
+
+4
+00:00:12,139 --> 00:00:15,917
+what I'm gonna call a black box for
+solving recurrences. Basically, it takes,
+
+5
+00:00:15,917 --> 00:00:19,644
+as input, a recurrence in a particular
+format, and it spits out as output, a
+
+6
+00:00:19,644 --> 00:00:23,371
+solution to that recurrence. An upper
+[inaudible] the running time of your
+
+7
+00:00:23,371 --> 00:00:27,401
+recursive algorithm. That is, you just
+plug in a few parameters of your recursive
+
+8
+00:00:27,401 --> 00:00:31,431
+algorithm, and boom, out pops its running
+time. Now, the master method does require
+
+9
+00:00:31,431 --> 00:00:35,587
+a few assumptions, and let me be explicit
+about one. Right now. Namely, the master
+
+10
+00:00:35,587 --> 00:00:39,325
+method, at least the one I'm gonna give
+you, is only gonna be relevant for
+
+11
+00:00:39,325 --> 00:00:43,165
+problems in which all of the subproblems
+have exactly the same size. So, for
+
+12
+00:00:43,165 --> 00:00:47,006
+example, in Merge Sort, there are two
+recursive calls, and each is on exactly
+
+13
+00:00:47,006 --> 00:00:51,051
+one-half of the array. So Merge Sort
+satisfies this assumption both so problems
+
+14
+00:00:51,051 --> 00:00:55,096
+have equal size. Similarly, in both of our
+integer multiplication algorithms, all
+
+15
+00:00:55,096 --> 00:00:59,192
+subproblems were on integers with N over
+two digits with half as many digits. So
+
+16
+00:00:59,192 --> 00:01:03,084
+those will also obey this assumption. If,
+for some reason, you had a recursive
+
+17
+00:01:03,084 --> 00:01:06,771
+algorithm that recursed on the third of
+the array, and then on the other
+
+18
+00:01:06,771 --> 00:01:10,965
+two-thirds of the array. The master method
+that I'm gonna give you will not apply to
+
+19
+00:01:10,965 --> 00:01:14,771
+it. There are generalizations of the
+master method that I'm going to show you,
+
+20
+00:01:14,771 --> 00:01:18,922
+which can accomodate unbalanced subproblem
+sizes, but those are outside the scope of
+
+21
+00:01:18,922 --> 00:01:22,975
+this course. This will be sufficient for
+almost all of the examples we're going to
+
+22
+00:01:22,975 --> 00:01:26,929
+see. One notable exception, for those of
+you that watch the optional video on the
+
+23
+00:01:26,929 --> 00:01:30,685
+deterministic algorithm for liner time
+selection. That will be one algorithm
+
+24
+00:01:30,685 --> 00:01:34,590
+which has two recursive calls on different
+subproblem sizes. So to analyze that
+
+25
+00:01:34,590 --> 00:01:38,490
+recurrence, we'll have to use a different
+method, not the master method. Next I'm
+
+26
+00:01:38,490 --> 00:01:42,164
+going to describe the format of the
+recurrences to which the master method
+
+27
+00:01:42,164 --> 00:01:46,230
+applies. As I said, there are more general
+versions of the master method which apply
+
+28
+00:01:46,230 --> 00:01:49,855
+to even more recurrences, but the one I'm
+going to give you is going to be
+
+29
+00:01:49,855 --> 00:01:53,970
+reasonably simple and it will cover pretty
+much all the cases you're likely ever to
+
+30
+00:01:53,970 --> 00:01:57,322
+encounter. So recurrences have two
+ingredients. There's the relatively
+
+31
+00:01:57,322 --> 00:02:00,961
+unimportant, but, still necessary base
+case step. And we're gonna make the
+
+32
+00:02:00,961 --> 00:02:04,407
+obvious assumption, which is just
+satisfied by every example we're ever
+
+33
+00:02:04,407 --> 00:02:08,094
+going to see in this course. Which is
+that, at some point, once the input size
+
+34
+00:02:08,094 --> 00:02:11,879
+drops two a sufficiently small amount,
+then the [inaudible], then the recursion
+
+35
+00:02:11,879 --> 00:02:15,664
+stops, and the problem is solved, sub
+problem is solved in constant [inaudible].
+
+36
+00:02:15,664 --> 00:02:19,400
+Since this assumption is pretty much
+always satisfied in every problem we're
+
+37
+00:02:19,400 --> 00:02:23,282
+going to see, I'm not gonna discuss it
+much further. Let's move on to the general
+
+38
+00:02:23,282 --> 00:02:27,261
+case, where there are recursive calls. So
+we assume there were recurrences given in
+
+39
+00:02:27,261 --> 00:02:32,559
+the following format. The running time on
+an input of link N is bounded above by
+
+40
+00:02:32,559 --> 00:02:38,506
+some number of recursive calls. Let's call
+it A different recursive calls. And then
+
+41
+00:02:38,506 --> 00:02:44,889
+each of these sub-problems has exactly the
+same size and it's, one over B fraction of
+
+42
+00:02:44,889 --> 00:02:50,547
+the original input size. So there's A
+recursive calls, each of on input of size
+
+43
+00:02:50,547 --> 00:02:55,738
+N over B. Now as usual there's the case
+where I never be as a fraction and not an
+
+44
+00:02:55,738 --> 00:02:59,979
+integer and as usual I'm going to be
+sloppy and ignore it and as usual that
+
+45
+00:02:59,979 --> 00:03:04,332
+sloppiness has no implications for the
+final conclusion, everything that we're
+
+46
+00:03:04,332 --> 00:03:08,797
+going to discuss is true, for the same
+reasons and the general case where N over
+
+47
+00:03:08,797 --> 00:03:13,429
+B is not an integer, outside the recursive
+calls we do some extra work and lets say
+
+48
+00:03:13,429 --> 00:03:17,615
+that it's O of N to the D for some
+parameter D so in addition to the input
+
+49
+00:03:17,615 --> 00:03:22,136
+size N there are three letters here which
+we need to be very clear of what their
+
+50
+00:03:22,136 --> 00:03:26,792
+meaning is. So first of all there's A,
+which is the number of subproblems, the
+
+51
+00:03:26,792 --> 00:03:31,831
+number of recursive calls. So A could be
+as small as one or it might be some larger
+
+52
+00:03:31,831 --> 00:03:36,633
+integer. Then there's B. B is the factor
+by which the input size shrinks before a
+
+53
+00:03:36,633 --> 00:03:41,315
+recursive call is applied. B is some
+constant strictly greater than one. So for
+
+54
+00:03:41,315 --> 00:03:46,177
+example if you re-curse oh half of the
+original problem then B would be equal to
+
+55
+00:03:46,177 --> 00:03:51,159
+two. It better be strictly bigger than one
+so that eventually you stop recursion. So
+
+56
+00:03:51,159 --> 00:03:55,581
+that eventually that you terminate.
+Finally, there's D, which is simply the
+
+57
+00:03:55,581 --> 00:04:00,653
+exponent in the running time of the quote
+unquote combined step. That is, the amount
+
+58
+00:04:00,653 --> 00:04:05,357
+of work which is done outside of the
+recursive calls. And D could be as small
+
+59
+00:04:05,357 --> 00:04:10,123
+as zero, which would indicate constant
+amount of work outside of the recursive
+
+60
+00:04:10,123 --> 00:04:14,767
+calls. One point to emphasize is that A, B
+and D are all constants. That's all,
+
+61
+00:04:14,767 --> 00:04:19,655
+they're all numbers that are independent
+of N. So A, B and D are gonna be numbers
+
+62
+00:04:19,655 --> 00:04:24,426
+like one, two, three or four. They do not
+depend on the input size and. And in fact,
+
+63
+00:04:24,426 --> 00:04:28,689
+let me just redraw the D so that you don't
+confuse it with the A. So again, A is the
+
+64
+00:04:28,689 --> 00:04:32,900
+number of recursive calls. And D is the
+exponent in the running time governing the
+
+65
+00:04:32,900 --> 00:04:36,958
+work done outside of the recursive calls.
+Now, one comment about that final turn,
+
+66
+00:04:36,958 --> 00:04:41,220
+that Big O of N to the D. On the one hand,
+I'm being sorta sloppy. I'm not keeping
+
+67
+00:04:41,220 --> 00:04:45,586
+track of the constant that's hidden inside
+the Big O [inaudible]. I'll be explicit
+
+68
+00:04:45,586 --> 00:04:49,695
+with that constant when we actually prove
+the master method, but it's really not
+
+69
+00:04:49,695 --> 00:04:53,649
+gonna matter. It's just gonna carry
+through the analysis, without affecting
+
+70
+00:04:53,649 --> 00:04:57,810
+anything. So you can go ahead and ignore
+that constant within the Big O. Obviously.
+
+71
+00:04:57,810 --> 00:05:01,970
+The constant of the exponent, namely D. Is
+very important. Alright? So depending on
+
+72
+00:05:01,970 --> 00:05:06,183
+when D. Is depends on whether that amount
+of time is constant, linear, quadratic, or
+
+73
+00:05:06,183 --> 00:05:10,462
+so on. So certainly we care about the
+constant [inaudible]. D. So that's the
+
+74
+00:05:10,462 --> 00:05:14,492
+input to the master method. It is a
+recurrence of this form, so you can think
+
+75
+00:05:14,492 --> 00:05:18,893
+of it as a recursive algorithm which makes
+A recursive calls, each on some problems
+
+76
+00:05:18,893 --> 00:05:23,136
+of equal size, each of size N over B, plus
+it does N to the D work outside of the
+
+77
+00:05:23,136 --> 00:05:27,113
+recursive calls. So having setup the
+notation I can now precisely state the
+
+78
+00:05:27,113 --> 00:05:31,640
+master method for you. So given such a
+occurrence we are going to get an upper
+
+79
+00:05:31,640 --> 00:05:36,496
+ban on the running time. So the running
+time on. Inputs of size N is going to be
+
+80
+00:05:36,496 --> 00:05:41,588
+upper bounded by one of three things. So
+somewhat famously the master method has
+
+81
+00:05:41,588 --> 00:05:46,617
+three cases. So let me tell you about each
+of them. The trigger, which determines
+
+82
+00:05:46,617 --> 00:05:51,200
+which case you're in, is a comparison
+between two numbers. First of all A.
+
+83
+00:05:51,200 --> 00:05:56,545
+Recall A is the number of recursive calls
+made and B raised to the D power. Recall B
+
+84
+00:05:56,545 --> 00:06:01,317
+is the factor by which the input size
+shrinks before you re-curse. D is the
+
+85
+00:06:01,317 --> 00:06:06,280
+exponent in the amount of work done
+outside the recursive call. So we're gonna
+
+86
+00:06:06,280 --> 00:06:11,180
+have one case for when they're equal,
+we're gonna have one case for when A is
+
+87
+00:06:11,180 --> 00:06:17,112
+strictly smaller then B to the D And third
+case is when A. Is strictly bigger than B.
+
+88
+00:06:17,112 --> 00:06:22,823
+To the D. And in the first case we get a
+running time of, big O. Of N. To the D.
+
+89
+00:06:22,823 --> 00:06:28,195
+Times log in. Again this is D. The same D
+that was in the final term of the
+
+90
+00:06:28,195 --> 00:06:32,258
+recurrence. Okay? That worked on the
+outside of the recursive calls. So the
+
+91
+00:06:32,258 --> 00:06:36,378
+first case, the running time is the, is
+the same as the running time in the
+
+92
+00:06:36,378 --> 00:06:41,053
+recurrence and outside the recursive calls
+but we pick up an extra log in factor. In
+
+93
+00:06:41,053 --> 00:06:45,754
+second case where A is smaller than B to
+the D. The running time is merely Big O of
+
+94
+00:06:45,754 --> 00:06:49,866
+N to the D. And this case might be
+somewhat stunning if this could ever
+
+95
+00:06:49,866 --> 00:06:54,210
+occur. Because, of course, in recurrence,
+what do you do? You do some recursion,
+
+96
+00:06:54,210 --> 00:06:58,727
+plus you do N to the D work outside of the
+recursion. So in the second case, it
+
+97
+00:06:58,727 --> 00:07:03,418
+actually says the work is dominated by
+just what's done outside the recursion in
+
+98
+00:07:03,418 --> 00:07:08,109
+the outermost call. The third case will
+initially seem the most mysterious, when A
+
+99
+00:07:08,109 --> 00:07:12,916
+is strictly bigger than B to the D. We're
+gonna get a running time of Big O, of N to
+
+100
+00:07:12,916 --> 00:07:21,430
+the log. Base B. Of a. For again recall A
+is the number of recursive cause and B is
+
+101
+00:07:21,430 --> 00:07:26,913
+the factor by which the input size shrinks
+before you recurse. So that's the master
+
+102
+00:07:26,913 --> 00:07:32,133
+method with its three cases. Let me give
+this to you in a cleaner slide to make
+
+103
+00:07:32,133 --> 00:07:36,485
+sure there's no ambiguity in my
+handwriting. So here's the exact same
+
+104
+00:07:36,485 --> 00:07:41,110
+statement, the master method. Once again,
+with it's three cases depending on how A
+
+105
+00:07:41,110 --> 00:07:45,766
+compares to B to the D. So one final
+comment. You'll notice that I'm being
+
+106
+00:07:45,766 --> 00:07:50,823
+asymmetrically sloppy with the two
+logarithms that appear in these formulas.
+
+107
+00:07:50,823 --> 00:07:54,985
+So let me just explain why. In particular
+you'll notice that in case one, with a
+
+108
+00:07:54,985 --> 00:07:59,199
+logarithm. I'm not specifying the base.
+Why is that true? Well, it's because the
+
+109
+00:07:59,199 --> 00:08:03,969
+logrithm with respect to any two different
+bases differs by a constant factor. So the
+
+110
+00:08:03,969 --> 00:08:08,403
+logrithm that is at base E, that is the
+natural logrigthm, and the logrithm base
+
+111
+00:08:08,403 --> 00:08:12,218
+two, for example, differ by only a
+constant factor independent of the
+
+112
+00:08:12,218 --> 00:08:16,259
+argument N. So you can switch this
+logrithm to whatever consant base you
+
+113
+00:08:16,259 --> 00:08:20,001
+like. It only changes the leading constant
+factor, which of course is being
+
+114
+00:08:20,001 --> 00:08:24,165
+suppressed in the bigger notation anyways.
+On the other hand, in case three, where we
+
+115
+00:08:24,165 --> 00:08:28,128
+have a logarithm in the exponents. Once
+it's in the exponent, we definitely care
+
+116
+00:08:28,128 --> 00:08:31,941
+about that constant. Constants is the
+difference between, say, linear time and
+
+117
+00:08:31,941 --> 00:08:35,904
+quadratic time. So we need to keep careful
+of the ba-, the logarithm base in the
+
+118
+00:08:35,904 --> 00:08:39,817
+exponent in case three. [inaudible], and
+that base is precisely B, the factor by
+
+119
+00:08:39,817 --> 00:08:43,574
+which the input shrinks which each
+[inaudible], with each recursive call. So
+
+120
+00:08:43,574 --> 00:08:47,620
+that's the precise statement of the master
+method. And the rest of this lecture will
+
+121
+00:08:47,620 --> 00:08:51,329
+work toward understanding the master
+method. So first, in the next video, we'll
+
+122
+00:08:51,329 --> 00:08:55,231
+look at a number of examples, including
+resolving the running time of [inaudible]
+
+123
+00:08:55,231 --> 00:08:58,651
+recursive algorithm for integer
+multiplication. Following those several
+
+124
+00:08:58,651 --> 00:09:02,552
+examples, we'll prove the master method.
+And I know now, these three cases probably
+
+125
+00:09:02,552 --> 00:09:05,828
+look super mysterious. But if I do my job,
+by the end of the analysis.

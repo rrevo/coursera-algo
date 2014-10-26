@@ -1,0 +1,1434 @@
+1
+00:00:00,000 --> 00:00:03,697
+So this is the first video of three in
+which we'll mathematically analyze the
+
+2
+00:00:03,697 --> 00:00:06,778
+running time of the randomized
+implementation of quicksort. So in
+
+3
+00:00:06,778 --> 00:00:10,618
+particular we're gonna prove that the
+average running time of quicksort is big-O
+
+4
+00:00:10,618 --> 00:00:14,084
+of n log n. Now this is the first
+randomized algorithm that we've seen in
+
+5
+00:00:14,084 --> 00:00:17,977
+the course and therefore, in its analysis
+will be the first time that we're gonna
+
+6
+00:00:17,977 --> 00:00:21,871
+need any kind of probability theory. So
+let me just explain upfront what I?d like,
+
+7
+00:00:21,871 --> 00:00:25,718
+expect you to know in the following
+analysis. Basically I need you to know the
+
+8
+00:00:25,718 --> 00:00:29,422
+first few ingredients of discrete
+probability theory, so I need you to know
+
+9
+00:00:29,422 --> 00:00:33,221
+about sample spaces, that is how to model
+all of the different things that could
+
+10
+00:00:33,221 --> 00:00:36,782
+happen, all of the ways that random
+choices could resolve themselves. I need
+
+11
+00:00:36,782 --> 00:00:40,391
+you to know about random variables,
+functions on sample spaces which take on
+
+12
+00:00:40,391 --> 00:00:44,000
+real values, I need you to know about
+expectations that is average values of
+
+13
+00:00:44,000 --> 00:00:48,272
+random variables, and Very simple but very
+key property we're going to need in the
+
+14
+00:00:48,272 --> 00:00:52,073
+analysis of qucksort is linearity of
+expectation of expectation. So, if you
+
+15
+00:00:52,073 --> 00:00:56,285
+haven't seen this before or if you're too
+rusty, definitely you should review this
+
+16
+00:00:56,285 --> 00:01:00,342
+stuff before you watch this video. Some
+places you can go to get that necessary
+
+17
+00:01:00,342 --> 00:01:04,502
+review, you can look at the probability
+review part one video that's up on the
+
+18
+00:01:04,502 --> 00:01:08,508
+course. If you prefer to read something,
+like I said at the beginning of the
+
+19
+00:01:08,508 --> 00:01:12,360
+course, I recommend the free online
+lecture notes by Eric Lehman and Tom
+
+20
+00:01:12,360 --> 00:01:16,674
+Laten. Mathematics for Computer Science.
+That covers everything we'll need to know
+
+21
+00:01:16,674 --> 00:01:20,734
+plus much more. There's also a wiki book
+on dist. Probability with is a perfectly
+
+22
+00:01:20,734 --> 00:01:24,970
+fine obviously free-source unless you can
+learn the necessary material. Okay? So
+
+23
+00:01:24,970 --> 00:01:29,277
+after you've got that sorta fresh in your
+minds and you're ready to watch the rest
+
+24
+00:01:29,277 --> 00:01:33,083
+of this video, and in particular we're
+ready to prove the following theorems
+
+25
+00:01:33,083 --> 00:01:36,989
+stated in the previous video. So, the
+quick sort of algorithm with a randomized
+
+26
+00:01:36,989 --> 00:01:40,995
+implementation, that is wherein every
+single recursive sub call you pick a pivot
+
+27
+00:01:40,995 --> 00:01:45,328
+uniformly at random restated the following
+assertion. But for every single input so
+
+28
+00:01:45,328 --> 00:01:49,860
+for a worse case input a ray of length n,
+the average running time of quick sorts.
+
+29
+00:01:49,860 --> 00:01:53,699
+With the random pivots. Is O of N login.
+And again, to be clear where the
+
+30
+00:01:53,699 --> 00:01:58,103
+randomness is, the randomness is not in
+the data. We make no assumptions about the
+
+31
+00:01:58,103 --> 00:02:02,452
+data, as per guiding principles. No matter
+what the input array is, averaging only
+
+32
+00:02:02,452 --> 00:02:06,802
+over the randomness in our own code. The
+randomness internal to the algorithm, we
+
+33
+00:02:06,802 --> 00:02:11,151
+get a running time of N log N. We saw in
+the past that the best case behavior of
+
+34
+00:02:11,151 --> 00:02:15,392
+Quick Sort is N log N. The worst case
+behavior is N squared. So this theorem is
+
+35
+00:02:15,392 --> 00:02:19,687
+asserting that, no matter what the input
+array is, the typical behavior of Quick
+
+36
+00:02:19,687 --> 00:02:23,710
+Sort is far closer to the best case
+behavior than it is to the worst case
+
+37
+00:02:23,710 --> 00:02:27,204
+behavior. Okay so that's what we are going
+to prove, in the next few videos. So let's
+
+38
+00:02:27,204 --> 00:02:32,494
+go ahead and get started. So first I'm
+going to set up the necessary notation and
+
+39
+00:02:32,494 --> 00:02:36,626
+be clear about exactly what is the sample
+space what is the random variable that we
+
+40
+00:02:36,626 --> 00:02:42,199
+care about and so on. So we're gonna fix
+an arbitrary array of length n, that's
+
+41
+00:02:42,199 --> 00:02:49,391
+gonna be the input to the quick sort
+algorithm. And we'll be working with this
+
+42
+00:02:49,391 --> 00:02:54,210
+fixed but arbitrary input array for the
+remainder of the analysis. Okay, so just
+
+43
+00:02:54,210 --> 00:02:59,300
+fix a single input in your mind. Now
+what's the relevant sample space. Well
+
+44
+00:02:59,300 --> 00:03:03,401
+recall what a sample space is. It's just
+all the possible outcomes of the
+
+45
+00:03:03,401 --> 00:03:07,782
+randomness in the world. So it's all the
+distinct things that could happen. Now
+
+46
+00:03:07,782 --> 00:03:11,601
+here the randomness is of our own
+devising, it's just a random pivot
+
+47
+00:03:11,601 --> 00:03:16,039
+sequences. The random pivots chosen by
+quick sort. So omega is just a set of all
+
+48
+00:03:16,039 --> 00:03:22,272
+possible random pivots that quick sort
+could choose. Now the whole point of this
+
+49
+00:03:22,272 --> 00:03:27,171
+theorem proving that the average, average
+running time it puts is sort of small,
+
+50
+00:03:27,171 --> 00:03:32,070
+boils down to computing the expectation of
+a single random variable. So here's the
+
+51
+00:03:32,070 --> 00:03:39,066
+random variable we're going to care about.
+Four Given pipit sequence, remember that
+
+52
+00:03:39,066 --> 00:03:43,687
+random variables are real valued functions
+defined on the sample space. So for a
+
+53
+00:03:43,687 --> 00:03:48,030
+given point in the sample space, or pipit
+sequence sigma, we're going to define
+
+54
+00:03:48,030 --> 00:03:52,261
+capital C of sigma, as the number of
+comparisons that Quick Sort makes, where
+
+55
+00:03:52,261 --> 00:03:56,882
+by comparison I don't mean something like
+within array index in a four loop, that's
+
+56
+00:03:56,882 --> 00:04:01,225
+not what I mean by comparison. I mean,
+comparison between two different entries
+
+57
+00:04:01,225 --> 00:04:05,734
+of the input array, by comparing the third
+entry in the array against the seventh
+
+58
+00:04:05,734 --> 00:04:09,854
+entry in the array to see whether the
+third entry or the seventh entry is
+
+59
+00:04:09,854 --> 00:04:16,426
+smaller. Notice that this is indeed a
+random variable that is given knowledge of
+
+60
+00:04:16,426 --> 00:04:21,148
+the pivot sequence sigma. The choices of
+all pivots you can think a quick sort at
+
+61
+00:04:21,148 --> 00:04:25,307
+that point is just a deterministic
+algorithm, with all of the pivot choice
+
+62
+00:04:25,307 --> 00:04:29,129
+predetermined. So the deterministic
+version of quick sort makes some
+
+63
+00:04:29,298 --> 00:04:33,850
+deterministic number of comparisons. So,
+if we're given pivot sequence sigma, we're
+
+64
+00:04:33,850 --> 00:04:38,291
+just calling C of sigma to be whatever,
+however many comparisons it makes given
+
+65
+00:04:38,291 --> 00:04:43,442
+those choices of pivots. Now the, with the
+theorem I've stated it's not about the
+
+66
+00:04:43,442 --> 00:04:47,366
+number of comparisons of Quick Sort but
+rather about the running time of Quick
+
+67
+00:04:47,366 --> 00:04:51,291
+Sort but really, if you think about it
+kinda only real work that the Quick Sort
+
+68
+00:04:51,291 --> 00:04:55,265
+algorithm does is make comparisons between
+two, between pairs of elements in the
+
+69
+00:04:55,265 --> 00:04:59,239
+input array. Yes, there's a little bit of
+other book keeping but that's all noise,
+
+70
+00:04:59,239 --> 00:05:03,214
+that's all second order stuff. All Quick
+Sort really does is comparisons between
+
+71
+00:05:03,214 --> 00:05:08,585
+the pairs of elements in the input array.
+And if you want to know what I mean by
+
+72
+00:05:08,585 --> 00:05:13,520
+that a little more formally, dominated by
+comparisons. I mean, that there exists a
+
+73
+00:05:13,520 --> 00:05:18,331
+constant c, so that the total number of
+operations of any type that quick sort
+
+74
+00:05:18,331 --> 00:05:23,530
+executes is at most a constant factor
+larger than the number of comparisons. So
+
+75
+00:05:23,530 --> 00:05:29,137
+let's say that by RT I mean the number of
+primitive operations of any form that
+
+76
+00:05:29,137 --> 00:05:35,115
+quick sort uses and for every. Pivot
+sequence sigma. The total number of
+
+77
+00:05:35,115 --> 00:05:40,100
+operations is no more than a constant
+times. The total number of comparisons.
+
+78
+00:05:40,100 --> 00:05:43,810
+And if you want a proof of this, it's not
+that interesting, so I'm not gonna talk
+
+79
+00:05:43,810 --> 00:05:47,567
+about it here. But in the notes posted on
+the website, there is a sketch, of why
+
+80
+00:05:47,567 --> 00:05:51,416
+this is true. How you can formally argue
+that there isn't much work beyond just the
+
+81
+00:05:51,416 --> 00:05:55,126
+comparisons. But I hope most of you find
+that, to be pretty intuitive. So, given
+
+82
+00:05:55,126 --> 00:05:58,790
+this, given the, the running time of Quick
+Sort boils down just to the number of
+
+83
+00:05:58,790 --> 00:06:02,315
+comparisons. And we want to prove the
+average running time is N log N. All we
+
+84
+00:06:02,315 --> 00:06:05,886
+gotta do, quote unquote, all we have to
+do, is prove that the average number of
+
+85
+00:06:05,886 --> 00:06:09,782
+comparisons that Quick Sort makes, is O of
+N log N. And that's what we're gonna do.
+
+86
+00:06:09,782 --> 00:06:14,586
+So that's what the, the rest of these
+lectures are about. So that's what we
+
+87
+00:06:14,586 --> 00:06:18,806
+gotta prove. We gotta prove that the
+expectation of this random variable C,
+
+88
+00:06:18,806 --> 00:06:23,540
+which counts up the number of comparisons
+quicksort makes is for this arbitrary
+
+89
+00:06:23,540 --> 00:06:30,978
+input array A of length n, bounded by
+big-O of n log n. So the high order bit of
+
+90
+00:06:30,978 --> 00:06:35,236
+this lecture is a decomposition principle.
+We've identified this random variable C,
+
+91
+00:06:35,236 --> 00:06:39,235
+the number of comparisons, and it's
+exactly what we care about. It governs the
+
+92
+00:06:39,235 --> 00:06:43,285
+average running time of Quick Sort. The
+problem is, it's quite complicated. It's
+
+93
+00:06:43,285 --> 00:06:47,648
+very hard to understand what this capital
+C is. It's fluctuating between n log n and
+
+94
+00:06:47,648 --> 00:06:52,854
+n squared, and it's hard to know how to
+get a handle on it. So how are we gonna go
+
+95
+00:06:52,854 --> 00:06:57,020
+about proving this assertion that the
+expected number of comparisons that
+
+96
+00:06:57,020 --> 00:07:01,245
+quicksort makes is on average just O (n
+log n)? At this point we actually have a
+
+97
+00:07:01,245 --> 00:07:04,813
+fair amount of experience with
+divide-and-conquer algorithms. We've seen
+
+98
+00:07:04,813 --> 00:07:08,876
+a number of examples. And, whenever we had
+to do a running-time analysis of such an
+
+99
+00:07:08,876 --> 00:07:12,890
+algorithm, we wrote out a recurrence, we
+applied the master method or, in the worst
+
+100
+00:07:12,890 --> 00:07:16,358
+case, we wrote out a recursion tree to
+figure out the solution of that
+
+101
+00:07:16,358 --> 00:07:20,323
+recurrence. So you'd be very right to
+expect something similar to happen here.
+
+102
+00:07:20,323 --> 00:07:24,287
+But as we probe deeper and we think about
+quicksort, we quickly realize that the
+
+103
+00:07:24,287 --> 00:07:28,251
+master method just doesn't apply, or at
+least not in the form that we're used to.
+
+104
+00:07:28,400 --> 00:07:32,712
+The problem is twofold. So, first of all,
+the size of the two subproblems is random.
+
+105
+00:07:32,712 --> 00:07:36,704
+Right? As we discussed in the last video
+the quality of the pivot is what
+
+106
+00:07:36,704 --> 00:07:41,134
+determines how balanced a split we get
+into the two subproblems. It can be as bad
+
+107
+00:07:41,134 --> 00:07:45,181
+subproblem size zero and one a size n
+minus one. Or it can be as good as a
+
+108
+00:07:45,181 --> 00:07:49,228
+perfectly balanced split into two
+subproblems of equal sizes. But we don't
+
+109
+00:07:49,228 --> 00:07:53,494
+know. It's gonna be dependent on our range
+of choice of the pivot. Moreover the
+
+110
+00:07:53,494 --> 00:07:57,760
+master at least as we discussed it
+required solved subproblems to have the
+
+111
+00:07:57,760 --> 00:08:02,026
+same size. And unless you're extremely
+lucky that's not gonna happen in the
+
+112
+00:08:02,026 --> 00:08:06,762
+quicksort algorithm. It is possible to
+develop a theory of recurrence relations
+
+113
+00:08:06,762 --> 00:08:10,824
+for randomized algorithms, and to apply it
+to quick sort in particular. But I'm not
+
+114
+00:08:10,824 --> 00:08:14,935
+going to go that route for two reasons.
+The first one is its really quite messy.
+
+115
+00:08:14,935 --> 00:08:18,997
+It gets pretty technical, to talk about
+solutions to recurrences for randomized
+
+116
+00:08:18,997 --> 00:08:22,811
+algorithms, or to think about random
+recursion trees. Both of those get, get
+
+117
+00:08:22,811 --> 00:08:26,824
+pretty complicated. The second reason is,
+I really want to introduce you to what I
+
+118
+00:08:26,824 --> 00:08:30,489
+call a decomposition principle, by which
+you take a random variable that's
+
+119
+00:08:30,489 --> 00:08:34,211
+complicated, but that you care about a
+lot. And decompose it in to simple random
+
+120
+00:08:34,211 --> 00:08:37,627
+variables which you don't really care
+about in their own right but which are
+
+121
+00:08:37,627 --> 00:08:41,264
+easy to analyze and then you stitch those
+two things together using linearity and
+
+122
+00:08:41,264 --> 00:08:44,591
+expectation so that's gonna be the
+workhorse for our analysis of the quick
+
+123
+00:08:44,591 --> 00:08:48,185
+store, of the quick-sort algorithm and
+it's gonna come up again a couple of times
+
+124
+00:08:48,185 --> 00:08:51,936
+in the rest of the course, for example,
+when we study hashing. So, to explain how
+
+125
+00:08:51,936 --> 00:08:56,293
+this decomposition principle applies to
+quicksort in particular, I'm gonna need to
+
+126
+00:08:56,293 --> 00:09:00,543
+introduce you to the building blocks,
+simple random variables which will make up
+
+127
+00:09:00,543 --> 00:09:04,794
+the complicated random variable that we
+care about, the number of comparisons. So
+
+128
+00:09:04,794 --> 00:09:10,013
+here's some notation. Recall that we fixed
+in the background an arbitrary array of
+
+129
+00:09:10,013 --> 00:09:15,456
+length N and that's denoted by capital A
+[sound]. And some notation which is
+
+130
+00:09:15,456 --> 00:09:22,054
+simple, but also quite important by z sub
+i. What I mean is the ith smallest element
+
+131
+00:09:22,054 --> 00:09:28,348
+in the input array capitol A. Also known
+as the ith order statistic. So let me tell
+
+132
+00:09:28,348 --> 00:09:32,998
+you what ZI is not, okay. What ZI is not,
+in general, is the element in the
+
+133
+00:09:32,998 --> 00:09:38,164
+[inaudible] position of the input unsorted
+array. What ZI is, is it's the element
+
+134
+00:09:38,164 --> 00:09:42,942
+which is going to wind up in the
+[inaudible] element of the array, once we
+
+135
+00:09:42,942 --> 00:09:47,786
+sort it, okay. So if you fast forward to
+the end of the sorting algorithm, in
+
+136
+00:09:47,786 --> 00:09:53,417
+position I, you're gonna find ZI. So let
+me give you an example. So suppose we have
+
+137
+00:09:53,417 --> 00:10:01,440
+just a simple array here, unsorted. Were
+the numbers six, eight, ten and two, then.
+
+138
+00:10:02,080 --> 00:10:07,710
+Z one, well that's the first smallest. The
+one smallest or just the minimum. So z one
+
+139
+00:10:07,710 --> 00:10:13,408
+would be the two z two would be the six z
+three would be the eight and z four would
+
+140
+00:10:13,408 --> 00:10:17,953
+be the ten. For this particular input
+array. Okay? So z I is just the
+
+141
+00:10:17,953 --> 00:10:23,312
+[inaudible] smallest number, wherever it
+may lie in the original unsorted array
+
+142
+00:10:23,516 --> 00:10:29,026
+that's what z I refers to. So we already
+defined the sample space that's just all
+
+143
+00:10:29,026 --> 00:10:33,901
+possible choices of pivots, the Quicksort
+might make. I already described one random
+
+144
+00:10:33,901 --> 00:10:38,364
+variable with the number of comparison
+that Quicksort makes on a particular
+
+145
+00:10:38,364 --> 00:10:42,887
+choice of pivots. Now I am getting
+introduced a family of much simpler random
+
+146
+00:10:42,887 --> 00:10:47,057
+variables which count merely the
+comparisons involving a given pair of
+
+147
+00:10:47,057 --> 00:10:53,623
+elements in the input way not all elements
+just a given pair. So for a given choice
+
+148
+00:10:53,623 --> 00:11:01,020
+of pivots given sigma and given choices of
+I and J. Both of which are between one and
+
+149
+00:11:01,020 --> 00:11:06,500
+N. And so we only count things once. I'm
+going to insist that I is less than J
+
+150
+00:11:06,500 --> 00:11:11,839
+always. And now here's a definition. My
+XIJ, and this is a random variable, so
+
+151
+00:11:11,839 --> 00:11:17,889
+it's a function of the pivots chosen. This
+is going to be the number of times that ZI
+
+152
+00:11:17,889 --> 00:11:23,386
+and ZJ are compared in the execution of
+quick sort. Okay, so this is gonna be an
+
+153
+00:11:23,386 --> 00:11:27,638
+important definition in our analysis. It's
+important you understand it. So, for
+
+154
+00:11:27,638 --> 00:11:32,278
+something like the third smallest element
+and the seventh smallest element, x I j is
+
+155
+00:11:32,278 --> 00:11:36,751
+asking, that's when I equals three and j
+equals seven, x three seven is asking how
+
+156
+00:11:36,751 --> 00:11:41,201
+many times those two elements get compared
+as quicksort. Proceeds. And this is a
+
+157
+00:11:41,201 --> 00:11:45,499
+random variable in the sense that if the
+pivot choices are all predetermined, if we
+
+158
+00:11:45,499 --> 00:11:49,745
+think of those being chosen in advance,
+then there's just some fixed deterministic
+
+159
+00:11:49,745 --> 00:11:53,888
+number of times, that ZI and ZJ get
+compared. So it's important you understand
+
+160
+00:11:53,888 --> 00:11:58,342
+these random variables XIJ. So the next
+quiz is gonna ask, a basic question about
+
+161
+00:11:58,342 --> 00:12:02,225
+the range of values that a given XIJ can
+take on. So for this quiz we're
+
+162
+00:12:02,225 --> 00:12:06,321
+considering, as usual, so fixed input
+array and now furthermore, fix two
+
+163
+00:12:06,321 --> 00:12:10,767
+specific elements of the input array. For
+example, the third smallest element,
+
+164
+00:12:10,767 --> 00:12:15,039
+wherever it may lie, and the seventh
+smallest element, wherever it may lie.
+
+165
+00:12:15,039 --> 00:12:19,544
+Think about just these pair of two
+elements. What is the range of values that
+
+166
+00:12:19,544 --> 00:12:23,698
+the corresponding random variable, Xij,
+can take on? That is, what are the
+
+167
+00:12:23,698 --> 00:12:28,320
+different numbers of times that a given
+pair of elements might conceivably get
+
+168
+00:12:28,320 --> 00:12:33,306
+compared in the execution of the quick
+sort algorithm? All right so the correct
+
+169
+00:12:33,306 --> 00:12:37,600
+answer to this quiz, is the second option.
+This is not a trivial quiz. This is a
+
+170
+00:12:37,600 --> 00:12:41,895
+little tricky to see. So the assertion is
+that a given pair of elements, they might
+
+171
+00:12:41,895 --> 00:12:45,735
+not be compared at all. They might be
+compared once. And they're not going to
+
+172
+00:12:45,735 --> 00:12:49,571
+get compared more than once. Okay? So
+here, what I'm gonna discuss is why it's
+
+173
+00:12:49,571 --> 00:12:53,808
+not possible for a given pair of elements
+to be compared twice during the execution
+
+174
+00:12:53,808 --> 00:12:57,995
+of quick sort. It'll be clear later on, if
+it's not already clear now, that both zero
+
+175
+00:12:57,995 --> 00:13:02,081
+and one are legitimate possibilities. A
+pair of elements might never get compared
+
+176
+00:13:02,081 --> 00:13:05,865
+and they might get compared once. And
+we'll, and again, we'll go into more
+
+177
+00:13:05,865 --> 00:13:10,001
+detail on that in the next video. So, but
+why is it impossible to be compared twice?
+
+178
+00:13:10,001 --> 00:13:14,037
+Well, think about two elements. Say, the
+third element and the seventh element. And
+
+179
+00:13:14,037 --> 00:13:18,022
+let's recall how the partition subroutine
+works. Observe that in quick sort, the
+
+180
+00:13:18,022 --> 00:13:22,254
+only place in the code where comparisons
+between pairs of the. Input array elements
+
+181
+00:13:22,254 --> 00:13:26,408
+happens, it only happens in the partition
+subroutine. So that's where we have to
+
+182
+00:13:26,408 --> 00:13:30,667
+drill down. So what are the comparisons
+that get made in the partition subroutine?
+
+183
+00:13:30,667 --> 00:13:35,391
+Well. Go back and look at that code. The
+pivot elements is compared to each other
+
+184
+00:13:35,391 --> 00:13:40,088
+element in the input array exactly once.
+Okay, so the pivot just hangs out in the
+
+185
+00:13:40,088 --> 00:13:44,961
+first entry of the array. We have this for
+loop, this index j, which marches over the
+
+186
+00:13:44,961 --> 00:13:49,658
+rest of the array. And for each value of
+j, the j element of the input array gets
+
+187
+00:13:49,658 --> 00:13:53,825
+compared to the pivot. Okay. So
+summarizing in an invocation of partition,
+
+188
+00:13:53,825 --> 00:13:58,196
+every single comparison involves the pivot
+element, okay. So two elements get
+
+189
+00:13:58,196 --> 00:14:02,912
+compared if and only if one is the pivot.
+Alright, so let's go back to the question.
+
+190
+00:14:02,912 --> 00:14:07,456
+Why can't a given pair of elements in the
+[inaudible] get compared two or more
+
+191
+00:14:07,456 --> 00:14:11,931
+times? Well, think about the first time
+they ever get compared in Quick Sort. It
+
+192
+00:14:11,931 --> 00:14:16,233
+must be the case that at that moment,
+we're in a recursive call where either one
+
+193
+00:14:16,233 --> 00:14:20,751
+of those two is the pivot element. So it's
+the third smallest element or the seventh
+
+194
+00:14:20,751 --> 00:14:24,946
+smallest element. The first time those two
+elements are compared to each other,
+
+195
+00:14:24,946 --> 00:14:29,303
+either the third smallest or the seventh
+smallest is currently the pivot, because
+
+196
+00:14:29,303 --> 00:14:33,512
+all comparisons involve the pivot element.
+Therefore. What's gonna happen in the
+
+197
+00:14:33,512 --> 00:14:37,647
+recursion, well the pitted is excluded
+from both recursive calls. So for example
+
+198
+00:14:37,647 --> 00:14:41,572
+if the second smallest element is
+currently the pitted that's not gonna be
+
+199
+00:14:41,572 --> 00:14:45,915
+passed on to recursive call which contains
+the third smallest element. Therefore if
+
+200
+00:14:45,915 --> 00:14:49,736
+you compared once, one of the elements
+that's pitted and it will never be
+
+201
+00:14:49,736 --> 00:14:53,922
+compared again because the pitted will not
+even show up in any future recursive
+
+202
+00:14:53,922 --> 00:14:57,638
+calls. Okay, so that's the reason. You
+compared once, one is the pitted, it
+
+203
+00:14:57,638 --> 00:15:02,309
+doesn't get passed to the recursion,
+you're done, never seen again. So a random
+
+204
+00:15:02,309 --> 00:15:07,562
+variable which can only take on the value
+zero or one is often called an indicator
+
+205
+00:15:07,562 --> 00:15:12,561
+random variable, because it's in, just
+indicating whether or not a certain thing
+
+206
+00:15:12,561 --> 00:15:17,645
+happens. So, in that terminology, each x I
+j. Is indicating whether or not the ith
+
+207
+00:15:17,645 --> 00:15:21,686
+smallest element in the array, and the jth
+smallest element in the array, ever get
+
+208
+00:15:21,686 --> 00:15:25,677
+compared. It can't happen more than once.
+It may or may not happen, and Xij is one
+
+209
+00:15:25,677 --> 00:15:30,668
+precisely when it happens. So that's the
+event that it's indicating. Having defined
+
+210
+00:15:30,668 --> 00:15:34,625
+the building blocks I need, these
+indicator random variables, these X, I,
+
+211
+00:15:34,625 --> 00:15:38,696
+Js, now I can introduce you to the
+decomposition principle as applied to
+
+212
+00:15:38,696 --> 00:15:43,389
+Quick Sort. So there's a random variable
+that we really care about which is denoted
+
+213
+00:15:43,389 --> 00:15:47,855
+capital C, the number of comparisons the
+Quick Sort makes, that's really hard to
+
+214
+00:15:47,855 --> 00:15:52,548
+get a handle on in and of itself. But we
+can express C as a sum of indicator random
+
+215
+00:15:52,548 --> 00:15:56,788
+variables of these X, I, Js and those, we
+don't care about in their own right,
+
+216
+00:15:56,788 --> 00:16:00,996
+they're gonna be much easier to
+understand. So, let me just rewrite the
+
+217
+00:16:00,996 --> 00:16:06,259
+definitions of C M E X and J so we're all
+clear on them. So C Recall counts all of
+
+218
+00:16:06,259 --> 00:16:11,918
+the comparisons between pairs of input
+elements that [inaudible] whatever makes.
+
+219
+00:16:11,918 --> 00:16:17,860
+Whereas an Xij only counts the number and
+its going to be zero or one which compare
+
+220
+00:16:17,860 --> 00:16:23,307
+the ith smallest and the jth smallest
+elements in particular. Now since every
+
+221
+00:16:23,307 --> 00:16:29,036
+comparison involves precisely one pair of
+elements some I and some j, with I less
+
+222
+00:16:29,036 --> 00:16:34,278
+the j. We can write C as the sum of the
+Xij's. So don't get intimidated by this
+
+223
+00:16:34,278 --> 00:16:38,240
+fancy double sum. All this is doing is
+it's iterating over all of the ordered
+
+224
+00:16:38,240 --> 00:16:42,460
+pairs. So all of the pairs IJ, where I and
+J are both between one and N, and where I
+
+225
+00:16:42,460 --> 00:16:46,372
+is strictly less than N. This double sum
+is just a convenient way to do that
+
+226
+00:16:46,372 --> 00:16:50,180
+iteration. And, of course, no matter what
+the pivots chosen are, we have this
+
+227
+00:16:50,180 --> 00:16:54,297
+equality, okay? The comparisons, are
+somehow split up amongst the various pairs
+
+228
+00:16:54,297 --> 00:16:58,472
+of elements, the various I's and J's. Why
+is it useful to express a complicated
+
+229
+00:16:58,472 --> 00:17:03,005
+random variable as a sum of simple random
+variables? Well, because an equation like
+
+230
+00:17:03,005 --> 00:17:07,484
+this is now right in the wheelhouse of
+linearity of expectation. So let's just go
+
+231
+00:17:07,484 --> 00:17:11,741
+ahead and apply that. Remember, and this
+is super, super important, linearity of
+
+232
+00:17:11,741 --> 00:17:16,390
+expectation says that the expectation of a
+sum. Equals, the sum, of the expectations,
+
+233
+00:17:16,390 --> 00:17:21,239
+and moreover, this is true, whether or not
+the reign of variables are independent
+
+234
+00:17:21,239 --> 00:17:25,883
+?Kay and I'm not gonna prove it here, but
+you might wanna think about the fact that
+
+235
+00:17:25,883 --> 00:17:30,629
+the X-I-J's are not in fact, independent.
+They were using the fact that we need an
+
+236
+00:17:30,629 --> 00:17:35,989
+expectation towards, even for not
+independent reign of variables. And why is
+
+237
+00:17:35,989 --> 00:17:43,021
+this interesting, well the left hand side.
+This is complicated, right? This is the,
+
+238
+00:17:43,021 --> 00:17:48,110
+this is some crazy number of comparisons
+by some algorithm on some arbitrarily long
+
+239
+00:17:48,110 --> 00:17:53,016
+array and it fluctuates between two pretty
+far apart numbers and log in and then
+
+240
+00:17:53,016 --> 00:17:57,741
+squared. On the other hand, this does not
+seem as intimidating, given X, I, J it's
+
+241
+00:17:57,741 --> 00:18:03,480
+just zero or one, whether or not these two
+guys get compared or not. So that is the
+
+242
+00:18:03,480 --> 00:18:07,667
+power of this decomposition approach,
+okay. So it reduces understanding of
+
+243
+00:18:07,667 --> 00:18:11,796
+complicated random variable to
+understanding simple random variables. In
+
+244
+00:18:11,796 --> 00:18:16,155
+fact, because these are indicator random
+variables, we can even clean up this
+
+245
+00:18:16,155 --> 00:18:21,264
+expression some more. So for any given
+xij, being a 01 random variable, if we
+
+246
+00:18:21,264 --> 00:18:26,426
+expand the definition of expectation, just
+as an average over the various values
+
+247
+00:18:26,619 --> 00:18:31,458
+it's, what is it. It's, well, it's some
+probability it takes on the value zero,
+
+248
+00:18:31,458 --> 00:18:37,100
+that's possible. And there's some
+possibility it takes on the value one. And
+
+249
+00:18:37,100 --> 00:18:43,100
+of course this zero part we can very
+satisfyingly delete, cancel. And so the
+
+250
+00:18:43,100 --> 00:18:49,340
+expected value of a given XIJ is just the
+probability that XIJ equals one. And
+
+251
+00:18:49,340 --> 00:18:55,180
+remember, it's an indicator random
+variable. It's one precisely when the I
+
+252
+00:18:55,180 --> 00:19:02,057
+smallest and the J smallest, elements get
+compared. So putting it all together. We
+
+253
+00:19:02,057 --> 00:19:08,153
+find that what we care about, the average
+value of the number of comparisons made by
+
+254
+00:19:08,153 --> 00:19:13,524
+quick sort on this input array. Is this
+double sum, which iterates over all
+
+255
+00:19:13,524 --> 00:19:21,127
+ordered pairs. Where each summand is the
+probability that the corresponding x I j
+
+256
+00:19:21,127 --> 00:19:27,915
+equals one. That is the probability that z
+I and z j get compared. And this is
+
+257
+00:19:27,915 --> 00:19:33,351
+essentially the stopping point for this
+video, for the first part of the analysis.
+
+258
+00:19:33,351 --> 00:19:38,309
+So let's call this star and put a nice
+circle around it. So whats gonna happen
+
+259
+00:19:38,309 --> 00:19:42,615
+next is that in the second video, for the
+analysis, we're going to drill down on
+
+260
+00:19:42,615 --> 00:19:46,758
+this probability. Probability that a
+given, pair of [inaudible] gets compared
+
+261
+00:19:46,758 --> 00:19:51,282
+and we're gonna nail it, we're gonna get
+an exact expression as a function of I and
+
+262
+00:19:51,282 --> 00:19:55,534
+J, for exactly what this probability is.
+Then in the third video we're going to
+
+263
+00:19:55,534 --> 00:19:59,841
+take that exact expression, plug it into
+the sum, and then, evaluate this sum and
+
+264
+00:19:59,841 --> 00:20:04,293
+it turns out the sum will evaluate to the
+[inaudible] and login. So that's the plan.
+
+265
+00:20:04,293 --> 00:20:07,891
+That's how you apply decomposition in
+terms of 0-1 or indicator random
+
+266
+00:20:07,891 --> 00:20:12,048
+variables. Apply linearity of expectation.
+In the next video we'll understand these
+
+267
+00:20:12,048 --> 00:20:16,153
+simple random variables, and then we'll
+wrap up in the third video. Before we move
+
+268
+00:20:16,153 --> 00:20:19,904
+on to the next part of the analysis, I do
+just want to emphasize that this
+
+269
+00:20:19,904 --> 00:20:24,010
+decomposition principle is relevant not
+only for quicksort, but it's relevant for
+
+270
+00:20:24,010 --> 00:20:27,406
+the analysis of lots of randomized
+algorithms. And we will see more
+
+271
+00:20:27,406 --> 00:20:31,005
+applications, at least one more
+application later in the course. So just
+
+272
+00:20:31,005 --> 00:20:35,313
+to kinda really hammer the point home, let
+me spell out the key steps for the general
+
+273
+00:20:35,313 --> 00:20:39,104
+decomposition principle. So first you need
+to figure out what is it you care about?
+
+274
+00:20:39,104 --> 00:20:42,699
+So in Quick Sort we cared about the number
+of comparisons, we had this lemma that
+
+275
+00:20:42,699 --> 00:20:45,939
+said the running time dominated our
+comparisons so we understood what we
+
+276
+00:20:45,939 --> 00:20:50,429
+wanted to know - the average value for the
+number of comparisons. The second step is
+
+277
+00:20:50,429 --> 00:20:56,206
+to express this random variable y as a sum
+of simpler random variables. Ideally
+
+278
+00:20:56,206 --> 00:21:02,375
+indicator or 01 random variables. [sound]
+Now you're in the wheel house of linearity
+
+279
+00:21:02,375 --> 00:21:08,536
+of expectation. You just apply it. And you
+find that what it is you care about, the
+
+280
+00:21:08,536 --> 00:21:15,766
+average value. Of the random value, of the
+random variable, Y. Is just the sum.
+
+281
+00:21:15,766 --> 00:21:22,235
+[sound] the probabilities of various
+events. That, given XL random variable is
+
+282
+00:21:22,235 --> 00:21:27,069
+equal to one. And so the upshot is, to
+understand this seemingly very complicated
+
+283
+00:21:27,069 --> 00:21:31,783
+left hand side, all you have to do is
+understand something which, in many cases,
+
+284
+00:21:31,783 --> 00:21:36,376
+is much simpler. Which is, understand the
+probability of these various events.
+
+285
+00:21:36,376 --> 00:21:41,149
+[sound]. In the next video, I'll show you
+exactly how that's done in the case of
+
+286
+00:21:41,149 --> 00:21:45,803
+Quick Sort. Where these, where we care
+about the XIJs, the probability that two
+
+287
+00:21:45,803 --> 00:21:50,274
+elements gets compared. So let's move on
+and get exact expression for that

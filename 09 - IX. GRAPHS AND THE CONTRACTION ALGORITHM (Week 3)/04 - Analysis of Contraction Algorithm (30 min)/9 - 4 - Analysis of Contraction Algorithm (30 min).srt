@@ -1,0 +1,1845 @@
+1
+00:00:00,000 --> 00:00:03,840
+So in the last video I left you with a
+cliffhanger. I introduced you to the
+
+2
+00:00:03,840 --> 00:00:07,885
+minimum cut problem. I introduced you to a
+very simple algorithm, randomized
+
+3
+00:00:07,885 --> 00:00:11,828
+algorithm, in the form of contraction
+algorithm. We observed that sometimes it
+
+4
+00:00:11,828 --> 00:00:15,566
+finds the main cut and sometimes it
+doesn't. And so the $64000 question is
+
+5
+00:00:15,719 --> 00:00:19,816
+just how frequently does it succeed and
+just how frequently does it fail. So now
+
+6
+00:00:19,816 --> 00:00:23,656
+that I hope you've brushed up the
+conditional probability and independence,
+
+7
+00:00:23,656 --> 00:00:27,548
+we are gonna give a very precise answer to
+that question in this lecture. >>So
+
+8
+00:00:27,548 --> 00:00:31,593
+recalling this problem we are given as
+input in undirected graph, possibly with
+
+9
+00:00:31,593 --> 00:00:36,001
+parallel edges, and that the goal is to
+compute among the exponential number of
+
+10
+00:00:36,001 --> 00:00:40,943
+possible different cuts, that's with the
+fewest number of crossing edges. So, for
+
+11
+00:00:40,943 --> 00:00:53,124
+example in this graph here, which you've
+seen in a previous video, the goal is to
+
+12
+00:00:53,124 --> 00:00:58,643
+compute the cut (A, B). Here, cuz there are
+only two crossing edges, and that's as
+
+13
+00:00:58,643 --> 00:01:03,539
+small as it gets. That's the minimum cut
+problem and Karger proposed the following
+
+14
+00:01:03,539 --> 00:01:07,975
+random contraction algorithm based on
+random sampling, so we have N-2
+
+15
+00:01:07,975 --> 00:01:12,468
+iterations, and the number of vertices
+gets decremented by 1 in each iteration.
+
+16
+00:01:12,468 --> 00:01:17,134
+So we start with N vertices, we get down
+to 2. And how do we decrease the number
+
+17
+00:01:17,134 --> 00:01:21,627
+of vertices? We do it by contracting or
+fusing two vertices together. How do we
+
+18
+00:01:21,627 --> 00:01:26,236
+pick which pair of edges, which pair of
+vertices to fuse? Well we pick one of the
+
+19
+00:01:26,236 --> 00:01:30,603
+remaining edges, uniformly at random. So
+there's [inaudible] many edges there are
+
+20
+00:01:30,603 --> 00:01:34,730
+remaining. We pick each one, equally
+likely. What, if the endpoints of that
+
+21
+00:01:34,730 --> 00:01:39,194
+edge are (u, v), then we collapse u and v
+together into a single super node. So
+
+22
+00:01:39,194 --> 00:01:43,480
+that's what we mean by contracting two
+nodes into a single vertex and then if
+
+23
+00:01:43,480 --> 00:01:47,766
+that causes any self-loops, and as we saw
+the examples, we will in general have
+
+24
+00:01:47,766 --> 00:01:51,667
+self-loops, then we delete them before
+proceeding. After the N-2
+
+25
+00:01:51,667 --> 00:01:55,788
+generations, only two vertices remain.
+You'll recall that two vertices
+
+26
+00:01:55,788 --> 00:02:00,074
+naturally correspond to a cut. The first
+group of the cut A corresponds to the
+
+27
+00:02:00,074 --> 00:02:04,524
+vertices that were fused into one of the
+super vertices remaining at the end. The
+
+28
+00:02:04,524 --> 00:02:09,030
+other super vertex corresponds to the set
+B the other original vertices of the
+
+29
+00:02:09,030 --> 00:02:14,232
+graph. >>So the goal of this lec, of this
+video is to give an answer to the
+
+30
+00:02:14,232 --> 00:02:19,473
+following question: What is the
+probability of success? Where by success,
+
+31
+00:02:19,473 --> 00:02:26,604
+we mean outputs a particular min cut (A, B).
+So let's set up the basic notation. We're
+
+32
+00:02:26,604 --> 00:02:33,180
+gonna fix any with input graph, undirected
+graph. As usual we use N to denote the
+
+33
+00:02:33,180 --> 00:02:39,711
+number of vertices and M to denote the
+number of edges. We're also going to fix a
+
+34
+00:02:39,711 --> 00:02:44,978
+minimum cuts (A, B). If a graph has
+only one minimum cut, then it's clear what
+
+35
+00:02:44,978 --> 00:02:48,985
+I'm talking about here. If a graph has
+multiple minimum cuts, I'm actually
+
+36
+00:02:48,985 --> 00:02:53,486
+selecting just one of them. Because I'm gonna
+focus on a distinguished minimum cut (A, B),
+
+37
+00:02:53,486 --> 00:02:58,043
+and we're only gonna define the
+algorithm as successful if it outputs this
+
+38
+00:02:58,043 --> 00:03:02,489
+particular minimum cut (A, B). If it outputs
+some other minimum cut, we don't count it.
+
+39
+00:03:02,489 --> 00:03:06,991
+We don't count it as successful. Okay. So,
+we really want this distinguished minimum
+
+40
+00:03:06,991 --> 00:03:12,463
+cut (A, B). In addition to N and M,
+we're gonna have a parameter K, which is
+
+41
+00:03:12,463 --> 00:03:17,790
+the size of the minimum cut. That is, it's
+the number of crossing edges of a minimum
+
+42
+00:03:17,790 --> 00:03:22,860
+cut. For example, that cross (A, B). The K
+edges that cross the minimum cut (A, B); we're
+
+43
+00:03:22,860 --> 00:03:27,866
+going to call capital F. So the picture
+you wanna have in mind is, there is, out
+
+44
+00:03:27,866 --> 00:03:33,427
+there in the world, this minimum cut (A, B).
+There's lots of edges with both end points
+
+45
+00:03:33,427 --> 00:03:38,902
+in A, lots of edges possibly with both
+endpoints in B. But, there's not a whole
+
+46
+00:03:38,902 --> 00:03:44,883
+lot of edges with one endpoint in A and
+one in endpoint in B. So the edges F,
+
+47
+00:03:44,883 --> 00:03:50,690
+would be precisely, these three crossing
+edges here. >>So our next step is to get a
+
+48
+00:03:50,690 --> 00:03:55,760
+very clear understanding of exactly when
+the execution of the contraction algorithm
+
+49
+00:03:55,760 --> 00:04:00,709
+can go wrong, and exactly when it's gonna
+work, exactly when we're going to succeed.
+
+50
+00:04:00,709 --> 00:04:05,950
+So let me redraw the same picture from the
+previous slide. So given they were hoping
+
+51
+00:04:05,950 --> 00:04:11,172
+that the contraction algorithm outputs
+this cut (A, B) at the end of the day, what
+
+52
+00:04:11,172 --> 00:04:16,662
+could possibly go wrong? Well, to see what
+could go wrong, suppose,, at some iteration,
+
+53
+00:04:16,662 --> 00:04:22,152
+one of the edges in capital F, remember F
+are the edges crossing the min cut (A, B), so
+
+54
+00:04:22,152 --> 00:04:27,441
+it's these three magenta edges in the
+picture. Suppose at some iteration one of
+
+55
+00:04:27,441 --> 00:04:32,169
+the edges of F gets chosen for
+contraction. Well because this edge of F
+
+56
+00:04:32,169 --> 00:04:37,650
+has one endpoint in A and one endpoint in
+B, when it gets chosen for contraction, it
+
+57
+00:04:37,650 --> 00:04:42,999
+causes this node from A and this node from
+B to be fused together. What does that
+
+58
+00:04:42,999 --> 00:04:48,216
+mean? That means, in the cut that the
+contraction algorithm finally outputs, this
+
+59
+00:04:48,216 --> 00:04:53,565
+node from A and this node from B will be
+on the same side of the output cut. Okay,
+
+60
+00:04:53,565 --> 00:04:58,716
+so the cut output by the contraction
+algorithm will have on one side both the
+
+61
+00:04:58,716 --> 00:05:03,455
+node from A and the node from B.
+Therefore, the output of the contraction
+
+62
+00:05:03,455 --> 00:05:08,313
+algorithm if this happens will be a
+different cut than (A, B), okay? It will not
+
+63
+00:05:08,313 --> 00:05:13,821
+output (A, B) if some edge of F is contracted.
+>>And if you think about it, the converse is
+
+64
+00:05:13,821 --> 00:05:19,126
+also true. So let's assume now, that in
+each of the N-2 iterations, the contraction
+
+65
+00:05:19,126 --> 00:05:24,367
+algorithm never contracts an edge from
+capital F. Remember capital F are exactly
+
+66
+00:05:24,367 --> 00:05:29,541
+the edges with one endpoint in A and one
+endpoint in B. So if it never contracts
+
+67
+00:05:29,541 --> 00:05:34,716
+any edge of F, then it only contracts
+edges where both endpoints lie in capital
+
+68
+00:05:34,716 --> 00:05:39,470
+A or both endpoints lie in capital B.
+Well, if this is the case then, vertices
+
+69
+00:05:39,470 --> 00:05:44,310
+from A always stick together in the fused
+nodes, and vertices from B always stick
+
+70
+00:05:44,310 --> 00:05:49,030
+together in the fused nodes. There is
+never A iteration where a node from A and
+
+71
+00:05:49,030 --> 00:05:53,691
+a node from B are fused together. What
+does that mean? That means that when the
+
+72
+00:05:53,691 --> 00:05:58,650
+algorithm outputs <i>cuts</i> all of the
+nodes in A have been grouped together, all
+
+73
+00:05:58,650 --> 00:06:03,192
+of the nodes in B have been grouped
+together, in each of the two super nodes,
+
+74
+00:06:03,192 --> 00:06:07,195
+which means that the output of the
+algorithm is indeed the desired
+
+75
+00:06:07,195 --> 00:06:12,747
+cut (A, B). Summarizing, the
+contraction algorithm will do what we
+
+76
+00:06:12,747 --> 00:06:18,945
+want. It will succeed and output the cut
+(A, B), if and only if it never chooses an
+
+77
+00:06:18,945 --> 00:06:24,673
+edge from capital F for contraction.
+Therefore, the probability of success,
+
+78
+00:06:24,673 --> 00:06:30,636
+that is, the probability that the output
+is the distinguished min cut (A, B), is
+
+79
+00:06:30,636 --> 00:06:36,286
+exactly the probability that never
+contracts an edge of capital F. >>So, this
+
+80
+00:06:36,286 --> 00:06:41,639
+is what we're gonna be interested in here.
+This really is the object of our mathematical
+
+81
+00:06:41,639 --> 00:06:46,661
+analysis, the probability that in all of
+the N-2 iterations we never
+
+82
+00:06:46,661 --> 00:06:51,618
+contact an edge of capital F. So, to think
+about that, let's think about each
+
+83
+00:06:51,618 --> 00:06:57,172
+iteration in isolation, and actually define
+some events describing that. So for an
+
+84
+00:06:57,172 --> 00:07:03,744
+iteration I, let Si denote the event, that
+we screw up an iteration I. With this
+
+85
+00:07:03,744 --> 00:07:09,454
+notation, we can succinctly say what our
+goal is, so, to compute the probability of
+
+86
+00:07:09,454 --> 00:07:14,952
+success. What we wanna do is we wanna
+compute the probability that <i>none</i> of the
+
+87
+00:07:14,952 --> 00:07:20,661
+events, S1, S2 up to N minus, S(N-2)
+never occur. So, I'm gonna use this NOT(¬)
+
+88
+00:07:20,661 --> 00:07:25,866
+symbol to say that S1 does not happen. So
+we don't screw up in iteration 1, we
+
+89
+00:07:25,866 --> 00:07:30,455
+don't screw up in iteration 2, we don't
+screw up in iteration 3, and so on. All
+
+90
+00:07:30,455 --> 00:07:34,988
+the way up to, we don't screw up, we don't
+contract anything from capital F, in the
+
+91
+00:07:34,988 --> 00:07:39,294
+final iteration, either. So summarizing,
+analyzing the success probability of the
+
+92
+00:07:39,294 --> 00:07:43,412
+contraction algorithm boils down to
+analyzing the probability of this event,
+
+93
+00:07:43,412 --> 00:07:47,584
+the intersection of the NOT Sis
+with I ranging from iteration 1 to
+
+94
+00:07:47,584 --> 00:07:52,135
+iteration N-2. >>So we're gonna take
+this in baby steps, and the next quiz will
+
+95
+00:07:52,135 --> 00:07:56,524
+lead you through the first one, which is,
+let's have a more modest goal. Let's just
+
+96
+00:07:56,524 --> 00:08:00,804
+think about iteration 1. Let's
+try and understand, what's the chance we
+
+97
+00:08:00,804 --> 00:08:07,320
+screw up, what's the chance we don't screw
+up, just in the first iteration? So the
+
+98
+00:08:07,320 --> 00:08:12,360
+answer to this quiz is the second option.
+The probability is K/M, where K is the
+
+99
+00:08:12,360 --> 00:08:17,280
+number edges crossing the cut (A, B),
+and M is the total number of edges. And
+
+100
+00:08:17,280 --> 00:08:23,571
+that's just because the probability of S1, the probability we screw up, is just the
+
+101
+00:08:23,571 --> 00:08:28,729
+number of crossing edges. That's the
+number of outcomes which are bad, which
+
+102
+00:08:28,729 --> 00:08:34,301
+cause which trigger S1, divided by the
+number of edges. That's the total number
+
+103
+00:08:34,301 --> 00:08:39,872
+of things that could happen. And since all
+edges are equally likely, it just boils
+
+104
+00:08:39,872 --> 00:08:46,141
+down to this. And by the definition of our
+notation, this is exactly K/M. So this
+
+105
+00:08:46,141 --> 00:08:50,001
+gives us an exact calculation of the
+failure probability in the first
+
+106
+00:08:50,001 --> 00:08:54,523
+iteration, as a function of the number of
+crossing edges, and the number of overall
+
+107
+00:08:54,523 --> 00:08:58,714
+edges. Now, it turns out it's gonna be
+more useful for us to have a bound not
+
+108
+00:08:58,714 --> 00:09:03,108
+quite as exact, an inequality. That's in
+terms of the number of vertices N, rather
+
+109
+00:09:03,108 --> 00:09:06,899
+than the number of edges, M. The reason
+for that is, it's a little hard to
+
+110
+00:09:06,899 --> 00:09:11,112
+understand how the number of edges is
+changing in each iteration. It's certainly
+
+111
+00:09:11,112 --> 00:09:14,173
+going down by 1 in each iteration, because we
+contract that in each iteration, but it
+
+112
+00:09:14,173 --> 00:09:18,636
+might go down by more than 1 when we
+delete self-loops. By contrast the number
+
+113
+00:09:18,636 --> 00:09:23,486
+of vertices is this very steady obvious
+process. One less vertex with each
+
+114
+00:09:23,486 --> 00:09:27,436
+successive iteration. >>So, let's rewrite
+this bound in terms of the number of
+
+115
+00:09:27,436 --> 00:09:36,152
+vertices N. To do that in a useful way,
+we make the following key observation. I
+
+116
+00:09:36,152 --> 00:09:42,393
+claim that, in the original graph G,
+we are given as input, every vertex has at
+
+117
+00:09:42,393 --> 00:09:48,405
+least K edges incident on it, that is in
+graph theoretic terminology, every edge
+
+118
+00:09:48,405 --> 00:09:54,640
+has degree at least K. Where, recall, K is
+the number of edges crossing our favorite
+
+119
+00:09:54,640 --> 00:09:59,287
+min cut (A, B). So why is that true? Why
+must every vertex have a decent number of
+
+120
+00:09:59,287 --> 00:10:03,708
+neighbors, a decent number of edges
+incident to it. Well, it's because, if you
+
+121
+00:10:03,708 --> 00:10:08,307
+think about it, each vertex defines a cut
+by itself. Remember, a cut is just any
+
+122
+00:10:08,307 --> 00:10:12,788
+grouping into other vertices into two
+groups, that are not empty, that don't
+
+123
+00:10:12,788 --> 00:10:17,386
+overlap. So one cut is to take a single
+vertex, and make that the first group, A,
+
+124
+00:10:17,386 --> 00:10:22,162
+and take the other N-1 vertices,
+and make that the second group, capital B.
+
+125
+00:10:22,162 --> 00:10:26,820
+So how many edges cross this cut? Well,
+it's exactly the edges that are incident
+
+126
+00:10:26,820 --> 00:10:31,533
+on the first note, on the note on the left
+side. So every single cut, fall
+
+127
+00:10:31,533 --> 00:10:36,184
+exponentially many cuts, have at least
+K crossing edges, then certainly the
+
+128
+00:10:36,184 --> 00:10:41,337
+N cuts defined by single vertices have at
+least K crossing edges, so therefore, the
+
+129
+00:10:41,337 --> 00:10:46,180
+degree of a vertex is at least K. So
+our assumption that every single cut in
+
+130
+00:10:46,180 --> 00:10:49,055
+the graph has at least K crossing edges
+because it's a lower bound on the number
+
+131
+00:10:49,055 --> 00:10:53,812
+edges incident on each possible vertex.
+>>So, why is that usual? Well let's recall
+
+132
+00:10:53,812 --> 00:11:00,462
+the following general facts about any graph; which
+is that if you sum up over the degrees of
+
+133
+00:11:00,462 --> 00:11:04,556
+the nodes, so if you go node by node, look
+at how many edges are insident on that
+
+134
+00:11:04,556 --> 00:11:09,470
+node, that's the degree of V, and then sum
+them up over all vertices. What will you
+
+135
+00:11:09,470 --> 00:11:14,025
+get? You'll get exactly twice the number of
+edges, okay? So this is true for any
+
+136
+00:11:14,025 --> 00:11:19,380
+undirected graph, that the sum of the
+degrees of the vertices is exactly double-
+
+137
+00:11:19,380 --> 00:11:23,734
+the number of edges. To see this, you
+might think about taking a graph, starting
+
+138
+00:11:23,734 --> 00:11:27,977
+with the empty set of edges, and then
+adding the edges of the graph one at a
+
+139
+00:11:27,977 --> 00:11:32,444
+time. Each time you add a new edge to a
+graph, obviously the number of edges goes
+
+140
+00:11:32,444 --> 00:11:37,022
+up by 1, and the degree of each of the
+endpoints of that edge also go up by 1,
+
+141
+00:11:37,022 --> 00:11:41,488
+and there are, of course, two endpoints.
+So every time you add an edge, the number
+
+142
+00:11:41,488 --> 00:11:45,898
+of edges goes up by 1, the sum of those
+degrees goes up by 2. Therefore, when
+
+143
+00:11:45,898 --> 00:11:50,644
+you've added all the edges, the sum of the
+degrees is double the number of edges that
+
+144
+00:11:50,644 --> 00:11:56,265
+you've added. That's why this is true.
+Now, in this graph, at that we have a hand here,
+
+145
+00:11:56,265 --> 00:12:04,167
+every degree is at least K, and there's N
+nodes. So this left hand side, of course,
+
+146
+00:12:04,167 --> 00:12:09,593
+is at least KN for us. So therefore if we
+just divide through by 2, and flip the
+
+147
+00:12:09,593 --> 00:12:17,945
+inequality around, we have the number of
+edges has to be at least the size of the
+
+148
+00:12:17,945 --> 00:12:21,493
+crossing cut, so the degrees of every
+vertex times the number of vertices
+
+149
+00:12:21,493 --> 00:12:27,623
+divided by 2. So this is just the
+primitive inequality rearranging. Putting
+
+150
+00:12:27,623 --> 00:12:36,268
+this together with your answer on the quiz,
+since the probability of S1 is exactly K/M,
+
+151
+00:12:36,268 --> 00:12:43,996
+and M is at least KN/2, if
+we substitute, we get that the probability
+
+152
+00:12:43,996 --> 00:12:51,961
+of S1 is at worst 2/N, 2 over
+the number of vertices, and the K cancels out.
+
+153
+00:12:51,961 --> 00:12:56,806
+So that's, sort of, our first
+milestone. We've figured out the chance
+
+154
+00:12:56,806 --> 00:13:00,992
+that we screw up in the first iteration,
+that we pick some edge from the
+
+155
+00:13:00,992 --> 00:13:05,230
+crosses the cut (A, B). And things look good.
+This is a, this is a small number, right?
+
+156
+00:13:05,230 --> 00:13:09,204
+So, in general, the number of vertices
+might be quite big. And this says that
+
+157
+00:13:09,204 --> 00:13:13,496
+the probability we screw up is only 2
+over the number of vertices. So, so far,
+
+158
+00:13:13,496 --> 00:13:17,322
+so good. Of course, this was only the
+first iteration. Who knows what happens
+
+159
+00:13:17,322 --> 00:13:20,393
+later? >>So now that we understand the
+chances of screwing up in the first
+
+160
+00:13:20,393 --> 00:13:24,683
+iteration, let's take our next baby step,
+and understand the probability that we
+
+161
+00:13:24,683 --> 00:13:28,097
+don't screw up in either of the first two
+iterations. That is, we're gonna be
+
+162
+00:13:28,097 --> 00:13:33,553
+interested. And the following probability.
+The probability that we don't screw up in
+
+163
+00:13:33,553 --> 00:13:38,273
+the first iteration nor in the second
+iteration. Now, as you go back to the
+
+164
+00:13:38,273 --> 00:13:42,440
+definition of a conditional probability,
+to realize that we can rewrite an
+
+165
+00:13:42,440 --> 00:13:46,262
+intersection like this in terms of
+conditional probabilities. Namely, as the
+
+166
+00:13:46,262 --> 00:13:51,335
+probability that we don't screw up in the
+second iteration, given that we didn't do
+
+167
+00:13:51,335 --> 00:13:55,840
+it already, times the probability that we
+didn't screw up in the first iteration.
+
+168
+00:13:56,320 --> 00:14:00,955
+Okay? So the probability that we miss all of
+these K vulnerable edges and in the second
+
+169
+00:14:00,955 --> 00:14:05,711
+iteration given that we didn't contract
+any of them in the first iteration. Now
+
+170
+00:14:05,711 --> 00:14:08,592
+notice this, we already have a good
+understanding on the previous slide. We are
+
+171
+00:14:08,592 --> 00:14:12,685
+given a nice lower bound of this. We say
+there's a good chance that we don't screw
+
+172
+00:14:12,685 --> 00:14:18,881
+up, probably at least 1-2/N. And in some sense we also have a
+
+173
+00:14:18,881 --> 00:14:24,336
+very good understanding of this
+probability. We know this is 1 minus the
+
+174
+00:14:24,336 --> 00:14:29,291
+chance that we do screw up. And what's the
+chance that we do screw up? Well, these K
+
+175
+00:14:29,291 --> 00:14:32,750
+edges are still hanging out in the graph.
+Remember we didn't contract any, in the
+
+176
+00:14:32,750 --> 00:14:38,103
+first iteration that's what's given. So
+there are K ways to screw up, and we choose
+
+177
+00:14:38,103 --> 00:14:41,717
+an edge to contract uniformly at random, so
+the total number of choices is the number
+
+178
+00:14:41,717 --> 00:14:48,560
+of remaining edges. >>Now the problem is,
+what's nice is we have an exact
+
+179
+00:14:48,560 --> 00:14:53,801
+understanding of this probability. This is
+an equality. The problem is we don't have
+
+180
+00:14:53,801 --> 00:14:59,748
+a good understanding of this denominator.
+How many remaining edges are there? We
+
+181
+00:14:59,748 --> 00:15:03,713
+have an upper bound on this. We know this
+is at most N-1, assuming we got
+
+182
+00:15:03,713 --> 00:15:07,777
+rid of one edge in the previous iteration,
+but actually what, if you think about it,
+
+183
+00:15:07,777 --> 00:15:11,891
+what we need of this quantity is a lower
+bound and that's a little unclear because
+
+184
+00:15:11,891 --> 00:15:15,707
+in addition to contracting the one edge
+and getting that out of the graph, we
+
+185
+00:15:15,707 --> 00:15:19,672
+might have created a bunch of self loops
+and deleted all events. So it's hard to
+
+186
+00:15:19,672 --> 00:15:23,786
+understand exactly what this quantity is.
+So instead we're gonna rewrite this bound
+
+187
+00:15:23,786 --> 00:15:27,602
+in terms of the numbers of the remaining
+vertices, and of course we know it's
+
+188
+00:15:27,602 --> 00:15:31,468
+exactly N-1 vertices remaining. We
+took two of the last iterations and
+
+189
+00:15:31,468 --> 00:15:35,293
+contracted down to 1. So how do we
+relate the number of edges to the number of
+
+190
+00:15:35,293 --> 00:15:39,449
+vertices? Well we do it just in exactly
+the same way as in the first iteration. We'll
+
+191
+00:15:39,449 --> 00:15:44,358
+make some more general observation. In
+the first iteration, we observed that every
+
+192
+00:15:44,358 --> 00:15:49,139
+node in the original graph induces a cut.
+Okay, with that node was on one side, the
+
+193
+00:15:49,139 --> 00:15:52,054
+other N-1 edges were on the other
+side. But the fact that's a more general
+
+194
+00:15:52,054 --> 00:15:56,072
+statement, even after we've done a bunch
+of contractions, any single node in the
+
+195
+00:15:56,072 --> 00:15:59,825
+contracted graph, even if it represents a
+union of a bunch of nodes in the original
+
+196
+00:15:59,825 --> 00:16:03,628
+graph, we can still think of that as a cut
+in the original graph. Right? So if
+
+197
+00:16:03,628 --> 00:16:07,054
+there's some super node in the contracted
+graph, which is the result of fusing
+
+198
+00:16:07,054 --> 00:16:11,312
+twelve different things together, that
+corresponds to a cut where those twelve
+
+199
+00:16:11,312 --> 00:16:15,964
+nodes in the original graph are on the one
+side A, and the other N-12
+
+200
+00:16:15,964 --> 00:16:20,196
+vertices are on the other side of the cut,
+B. So, even after contractions, as long as
+
+201
+00:16:20,196 --> 00:16:23,888
+we have at least two nodes in our
+contracted graph, you can take any node
+
+202
+00:16:23,888 --> 00:16:28,807
+and think of it as half of a cut, one side
+of a cut in the original graph.
+
+203
+00:16:31,253 --> 00:16:35,630
+>>Now remember, K is the number of edges
+crossing our minimum cut (A, B), so
+
+204
+00:16:35,630 --> 00:16:42,983
+any cuts in the original graph G has to
+have K crossing edges. So, since every
+
+205
+00:16:42,983 --> 00:16:47,160
+node in the contracted graph naturally
+maps over to a cut in the original graph
+
+206
+00:16:47,160 --> 00:16:51,337
+with at least K edges crossing it, that
+means, in the contracted graph, all of the
+
+207
+00:16:51,337 --> 00:16:55,619
+degrees have to be at least K. If you ever
+had a node in the contracted graph that
+
+208
+00:16:55,619 --> 00:16:59,952
+had only say K-1 incident edges,
+well then you'd have a cut in the original
+
+209
+00:16:59,952 --> 00:17:03,868
+graph with only K-1 edges
+contradiction. So just like in the first
+
+210
+00:17:03,868 --> 00:17:08,098
+iteration, now that we have a lower bound
+on the degree of every single vertex, we
+
+211
+00:17:08,098 --> 00:17:12,542
+can derive a lower bound on the number of
+edges that remain in the graph. The number
+
+212
+00:17:12,542 --> 00:17:16,967
+of remaining edges is at least 1/2,
+that's because when you sum over the
+
+213
+00:17:16,967 --> 00:17:21,335
+degrees of the vertices, you double count
+the edges, times the degree of each
+
+214
+00:17:21,335 --> 00:17:25,933
+vertex, that we just argued that that's at
+least K in this contracted graph, times
+
+215
+00:17:25,933 --> 00:17:29,609
+the number of vertices, that we know
+there's exactly N-1 vertices left in
+
+216
+00:17:29,609 --> 00:17:34,568
+the graph at this point. So now what we do
+is to plug this inequality, to plug this
+
+217
+00:17:34,568 --> 00:17:39,382
+lower bound of the number of remaining
+edges, on, as we'll substitute that for
+
+218
+00:17:39,382 --> 00:17:47,120
+this denominator, so in lower bounding the
+denominator, we upper bound this fraction,
+
+219
+00:17:47,120 --> 00:17:52,296
+which gives us a lower bound on 1 minus
+that fraction, and that's what we want. So
+
+220
+00:17:52,296 --> 00:17:58,931
+what we find is that the probability that
+we don't screw up in the second iteration
+
+221
+00:17:58,931 --> 00:18:02,249
+given that we didn't screw up in the first
+iteration. Where again, by screwing up
+
+222
+00:18:02,249 --> 00:18:11,173
+means picking one of these K edges
+crossing (A, B) to contract is at least
+
+223
+00:18:11,173 --> 00:18:17,376
+1-(2/(N-1)). So, that's pretty cool. We
+took the first iteration, we analyzed it,
+
+224
+00:18:17,376 --> 00:18:22,137
+we showed the probability that we screw up
+is pretty low, we succeed with probability of
+
+225
+00:18:22,137 --> 00:18:25,694
+at least 1-(2/N). In the
+second iteration, our success probability
+
+226
+00:18:25,694 --> 00:18:29,719
+has dropped a little bit, but it's still
+looking pretty good for reasonable values
+
+227
+00:18:29,719 --> 00:18:34,260
+of N, 1-(2/(N-1)). >>Now,
+as I hope you've picked up, we can
+
+228
+00:18:34,260 --> 00:18:38,325
+generalize this pattern to any number of
+iterations, so that the degree of every node of
+
+229
+00:18:38,325 --> 00:18:41,856
+the contracted graph remains at least K.
+The only thing which is changing is the
+
+230
+00:18:41,856 --> 00:18:46,610
+number of vertices is dropping by 1. So,
+extending this pattern to its logical
+
+231
+00:18:46,610 --> 00:18:51,503
+conclusion, we get the following lower
+bound on the probability that the
+
+232
+00:18:51,503 --> 00:18:56,499
+contraction algorithm succeeds. The
+probability that the contraction algorithm
+
+233
+00:18:56,499 --> 00:19:01,593
+outputs the cut (A, B), you recall we argued,
+is exactly the same thing as the
+
+234
+00:19:01,593 --> 00:19:06,535
+probability that it doesn't contract
+anything, any of the K crossing edges, any
+
+235
+00:19:06,535 --> 00:19:11,667
+of the set F in the first iteration, nor in
+the second iteration, nor in the third
+
+236
+00:19:11,667 --> 00:19:17,398
+iteration, and then so on, all the way up to
+the final (N-2)th iteration. Using the
+
+237
+00:19:17,398 --> 00:19:22,302
+definition of conditional probability,
+this is just the probability that we
+
+238
+00:19:22,302 --> 00:19:25,567
+don't screw up in the first iteration,
+times the probability that we don't screw
+
+239
+00:19:25,567 --> 00:19:28,649
+up in the second iteration given that we
+didn't screw up in the first iteration,
+
+240
+00:19:28,649 --> 00:19:35,092
+and so on. In the previous two slides, we
+showed that, we don't screw up in the
+
+241
+00:19:35,092 --> 00:19:39,335
+first iteration, with probability of at
+least 1-(2/N). In the second
+
+242
+00:19:39,335 --> 00:19:43,631
+iteration, with probability at least 1-(2/(N-1)). And of course,
+
+243
+00:19:43,631 --> 00:19:47,438
+you can guess what that pattern looks
+like. And that results in the following
+
+244
+00:19:47,438 --> 00:19:52,280
+product. Now, because we stop when we get
+down to two nodes remaining, the last
+
+245
+00:19:52,280 --> 00:19:56,047
+iteration in which we actually make a
+contraction, there are three nodes. And
+
+246
+00:19:56,047 --> 00:19:58,464
+then, the second to last iteration in
+which we make a contraction, there are
+
+247
+00:19:58,464 --> 00:20:06,038
+four nodes. So that's where these last two
+terms come from. Rewriting, this is just
+
+248
+00:20:06,038 --> 00:20:13,381
+(N-2)/N times (N-3)/(N-1), and so on. And now something
+
+249
+00:20:13,381 --> 00:20:17,786
+very cool happens, which is massive
+cancellation, and to this day, this is
+
+250
+00:20:17,786 --> 00:20:22,620
+always just incredibly satisfying to be
+able to cross out so many terms. So you
+
+251
+00:20:22,620 --> 00:20:27,453
+get N-2, cross it out here and now here,
+there's going to be a pair of N-3s that
+
+252
+00:20:27,453 --> 00:20:31,378
+get crossed out, and N-4s, and so on. On the
+other side, there's going to be a pair of
+
+253
+00:20:31,378 --> 00:20:35,673
+4s that get crossed out, and a pair of 3s
+that get crossed out. And we'll be left
+
+254
+00:20:35,673 --> 00:20:42,383
+with only the two largest terms on the
+denominator, and the two smallest terms in
+
+255
+00:20:42,383 --> 00:20:48,444
+the numerator, which is exactly 2/N(N-1). And to keep things
+
+256
+00:20:48,444 --> 00:20:56,596
+simple among friends, let's just be sloppy
+and lower bound this by 1/(N^2).
+
+257
+00:20:56,596 --> 00:21:00,460
+So that's it. That's our analysis
+of the success probability of Karger's
+
+258
+00:21:00,460 --> 00:21:06,452
+contraction algorithm. Pretty cool, pretty
+slick, huh? >>Okay, I'll concede, probably
+
+259
+00:21:06,452 --> 00:21:12,461
+you're thinking "Hey, wait a minute. We're
+analyzing the probability that the
+
+260
+00:21:12,461 --> 00:21:19,030
+algorithm succeeds, and we're thinking of
+the number of vertices N as being big, so
+
+261
+00:21:19,030 --> 00:21:25,599
+we'll see here as a success probability of
+only 1/(N^2), and that kinda sucks."
+
+262
+00:21:25,599 --> 00:21:34,101
+So that's a good point. Let me
+address that problem. This is a low
+
+263
+00:21:34,101 --> 00:21:40,504
+success probability. So that's
+disappointing. So why are we talking about
+
+264
+00:21:40,504 --> 00:21:45,720
+this algorithm, or this analysis? Well,
+here's something I want to point out.
+
+265
+00:21:46,020 --> 00:21:50,648
+Maybe this is not so good, 1/(N^2) you're going to succeed, but
+
+266
+00:21:50,648 --> 00:21:57,424
+this is still actually shockingly high for
+an brute-forth algorithm which honestly
+
+267
+00:21:57,424 --> 00:22:03,322
+seems to be doing almost nothing. This is
+a nontrivial lower bound and non trivial
+
+268
+00:22:03,322 --> 00:22:08,804
+success probability, because don't forget,
+there's an exponential number of cuts in
+
+269
+00:22:08,804 --> 00:22:14,220
+the graph. So if you try to just pick a
+random cut i.e you put every vertex 50:50
+
+270
+00:22:14,220 --> 00:22:19,034
+left or right, you'll be doing way worse
+than this. You'll have a success
+
+271
+00:22:19,034 --> 00:22:24,520
+probability of like 1/(2^N).
+So this is way, way better than that. And
+
+272
+00:22:24,520 --> 00:22:29,988
+the fact that its inverse polynomial
+means is that using repeated trials, we can
+
+273
+00:22:29,988 --> 00:22:34,444
+turn a success probability that's
+incredibly small into a failure
+
+274
+00:22:34,444 --> 00:22:40,126
+probability that's incredibly small. So
+lemme show you how to do that next. >>So,
+
+275
+00:22:40,126 --> 00:22:44,632
+we're gonna boost the success probability
+of the contraction algorithm in, if you
+
+276
+00:22:44,632 --> 00:22:48,971
+think about it a totally obvious way.
+We're gonna run it a bunch of times, each
+
+277
+00:22:48,971 --> 00:22:53,309
+one independently using a fresh batch of
+random coins. And we're just going to
+
+278
+00:22:53,309 --> 00:22:57,870
+remember the smallest cut that we ever see,
+and that's what we're gonna return, the
+
+279
+00:22:57,870 --> 00:23:02,209
+best of a bunch of repeated trials. Now
+the question is, how many trials are we
+
+280
+00:23:02,209 --> 00:23:06,492
+gonna need before we're pretty confident
+that we actually find the meant cut that we're
+
+281
+00:23:06,492 --> 00:23:11,058
+looking for? To answer this question
+vigorously, let's define some suitable
+
+282
+00:23:11,058 --> 00:23:15,900
+events. So by Ti, I mean the event at the
+Ith trail succeeds, that is the Ith
+
+283
+00:23:15,900 --> 00:23:21,056
+time we run the contraction
+algorithm which does output that desired meant
+
+284
+00:23:21,056 --> 00:23:25,039
+cut (A, B). For those of you that watched
+the part II of the probability review, I
+
+285
+00:23:25,039 --> 00:23:28,911
+said a rule of thumb for dealing with
+independents is that, you should maybe, as
+
+286
+00:23:28,911 --> 00:23:32,587
+a working hypothesis, assume granted
+variables are dependent, unless they're
+
+287
+00:23:32,587 --> 00:23:36,606
+explicitly constructed to be independent.
+So here's a case where we're just gonna
+
+288
+00:23:36,606 --> 00:23:40,281
+define the random variables to be
+independent. We're just gonna say that we
+
+289
+00:23:40,281 --> 00:23:44,398
+run [inaudible] the contraction algorithm
+over and over again with fresh randomness
+
+290
+00:23:44,398 --> 00:23:49,095
+so that they're gonna be independent trials.
+Now, we know that the, probability that a
+
+291
+00:23:49,095 --> 00:23:53,888
+single trial fails can be pretty big, could be as big as 1-1/(N^2). But,
+
+292
+00:23:53,888 --> 00:23:58,681
+here, now, with repeated trials, we're
+only in trouble if every single trial
+
+293
+00:23:58,681 --> 00:24:04,087
+fails. If even one succeeds, then we find
+the meant cut. So a different way of saying
+
+294
+00:24:04,087 --> 00:24:09,540
+that is we're interested in the
+intersection of T1 and T2 and so on,
+
+295
+00:24:09,540 --> 00:24:15,300
+that's the event that every single trial
+fails. And now we use the fact that the
+
+296
+00:24:15,300 --> 00:24:19,862
+trials are independent. So, the
+probability that all of these things
+
+297
+00:24:19,862 --> 00:24:24,535
+happen is just the product of the relevant
+probabilities. So, the product from I=1
+
+298
+00:24:24,535 --> 00:24:31,537
+to capital N of the probability of
+not TI. Recall that we argued that the
+
+299
+00:24:31,537 --> 00:24:36,600
+success probability of a single trial was
+bounded below by 1/(N^2). So
+
+300
+00:24:36,600 --> 00:24:41,725
+the failure probability is bounded above
+by 1-1/(N^2). So since
+
+301
+00:24:41,725 --> 00:24:46,162
+that's true for each of the capital N
+terms, you get an overall failure
+
+302
+00:24:46,162 --> 00:24:51,350
+probability for all capital N trials of
+1 minus 1/(n^2) raised
+
+303
+00:24:51,350 --> 00:24:55,763
+to the capital of N. Alright, so that's a
+little calculation. Don't lose sight of
+
+304
+00:24:55,763 --> 00:24:59,700
+why we're doing the calculation. We want
+to answer this question, how many trials
+
+305
+00:24:59,700 --> 00:25:03,735
+do we need? How big does capital N need to
+be before are confident that we get the
+
+306
+00:25:03,735 --> 00:25:09,071
+answer that we want? >>Okay, so to answer that
+question I need a quick calculus fact,
+
+307
+00:25:09,071 --> 00:25:14,778
+which is both very simple and very useful.
+So for all real numbers X, we have the
+
+308
+00:25:14,778 --> 00:25:20,413
+following inequality, 1+x is bound
+above by e^x. So I'll just
+
+309
+00:25:20,413 --> 00:25:25,419
+give you a quick proof via picture. So
+first think about the line 1+x. What
+
+310
+00:25:25,419 --> 00:25:30,081
+does that cross through? Well, that
+crosses through the points when x is -1,
+
+311
+00:25:30,081 --> 00:25:34,742
+y is 0, and when x is 0, y is 1.
+And it's a line, so this looks like this
+
+312
+00:25:34,742 --> 00:25:39,344
+blue line here. What does e^x look
+like? Well, if you substitute x = 0,
+
+313
+00:25:39,344 --> 00:25:43,688
+it's gonna be 1. So in fact two curves
+kiss each other at x = 0. But
+
+314
+00:25:43,688 --> 00:25:48,621
+exponentials grow really quickly, so as you
+jack up x to higher positive numbers, it
+
+315
+00:25:48,621 --> 00:25:53,376
+becomes very, very steep. And for x
+negative numbers it stays non-negative the
+
+316
+00:25:53,376 --> 00:25:58,177
+whole way. So this sort of flattens out
+for the negative numbers. So, pictorially,
+
+317
+00:25:58,177 --> 00:26:01,714
+and I encourage you to, you know, type
+this into your own favorite graphing
+
+318
+00:26:01,714 --> 00:26:05,635
+program. You see the e^x
+bounds above everywhere, the line, the 1+x.
+
+319
+00:26:05,635 --> 00:26:08,790
+For those of you who want
+something more rigorous, there's a bunch
+
+320
+00:26:08,790 --> 00:26:12,327
+of ways to do it. For example, you can
+look at the [inaudible] expansion of
+
+321
+00:26:12,327 --> 00:26:16,407
+e^x at the point 0. >>What's the
+point? The point is this allows us to do
+
+322
+00:26:16,407 --> 00:26:20,124
+some very simple calculations on our
+previous upper bound on the failure
+
+323
+00:26:20,124 --> 00:26:24,198
+probability by working with exponentials
+instead of working with these ugly one
+
+324
+00:26:24,198 --> 00:26:28,119
+minus whatevers raised to the whatever
+term. So, let's combine our upper bound
+
+325
+00:26:28,119 --> 00:26:32,142
+from the previous slide with the upper
+bound provided by the calculus fact. And
+
+326
+00:26:32,142 --> 00:26:36,064
+to be concrete, let's substitute some
+particular number of capital N. So, let's
+
+327
+00:26:36,064 --> 00:26:40,240
+use little n^2 trials, where little
+n is the number of vertices of the graph.
+
+328
+00:26:40,560 --> 00:26:46,860
+In which case, the probability that every
+single trial fails to recover the cut (A, B)
+
+329
+00:26:46,860 --> 00:26:52,424
+is bounded above by e to the -1/(N^2). That's using the calculus
+
+330
+00:26:52,424 --> 00:26:59,020
+fact applied with X = -1/(N^2). And then we inherit the
+
+331
+00:26:59,020 --> 00:27:04,352
+capital N and the exponent which we just
+substantiated to little n^2. So of
+
+332
+00:27:04,352 --> 00:27:09,554
+course the N^2 are gonna cancel,
+this is gonna give us E^(-1),
+
+333
+00:27:09,554 --> 00:27:14,335
+also known as 1/E. So if we're
+willing to do little n^2 trials,
+
+334
+00:27:14,335 --> 00:27:19,415
+then our failure probability has gone
+from something very close to 1, to
+
+335
+00:27:19,415 --> 00:27:24,119
+something which is more like, say, 30 some
+more percent. Now, once you get to a
+
+336
+00:27:24,119 --> 00:27:29,136
+constant success probability, it's very
+easy to boost it further by just doing a
+
+337
+00:27:29,136 --> 00:27:34,028
+few more trials. So if we just add a
+natural log factor, so instead of a little
+
+338
+00:27:34,028 --> 00:27:38,920
+n^2 trials, we do little n^2
+times the natural log of the little n.
+
+339
+00:27:39,480 --> 00:27:45,402
+Now, the probability that everything fails
+is bound and above by the 1/e that we
+
+340
+00:27:45,402 --> 00:27:51,115
+had last time, but still with the residual
+natural log of N up top. And this is now,
+
+341
+00:27:51,115 --> 00:27:56,035
+merely 1/N. So I hope it's clear
+what happened. We took a very simple, very
+
+342
+00:27:56,035 --> 00:28:00,588
+elegant algorithm, that almost always
+didn't do what we want. It almost always
+
+343
+00:28:00,588 --> 00:28:05,200
+failed to output the cut (A, B). It did it
+with only probability 1/(n^2).
+
+344
+00:28:05,200 --> 00:28:09,751
+But, 1/(n^2) is
+still big enough that we can boost it, so
+
+345
+00:28:09,751 --> 00:28:14,086
+that it almost always succeeds just by
+doing repeated trials. And the number of
+
+346
+00:28:14,086 --> 00:28:18,036
+repeated trials that we need is the
+reciprocal of its original success
+
+347
+00:28:18,036 --> 00:28:21,878
+probability boosted by, for the
+logarithmic factor. So that transformed
+
+348
+00:28:21,878 --> 00:28:26,487
+this almost always failing algorithm into
+an almost always succeeding algorithm. And
+
+349
+00:28:26,487 --> 00:28:30,822
+that's a more general less, more general
+algorithm technique, which is certainly
+
+350
+00:28:30,822 --> 00:28:35,240
+worth remembering. >>Let me conclude with a
+couple comments about the running time.
+
+351
+00:28:35,240 --> 00:28:39,666
+This is probably the first algorithm of a
+course, of the course where we haven't
+
+352
+00:28:39,666 --> 00:28:44,037
+obsessed over just what the running time
+is. And I said, it's simple enough. It's
+
+353
+00:28:44,037 --> 00:28:48,242
+not hard to figure out what it is, but
+it's actually not that impressive. And
+
+354
+00:28:48,242 --> 00:28:52,779
+that's why I haven't been obsessing over
+it. This is not almost linear. This is not
+
+355
+00:28:52,779 --> 00:28:57,166
+a for free primitive as I've described it
+here. So it's certainly a polynomial-time
+
+356
+00:28:57,166 --> 00:29:00,989
+algorithm; its running time is bounded
+above by some polynomial in n and m. So
+
+357
+00:29:00,989 --> 00:29:05,059
+it's way better than the exponential time
+you get from brute-force search through
+
+358
+00:29:05,059 --> 00:29:09,239
+all 2^n possible cuts. But it is
+certainly, the way I've described it, we
+
+359
+00:29:09,239 --> 00:29:13,838
+gotta to n^2 trials, plus a log
+factor, which I'm not even going to bother
+
+360
+00:29:13,838 --> 00:29:18,379
+writing down. And also, each trial, while
+at the very least, you look at all the
+
+361
+00:29:18,379 --> 00:29:22,343
+edges, so that's going to be another
+factor of M. So this is a bigger
+
+362
+00:29:22,343 --> 00:29:26,991
+polynomial than in any, almost any of the
+algorithms that we're going to see. Now, I
+
+363
+00:29:26,991 --> 00:29:31,752
+don't wanna undersell this application of
+random sampling in computing cuts because
+
+364
+00:29:31,752 --> 00:29:36,059
+I've just shown you the simplest, most
+elegant, most basic, but therefore also
+
+365
+00:29:36,059 --> 00:29:40,214
+the slowest implementation of using
+contractions to compute cuts. There's been
+
+366
+00:29:40,214 --> 00:29:44,162
+follow-up work with a lot of extra
+optimizations, in particular, doing stuff
+
+367
+00:29:44,162 --> 00:29:48,163
+much more clever than just repeated
+trials, so basically using work that you
+
+368
+00:29:48,163 --> 00:29:52,375
+did in previous trials to inform how you
+look for cuts in subsequent trials. And
+
+369
+00:29:52,375 --> 00:29:56,428
+you can shave large factors off of the
+running time. So there are much better
+
+370
+00:29:56,428 --> 00:30:00,166
+implementations of this randomized
+contraction algorithm than what I'm
+
+371
+00:30:00,166 --> 00:30:04,559
+showing you here. Those are, however,
+outside the course, scope of this course.

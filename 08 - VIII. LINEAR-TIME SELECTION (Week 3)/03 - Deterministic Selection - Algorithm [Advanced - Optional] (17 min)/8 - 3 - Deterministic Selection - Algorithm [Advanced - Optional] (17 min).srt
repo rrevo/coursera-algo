@@ -1,0 +1,1199 @@
+1
+00:00:00,000 --> 00:00:04,429
+Previous videos covered an outstanding
+algorithm for the selection problem, the
+
+2
+00:00:04,429 --> 00:00:08,915
+problem of computing the Ith statistic of
+a given array. That algorithm which we
+
+3
+00:00:08,915 --> 00:00:13,121
+called the R select algorithm was
+excellent in two senses. First its super
+
+4
+00:00:13,121 --> 00:00:17,270
+practical, runs blazingly fast in
+practice. But also it enjoys a satisfying
+
+5
+00:00:17,270 --> 00:00:21,756
+theoretical guarantee. For every input
+array of length N at the expected running
+
+6
+00:00:21,756 --> 00:00:26,410
+time of R select is big O of N, where the
+expectation is over the random choices of
+
+7
+00:00:26,410 --> 00:00:30,280
+the pivots that R select makes during
+execution, now in this optional video
+
+8
+00:00:30,280 --> 00:00:33,894
+I'm going to teach you yet
+another algorithm for the selection
+
+9
+00:00:33,894 --> 00:00:37,841
+problem. Well why bother given that our
+select is so good? Well frankly, I just
+
+10
+00:00:37,841 --> 00:00:41,765
+can't help myself. The ideas of this
+algorithm are just too cool not to tell
+
+11
+00:00:41,765 --> 00:00:45,636
+you about, at least in optional video like
+this one. The selection algorithm
+
+12
+00:00:45,636 --> 00:00:49,480
+, we cover here is deterministic.
+That is, it uses no randomization
+
+13
+00:00:49,480 --> 00:00:53,807
+whatsoever. And it's still gonna run in
+linear time, big O of N time. But now, in
+
+14
+00:00:53,807 --> 00:00:58,189
+the worst case for every single input
+array. Thus, the same way Merge Short gets
+
+15
+00:00:58,189 --> 00:01:02,294
+the same asymptotic running time, big O
+of N log N, as quick sorts gets on
+
+16
+00:01:02,294 --> 00:01:06,953
+average. This deterministic algorithm will
+get the same running time O of N, as the R
+
+17
+00:01:06,953 --> 00:01:11,113
+select algorithm does on average. That
+said, the algorithm we're gonna cover
+
+18
+00:01:11,113 --> 00:01:15,440
+here, well, it's not slow. It's not as
+fast as R select in practice, both because
+
+19
+00:01:15,440 --> 00:01:20,100
+the hidden constants in it are larger. And
+also because it doesn't' operate in place.
+
+20
+00:01:20,100 --> 00:01:23,591
+For those of you who are feeling keen, you
+might wanna try coding up both the
+
+21
+00:01:23,591 --> 00:01:27,446
+randomized and the deterministic selection
+algorithms, and make your own measurements
+
+22
+00:01:27,446 --> 00:01:30,710
+about how much better the randomized one
+seems to be. But if you have an
+
+23
+00:01:30,710 --> 00:01:33,975
+appreciation for Boolean algorithms, I
+think you'll enjoy these lectures
+
+24
+00:01:33,975 --> 00:01:37,508
+nonetheless. So let me remind of the
+problem. This is the i-th order
+
+25
+00:01:37,508 --> 00:01:41,075
+statistic problem. So we're given an
+array, it has N distinct entries. Again,
+
+26
+00:01:41,075 --> 00:01:44,979
+the distinctness is for simplicity. And
+you're given a number I between one and N.
+
+27
+00:01:44,979 --> 00:01:48,691
+You're responsible for finding the
+i-th smallest number, which we call
+
+28
+00:01:48,691 --> 00:01:52,258
+the i-th order statistic. For
+example, if I is something like N over
+
+29
+00:01:52,258 --> 00:01:55,757
+two, then we're looking for the median. So
+let's briefly review the randomized
+
+30
+00:01:55,757 --> 00:01:59,262
+selection algorithm. We can think of the
+deterministic algorithm covered here as a
+
+31
+00:01:59,262 --> 00:02:02,554
+modification of the randomized algorithm,
+the R select algorithm. So when that
+
+32
+00:02:02,554 --> 00:02:05,760
+algorithm is passed in array with length
+N, and when you're looking for the
+
+33
+00:02:05,760 --> 00:02:08,923
+i-th order statistic, as usual,
+there's a trivial base case. But when
+
+34
+00:02:08,923 --> 00:02:12,343
+you're not in the base case, just like in
+Quick Sort, what you do is you're gonna
+
+35
+00:02:12,343 --> 00:02:15,720
+partition the array around pivot element
+P. Now, how are you gonna choose P? Well,
+
+36
+00:02:15,720 --> 00:02:18,969
+just like Quick Sort, in the randomized
+algorithm, you choose it uniformly at
+
+37
+00:02:18,969 --> 00:02:22,260
+random. So each of the N elements of the
+input array are equally likely to be
+
+38
+00:02:22,260 --> 00:02:25,975
+chosen. As the pivot. So, call that pivot
+p. Now, do the partitioning. Remember
+
+39
+00:02:25,975 --> 00:02:30,206
+partitioning puts all of the elements less
+than the pivot to the left of the pivot.
+
+40
+00:02:30,206 --> 00:02:33,927
+We call that the first part of the
+partitioned array. Anything big, bigger
+
+41
+00:02:33,927 --> 00:02:38,209
+than the pivot gets moved to the right of
+the pivot. We call that the second part of
+
+42
+00:02:38,209 --> 00:02:42,235
+the array. And let j denote the position
+of the pivot in this partitioned array.
+
+43
+00:02:42,235 --> 00:02:45,651
+Equivalently, let j be what order
+statistic that the pivot winds up
+
+44
+00:02:45,651 --> 00:02:49,729
+happening to be. Right? So, we happen to
+choose the minimum element then J's gonna
+
+45
+00:02:49,729 --> 00:02:53,858
+be equal to one. If we happen to choose
+the maximum element, J's gonna be equal to
+
+46
+00:02:53,858 --> 00:02:57,865
+n. And so on. So, there's always the lucky
+case, chance one in N, that we happen to
+
+47
+00:02:57,865 --> 00:03:01,343
+choose the Ith order statistic as our
+pivot. So, we're going to find that out
+
+48
+00:03:01,343 --> 00:03:05,050
+when we notice that J equals I. In that
+super lucky case, we just return the pivot
+
+49
+00:03:05,050 --> 00:03:08,756
+and we're done. That's what we're looking
+for in the first place. Of course, that's
+
+50
+00:03:08,756 --> 00:03:12,280
+so rare it's not worth worrying about, so
+really the two main cases depend on
+
+51
+00:03:12,280 --> 00:03:16,124
+whether the pivot that we randomly choose
+is bigger than what we are looking for or
+
+52
+00:03:16,124 --> 00:03:19,647
+if it's less than what we are looking for.
+So, if it's bigger than what we are
+
+53
+00:03:19,647 --> 00:03:23,308
+looking for, that means J is bigger than
+I, we're looking for the Ith smallest, we
+
+54
+00:03:23,308 --> 00:03:26,786
+randomly chose the J'th smallest. Then
+remember we know that the Ith smallest
+
+55
+00:03:26,786 --> 00:03:30,477
+element has to lie to the left of the
+pivot. Good element in that first part of
+
+56
+00:03:30,477 --> 00:03:34,408
+the partition array. So we recurs there.
+It's an array that has J-1 elements in it,
+
+57
+00:03:34,408 --> 00:03:38,338
+everything less than the pivot. And we're
+still looking for the Ith smallest among
+
+58
+00:03:38,338 --> 00:03:42,317
+them. In the other case, this was the case
+covered in a quiz a couple videos back, if
+
+59
+00:03:42,317 --> 00:03:46,104
+we guess a pivot element that is less than
+what we're looking for, well then we
+
+60
+00:03:46,104 --> 00:03:49,939
+should discard everything less than the
+pivot and the pivot itself. So we should
+
+61
+00:03:49,939 --> 00:03:53,534
+recurs on the second part of A, stuff
+bigger than the pivot. We know that's
+
+62
+00:03:53,534 --> 00:03:56,985
+where what we're looking for lies. And
+having thrown away J elements, the
+
+63
+00:03:56,985 --> 00:04:00,958
+smallest ones at that. We're rehearsing on
+a ray of [inaudible] and minus J, I'm
+
+64
+00:04:00,958 --> 00:04:04,900
+looking for the [inaudible] smallest
+element in that second part. So, that was
+
+65
+00:04:04,900 --> 00:04:08,996
+the randomized selection algorithm, and
+you'll recall the intuition for why this
+
+66
+00:04:08,996 --> 00:04:12,887
+works is random pivot should usually give
+pretty good splits. So the way the
+
+67
+00:04:12,887 --> 00:04:16,732
+analysis went is we should. Each
+iteration, each recursive call, with 50
+
+68
+00:04:16,732 --> 00:04:20,740
+percent probability, we get a 25/75 split
+or better. Therefore, on average, every
+
+69
+00:04:20,740 --> 00:04:24,920
+two recursive calls, we are pretty
+aggressively shrinking the size of the
+
+70
+00:04:24,920 --> 00:04:29,558
+recursive call. And for that reason, we
+should get, something like a linear time
+
+71
+00:04:29,558 --> 00:04:33,852
+bound. We do almost as well as if we
+picked the median in every single call,
+
+72
+00:04:33,852 --> 00:04:38,865
+just because random pivots are a good
+enough proxy of best case pivots, of. The
+
+73
+00:04:38,865 --> 00:04:43,496
+median. So now the big question is:
+suppose we weren't permitted to make use
+
+74
+00:04:43,496 --> 00:04:47,692
+of randomizations. Suppose this
+choose-a-random-pivot trick was not in our
+
+75
+00:04:47,692 --> 00:04:52,115
+tool box. What could we do? How are we
+going to deterministically choose a good
+
+76
+00:04:52,115 --> 00:04:56,822
+pivot? Let's just remember quickly what it
+means to be a good pivot. A good pivot is
+
+77
+00:04:56,822 --> 00:05:01,471
+one that gives us a balanced split, after
+we do the partitioning of the array. That
+
+78
+00:05:01,471 --> 00:05:05,951
+is, we want as close to a 50/50 split
+between the first and the second parts of
+
+79
+00:05:05,951 --> 00:05:10,544
+the partitioned array as possible. Now,
+what pivot would give us the perfect 50/50
+
+80
+00:05:10,544 --> 00:05:14,816
+split? Well, in fact, that would be the
+median. Well, that seems like a totally
+
+81
+00:05:14,816 --> 00:05:18,771
+ridiculous observation, because we
+canonically, are trying to find the
+
+82
+00:05:18,771 --> 00:05:23,299
+median. So previously we were able to be
+lazy, and we just picked a random pivot,
+
+83
+00:05:23,299 --> 00:05:27,884
+and used that as a pretty good proxy for
+the best case pivot. But now, we have to
+
+84
+00:05:27,884 --> 00:05:31,725
+have some subroutine that
+deterministically finds us a pretty good
+
+85
+00:05:31,725 --> 00:05:35,817
+approximation of the median. And the big
+idea in this linear time selection
+
+86
+00:05:35,817 --> 00:05:40,052
+algorithm, is to use what's called the
+median of medians as a proxy for the true
+
+87
+00:05:40,052 --> 00:05:44,392
+meaning of the input array. So when I say
+median of medians, you're not supposed to
+
+88
+00:05:44,392 --> 00:05:48,415
+know what I'm talking about. You're just
+supposed to be intrigued. Now, let me
+
+89
+00:05:48,415 --> 00:05:52,493
+explain a little bit further. Here's the
+plan, we're gonna have our new
+
+90
+00:05:52,493 --> 00:05:57,332
+implementation of chose pivot and it's
+gonna be deterministic. You will see no
+
+91
+00:05:57,332 --> 00:06:01,725
+randomization on this slide, I promise. So
+the high-level strategy is gonna be we're
+
+92
+00:06:01,725 --> 00:06:05,298
+gonna think about the elements of this
+array like sports teams, and we're gonna
+
+93
+00:06:05,298 --> 00:06:08,775
+run a tournament, a 2-round. Knockout
+tournament, and the winner of this
+
+94
+00:06:08,775 --> 00:06:13,023
+tournament is going to be who we return as
+the proposed pivot element. Then we'll
+
+95
+00:06:13,023 --> 00:06:17,167
+have to prove that this is a pretty good
+pivot element. So there's gonna be two
+
+96
+00:06:17,167 --> 00:06:21,415
+rounds in this tournament. Each element,
+each team is gonna first participate in a
+
+97
+00:06:21,415 --> 00:06:25,506
+world group, if you will. So they'll be,
+small groups of five teams each, five
+
+98
+00:06:25,506 --> 00:06:29,492
+elements each. And to win your first
+round, you have to be the middle element
+
+99
+00:06:29,492 --> 00:06:33,583
+out of those five. So that'll give us N
+over five first round winners. And then
+
+100
+00:06:33,583 --> 00:06:37,936
+the winner of that second round is going
+to the med-, be the median of those N over
+
+101
+00:06:37,936 --> 00:06:42,209
+five winners from the first round. Here
+are the details. The first step isn't
+
+102
+00:06:42,209 --> 00:06:46,117
+really something you actually do in the
+program, it's just conceptually. So
+
+103
+00:06:46,117 --> 00:06:50,447
+logically, we're going to take this array
+capital A, which has N elements, and we're
+
+104
+00:06:50,447 --> 00:06:54,725
+gonna think of it as comprising N over
+five groups with five elements each. So if
+
+105
+00:06:54,725 --> 00:06:58,950
+N is not a multiple of five, obviously,
+there'll be one extra group that has size
+
+106
+00:06:58,950 --> 00:07:02,642
+between one and four. Now for each of
+these groups of five, we're going to
+
+107
+00:07:02,642 --> 00:07:06,616
+compute the median, so the middle element
+of those five. Now for five elements, we
+
+108
+00:07:06,616 --> 00:07:10,590
+may as well just invoke a reduction to
+sorting; we're just gonna sort each group
+
+109
+00:07:10,590 --> 00:07:14,196
+separately, and then use the middle
+element, which is the median. It doesn't
+
+110
+00:07:14,196 --> 00:07:17,615
+really how you do the sorting. Because
+after all, there's only five elements. But
+
+111
+00:07:17,615 --> 00:07:21,590
+you know, let's use [inaudible] sort, what
+the heck. Now what we're going to do is
+
+112
+00:07:21,590 --> 00:07:26,117
+we're going to take our first round
+winners and we're gonna copy them over
+
+113
+00:07:26,117 --> 00:07:30,946
+into their own private array. Now this
+next step is the one that's going to seem
+
+114
+00:07:30,946 --> 00:07:35,775
+dangerously like cheating, dangerously
+like I'm doing something circular and not
+
+115
+00:07:35,775 --> 00:07:40,845
+actually defining a proper algorithm, so c
+you'll notice has linked over n over five.
+
+116
+00:07:40,845 --> 00:07:45,674
+We started with an array of link n. This
+is a smaller input. So let's recursively
+
+117
+00:07:45,674 --> 00:07:49,975
+compute the median of this array capital
+c. That is the second round of our
+
+118
+00:07:49,975 --> 00:07:53,760
+tournament amongst the n over five
+first-round winners, the n over five
+
+119
+00:07:53,760 --> 00:07:58,132
+middle elements of the sorted groups. We
+recursively compute the median, that's our
+
+120
+00:07:58,132 --> 00:08:02,450
+final winner, and that's what we return as
+the pivot element from this subroutine.
+
+121
+00:08:02,450 --> 00:08:07,153
+Now I realize it's very hard to keep track
+of both what's happening internal to this
+
+122
+00:08:07,153 --> 00:08:11,303
+juice pivot subroutine and what's
+happening in the calling function of our
+
+123
+00:08:11,303 --> 00:08:15,951
+deterministic selection algorithm. So let
+me put them both together and show them to
+
+124
+00:08:15,951 --> 00:08:19,880
+you, cleaned up, on a single slide. So,
+here is the proposed deterministic,
+
+125
+00:08:19,880 --> 00:08:24,030
+selection algorithm. So, this algorithm
+uses no randomization. Previously, the
+
+126
+00:08:24,030 --> 00:08:28,070
+only randomization was in choosing the
+pivot. Now we have a deterministic
+
+127
+00:08:28,070 --> 00:08:32,528
+subroutine for choosing the pivot, and so
+there's no randomization at all. I've
+
+128
+00:08:32,528 --> 00:08:39,395
+taken the liberty of in-lining true's
+pivot subroutine. So that is exactly what
+
+129
+00:08:39,395 --> 00:08:43,870
+lines one, two, and three are. I haven't
+written down the base case just to save
+
+130
+00:08:43,870 --> 00:08:47,353
+space I'm sure you can remember it, so if
+you're not in the base case. What did we
+
+131
+00:08:47,353 --> 00:08:50,975
+do before? The first thing we do is choose
+a random pivot. What do we do now? Well,
+
+132
+00:08:50,975 --> 00:08:54,461
+we have steps one through three. We do
+something much more clever to choose a
+
+133
+00:08:54,461 --> 00:08:58,128
+pivot. And this is exactly what we said on
+the last slide. We break the array into
+
+134
+00:08:58,128 --> 00:09:01,568
+groups of five. We sort each group, for
+example, using merge sort. We copy over
+
+135
+00:09:01,568 --> 00:09:05,281
+the middle element of each of the n over
+five groups into their own array capital
+
+136
+00:09:05,281 --> 00:09:08,857
+c. And, then, we recursively compute the
+median of c. So, when we recurs on select
+
+137
+00:09:08,857 --> 00:09:12,253
+that we pass the input c. C has n over
+five elements so that's the new link.
+
+138
+00:09:12,253 --> 00:09:15,965
+That's a smaller link than what we start
+with so it's a legitimate recursive call
+
+139
+00:09:15,965 --> 00:09:19,406
+refining the median of n over five
+element. So, that's gonna be the n over
+
+140
+00:09:19,406 --> 00:09:23,113
+tenth order statistic. As usual. Well to
+keep things clear I'm ignoring stuff like
+
+141
+00:09:23,113 --> 00:09:26,694
+fractions, in your real implementation
+you'd just round it up or down. As
+
+142
+00:09:26,694 --> 00:09:31,628
+appropriate. So steps one through three
+are the new [inaudible] step routine that
+
+143
+00:09:31,628 --> 00:09:36,237
+replaces the randomized selection that we
+had before. Steps four through seven are
+
+144
+00:09:36,237 --> 00:09:40,734
+exactly the same as before. We've changed
+nothing. All we have done is ripped out
+
+145
+00:09:40,734 --> 00:09:45,118
+that one line where we chose the pivot
+randomly and pasted in these lines one
+
+146
+00:09:45,118 --> 00:09:49,563
+through three. That is the only change to
+the randomized selection algorithm. So,
+
+147
+00:09:49,563 --> 00:09:54,304
+the next quiz is a standard check that you
+understand this algorithm, at least, not
+
+148
+00:09:54,304 --> 00:09:58,930
+necessarily why it?s fast; but, at least,
+just how it actually works. And I only ask
+
+149
+00:09:58,930 --> 00:10:03,497
+you to identify how many recursive calls
+there are, each time. So, for example in
+
+150
+00:10:03,497 --> 00:10:08,238
+[inaudible] there's two recursive calls,
+in quick-sort there's two recursive calls,
+
+151
+00:10:08,238 --> 00:10:12,922
+in r-select there's one recursive call.
+How many recursive calls do you have each
+
+152
+00:10:12,922 --> 00:10:19,081
+time, outside of the base case in the
+d-select algorithm? All right, so the
+
+153
+00:10:19,081 --> 00:10:23,449
+correct answer is two. There are two
+recursive calls in deselect, and maybe the
+
+154
+00:10:23,449 --> 00:10:27,903
+easiest way to answer this question is not
+to think too hard about it and literally
+
+155
+00:10:27,903 --> 00:10:32,144
+just inspect the code and count, right
+namely there's one recursive call in line
+
+156
+00:10:32,144 --> 00:10:36,333
+three, and there's one recursive call in
+either six or seven, so quite literally,
+
+157
+00:10:36,333 --> 00:10:40,681
+you know there's seven lines of code, and
+two of the ones that get executed have a
+
+158
+00:10:40,681 --> 00:10:44,976
+recursive call so the answer is two. Now
+what's confusing is that in the random, a
+
+159
+00:10:44,976 --> 00:10:48,953
+couple things, first in the randomized
+selection algorithm, we only have one
+
+160
+00:10:48,953 --> 00:10:52,929
+recursive call. We have the recursive
+call. In line six or seven, we didn't have
+
+161
+00:10:52,929 --> 00:10:56,623
+this in line three. That one in line three
+is new compared to the randomized
+
+162
+00:10:56,769 --> 00:11:00,463
+procedure. So we're kind of used to
+thinking of one recursive call using the
+
+163
+00:11:00,463 --> 00:11:04,870
+divide and conquer approach to selection,
+here we have two. Moreover. Conceptually.
+
+164
+00:11:04,870 --> 00:11:09,662
+The roll of these two recursive calls are
+different. So the one in line six or seven
+
+165
+00:11:09,662 --> 00:11:13,971
+is the one we're used to. That's after
+you've done the partitioning so you have a
+
+166
+00:11:13,971 --> 00:11:18,440
+smaller sub-problem and then you just
+recursively find the residual or statistic
+
+167
+00:11:18,440 --> 00:11:22,589
+in the residual array. That's sort of the
+standard divide and conquer approach.
+
+168
+00:11:22,589 --> 00:11:26,891
+What's sort all crazy. Is this second use
+of a recursive call which is part of
+
+169
+00:11:26,891 --> 00:11:31,252
+identifying a good pivot element for this
+outer recursive call and this is so
+
+170
+00:11:31,252 --> 00:11:35,501
+counter-intuitive, many students in my
+experience don't even think that this
+
+171
+00:11:35,501 --> 00:11:40,142
+algorithm will hold, sort of, they sort of
+expect it to go into an infinite loop. But
+
+172
+00:11:40,142 --> 00:11:44,503
+again, that sort of over thinking it. So
+let's just compare this to an algorithm
+
+173
+00:11:44,503 --> 00:11:48,754
+like merge sort. What does merge sort do?
+Well it does two recursive calls and it
+
+174
+00:11:48,754 --> 00:11:52,732
+does some other stuff. Okay. It does
+linear work. That's what it does to merge.
+
+175
+00:11:52,732 --> 00:11:56,811
+And then there are two recursive calls on
+smaller sub problems, right? No issue. We
+
+176
+00:11:56,811 --> 00:12:00,839
+definitely feel confident that merge
+[inaudible] is gonna terminate because the
+
+177
+00:12:00,839 --> 00:12:04,817
+sub problems keep getting smaller. What
+does deselect do, if you squint? So don't
+
+178
+00:12:04,817 --> 00:12:08,695
+think about the details just [inaudible]
+high level. What is the work done in
+
+179
+00:12:08,695 --> 00:12:12,574
+deselect? Well. There are two recursive
+calls, there's [inaudible] one's in line
+
+180
+00:12:12,574 --> 00:12:16,492
+three, one's in line six or seven, but
+there's two recursive calls on sm, smaller
+
+181
+00:12:16,492 --> 00:12:20,608
+sub problem sizes. And there's some other
+stuff. There's some stuff in steps one and
+
+182
+00:12:20,608 --> 00:12:24,271
+two and four, but whatever. Those are
+recursive calls. It does some work. Two
+
+183
+00:12:24,271 --> 00:12:27,581
+recurs have caused the smaller
+sub-problems, TI's got to terminate. We
+
+184
+00:12:27,581 --> 00:12:31,226
+don't know what the run time is, but it's
+got to terminate, okay? So if you're
+
+185
+00:12:31,226 --> 00:12:34,871
+worried about this terminating, forget
+about the fact that the two recurs of
+
+186
+00:12:34,871 --> 00:12:38,517
+cause have different semantics and just
+remember, if ever, you only recurs on
+
+187
+00:12:38,517 --> 00:12:42,162
+smaller sub-problems, you're definitely
+going to terminate. Now, of course who
+
+188
+00:12:42,162 --> 00:12:46,047
+knows what the running time is? I owe you
+an argument on why it would be anything
+
+189
+00:12:46,047 --> 00:12:50,338
+reasonable, that's going to come later. In
+fact what I'm gonna prove to you is not
+
+190
+00:12:50,338 --> 00:12:54,700
+only does this selection algorithm
+terminate, run in finite time, it actually
+
+191
+00:12:54,700 --> 00:13:00,031
+runs in linear time. No matter what the
+input array is. So where as with R select,
+
+192
+00:13:00,031 --> 00:13:03,992
+we could only discuss its expected running
+time being linear. We showed that with
+
+193
+00:13:03,992 --> 00:13:07,904
+disastrously bad choices for pivots, R
+selects can actually take quadratic time.
+
+194
+00:13:07,904 --> 00:13:11,767
+Under no circumstances will deselect ever
+take, ever take quadratic time. So for
+
+195
+00:13:11,767 --> 00:13:15,728
+every input array it's big O of N time.
+There's no randomization because we don't
+
+196
+00:13:15,728 --> 00:13:19,543
+randomly do anything in choose pivot, so
+there's no need to talk about average
+
+197
+00:13:19,543 --> 00:13:23,553
+running time; just the worst case running
+time over all inputs is O of N. That said,
+
+198
+00:13:23,553 --> 00:13:27,709
+I want to reiterate the warning I gave you
+at the very beginning of this video which
+
+199
+00:13:27,709 --> 00:13:31,475
+is, if you actually need to implement a
+selection algorithm, you know, this one
+
+200
+00:13:31,475 --> 00:13:36,011
+wouldn't be a disaster. But it is not the
+method of choice, so I don't want you to
+
+201
+00:13:36,011 --> 00:13:41,180
+be misled. As I said there are two reasons
+for this. The first is that the constants
+
+202
+00:13:41,180 --> 00:13:45,465
+hidden in the begon notation are larger
+for V select than for R select. That will
+
+203
+00:13:45,465 --> 00:13:49,962
+be somewhat evident from the analyses that
+we give for the two algorithms. The second
+
+204
+00:13:49,962 --> 00:13:54,088
+reason is, recall we made a big deal about
+how partitioning works in place and
+
+205
+00:13:54,088 --> 00:13:58,690
+therefore quicksort and r select also work
+in place, that is, with no real additional
+
+206
+00:13:58,690 --> 00:14:02,870
+memory storage. But in this deselect
+algorithm we do need this extra array c to
+
+207
+00:14:02,870 --> 00:14:07,155
+copy over the middle elements, the first
+round winners. And so the extra memory, as
+
+208
+00:14:07,155 --> 00:14:10,674
+usual, slows down the practical
+performance. One final comment. So for
+
+209
+00:14:10,674 --> 00:14:14,605
+many of the algorithms that we cover, I
+hope I explain them clearly enough that
+
+210
+00:14:14,605 --> 00:14:18,835
+their elegance shines through and that for
+many of them you feel like you could have
+
+211
+00:14:18,835 --> 00:14:23,016
+up with it yourself, if only you'd been in
+the right place at the right time. I think
+
+212
+00:14:23,016 --> 00:14:27,196
+that's a great way to feel and a great way
+to appreciate some of these very cool
+
+213
+00:14:27,196 --> 00:14:30,879
+algorithms. That said, linear time
+selection, I don't blame you if it, if you
+
+214
+00:14:30,879 --> 00:14:34,661
+feel like you never might have come up
+with this algorithm. I think that's a
+
+215
+00:14:34,661 --> 00:14:38,444
+totally reasonable way to feel after you
+see this code. If it makes you feel
+
+216
+00:14:38,444 --> 00:14:43,396
+better, let me tell you about who came up
+with this algorithm. It's quite old at
+
+217
+00:14:43,396 --> 00:14:49,705
+this point, about 40 years, from 1973. And
+the authors, there are five of them and at
+
+218
+00:14:49,705 --> 00:15:00,940
+the time this was very unusual. So, Manuel
+Blum. Bob Floyd. Vaughn Pratt. Ron Rivest.
+
+219
+00:15:01,840 --> 00:15:10,834
+And Bob Targen. And this is a pretty heavy
+weight line up, so as we've discussed in
+
+220
+00:15:10,834 --> 00:15:15,918
+the past, the highest award in computer
+science is the ACM Turing award given once
+
+221
+00:15:15,918 --> 00:15:21,126
+each year. And I like to ask my algorithms
+classes how many of these authors do they
+
+222
+00:15:21,126 --> 00:15:25,980
+think, have been awarded a Turing award.
+I've asked him many times. The favorite
+
+223
+00:15:25,980 --> 00:15:31,000
+answer anyone's ever given me has been.
+Six, which I think is in spirit should be
+
+224
+00:15:31,000 --> 00:15:35,723
+correct. Strictly speaking the answer is
+four. So, the only one of these five
+
+225
+00:15:35,723 --> 00:15:40,383
+authors that doesn't have a Touring award
+is Von Pratt, although he's done
+
+226
+00:15:40,383 --> 00:15:45,736
+remarkable things spanning the gambit from
+co-founding Sun Systems to having very
+
+227
+00:15:45,736 --> 00:15:50,711
+famous theorems about, for example,
+testing primality. But the other four have
+
+228
+00:15:50,711 --> 00:15:55,875
+all been awarded the Touring award at some
+point. So in chronological order, so the
+
+229
+00:15:55,875 --> 00:16:01,137
+late Bob Floyd who was a professor here at
+Stanford. Was awarded the 1978 [inaudible]
+
+230
+00:16:01,137 --> 00:16:05,713
+award, both for contributions to
+algorithms but also to program languages
+
+231
+00:16:05,713 --> 00:16:10,350
+and compilers. So Bob Targen who, as we
+speak, is here as a visitor at Stanford
+
+232
+00:16:10,350 --> 00:16:15,529
+and has spent his Ph. D here and has been
+here as a faculty at times, was awarded it
+
+233
+00:16:15,529 --> 00:16:20,467
+for contributions to graph algorithms and
+data structures. We'll talk some more
+
+234
+00:16:20,467 --> 00:16:25,975
+about some of his other contributions in
+future courses. Manuel Blum was awarded
+
+235
+00:16:25,975 --> 00:16:30,773
+the Turing award in'95 largely for
+contributions in cryptography, and many of
+
+236
+00:16:30,773 --> 00:16:35,696
+you probably know Ron Rivest as the R in
+the RSA cryptosystem. So he, won the,
+
+237
+00:16:35,883 --> 00:16:40,619
+Turing award along with Shamir and Adleman
+back in'02. So in summary, if this
+
+238
+00:16:40,619 --> 00:16:45,604
+algorithm seems like one that might have
+alluded you even on your most creative
+
+239
+00:16:45,604 --> 00:16:50,776
+days, I wouldn't feel bad about it. This
+is a, this is a quite clever algorithm. So
+
+240
+00:16:50,776 --> 00:16:55,948
+let's now turn to the analysis and explain
+why it runs in linear time in the worst

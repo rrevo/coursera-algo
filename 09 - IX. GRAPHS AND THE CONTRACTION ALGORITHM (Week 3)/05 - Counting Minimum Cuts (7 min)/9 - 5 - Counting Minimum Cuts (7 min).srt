@@ -1,0 +1,416 @@
+1
+00:00:00,000 --> 00:00:04,369
+So this is short optional video, 
+really just for fun, I want to point
+
+2
+00:00:04,369 --> 00:00:08,375
+out an interesting consequence tracking
+algorithm has about a
+
+3
+00:00:08,375 --> 00:00:13,867
+problem that is in pure graph theory. So,
+to motivate the question, I want to remind
+
+4
+00:00:13,867 --> 00:00:17,654
+you of something we discussed in passing,
+which is that a graph may have more than
+
+5
+00:00:17,654 --> 00:00:22,359
+one minimum cut. So, there may be distinct
+cuts which are tied for the fewest number
+
+6
+00:00:22,359 --> 00:00:27,882
+of crossing edges. For a concrete example,
+you could think about a tree. So, if you
+
+7
+00:00:27,882 --> 00:00:32,899
+just look at a star graph, that is hubs and
+spokes, it's evident that if you isolate
+
+8
+00:00:32,899 --> 00:00:37,743
+any leaf by itself, then you get a minimum
+cut with exactly one crossing edge. In
+
+9
+00:00:37,743 --> 00:00:41,955
+fact, if you think about it for a little
+while, you'll see that in any tree you'll
+
+10
+00:00:41,955 --> 00:00:46,547
+have N-1 different minimum cuts,
+each with exactly one crossing edge. >>The
+
+11
+00:00:46,547 --> 00:00:52,169
+question concerns counting the number of
+minimum cuts. Namely, given that a graph
+
+12
+00:00:52,169 --> 00:00:57,618
+may have more than one minimum cut, what
+is the largest number of minimum cuts that
+
+13
+00:00:57,618 --> 00:01:03,100
+a graph with N vertices can have? We know
+the answer is at least N-1. We
+
+14
+00:01:03,100 --> 00:01:07,497
+already discussed how trees have N-1 distinct minimum cuts. We know the
+
+15
+00:01:07,497 --> 00:01:12,117
+answer at most something like 2^N,
+because a graph only has roughly 2^N
+
+16
+00:01:12,117 --> 00:01:16,961
+cuts. In fact, the answer is both
+very nice and wedged in between. So the
+
+17
+00:01:16,961 --> 00:01:22,540
+answer is exactly N choose 2, where N is
+the number of vertices. This is also known
+
+18
+00:01:22,540 --> 00:01:27,797
+as N(N-1)/2. So
+it can be bigger than it is in trees, but
+
+19
+00:01:27,797 --> 00:01:32,671
+not a lot bigger. In particular, graphs
+have only; undirected graphs have only
+
+20
+00:01:32,671 --> 00:01:37,700
+polynomially many minimum cuts.
+And that's been a useful fact in a number
+
+21
+00:01:37,700 --> 00:01:42,553
+of different applications. So, I'm going
+to prove this back to you. All I need is
+
+22
+00:01:42,553 --> 00:01:46,776
+one short slide on the lower bound and
+then one slide for the upper bound, which
+
+23
+00:01:46,776 --> 00:01:51,319
+follows from properties of the random
+contraction algorithm. >>So for the lower
+
+24
+00:01:51,319 --> 00:01:54,866
+bound, we don't have to look much beyond
+our trees example. We're just gonna look
+
+25
+00:01:54,866 --> 00:02:04,059
+at cycles. So for any value of N, consider
+the N cycle. So here, for example, is the N
+
+26
+00:02:04,059 --> 00:02:11,500
+cycle with N = 8. That would be
+an octagon. And the key observation is
+
+27
+00:02:11,500 --> 00:02:16,106
+that, just like in the tree, how
+moving each of the N-1 edges
+
+28
+00:02:16,106 --> 00:02:20,588
+breaks the tree into two pieces and
+defines the cut. With a cycle, if you
+
+29
+00:02:20,588 --> 00:02:25,501
+remove just one edge, you don't get a cut.
+The thing remains connected, but if you
+
+30
+00:02:25,501 --> 00:02:30,102
+remove any pair of edges, then that
+induces a cut of the graph, corresponding
+
+31
+00:02:30,102 --> 00:02:34,097
+to the two pieces that will remain. No matter
+which pair of edges you remove, you get a
+
+32
+00:02:34,097 --> 00:02:39,017
+distinct pair of groups, distinct cuts.
+So ranging overall N choose 2
+
+33
+00:02:39,017 --> 00:02:44,109
+choices of pairs of edges, you generate
+N choose 2 different cuts. Each of
+
+34
+00:02:44,109 --> 00:02:48,521
+these cuts has exactly two crossing edges,
+and it's easy to see that's the fewest
+
+35
+00:02:48,521 --> 00:02:53,720
+possible. >>So that's the lower bound, which
+was simple enough. Let's now move on to
+
+36
+00:02:53,720 --> 00:02:58,765
+the upper bound, which, a purely
+count-all fact will follow from an
+
+37
+00:02:58,765 --> 00:03:03,794
+algorithm. So consider any graph that has
+N vertices, and let's think about the
+
+38
+00:03:03,794 --> 00:03:09,492
+different minimum cuts of that graph. What
+we're going to use is that the analysis of
+
+39
+00:03:09,492 --> 00:03:13,991
+the contraction algorithm proceeded in a
+fairly curious way. So remember how we
+
+40
+00:03:13,991 --> 00:03:18,608
+define the success probability of a
+contraction algorithm. We fixed up front,
+
+41
+00:03:18,608 --> 00:03:23,626
+some min cut (A, B). And we defined the
+contraction algorithm, the basic
+
+42
+00:03:23,626 --> 00:03:27,581
+contraction algorithm, before the repeated
+trials. We defined the contraction
+
+43
+00:03:27,581 --> 00:03:33,323
+algorithm as successful, if and only if it
+output the minimum cut (A, B) that we
+
+44
+00:03:33,323 --> 00:03:38,052
+designated upfront. If it output some
+other minimum cut, we didn't count it. We
+
+45
+00:03:38,052 --> 00:03:42,343
+said nope, that's a failure. So we
+actually analyzed a stronger property than
+
+46
+00:03:42,343 --> 00:03:46,230
+what we were trying to solve, which is
+outputting a given min cut (A, B) rather than
+
+47
+00:03:46,230 --> 00:03:51,209
+just any/all min cut. So how is that
+useful? Well, let's apply it here. For each
+
+48
+00:03:51,209 --> 00:03:55,763
+of these T minimum cuts of this graph, we
+can think about the probability that the
+
+49
+00:03:55,763 --> 00:04:00,459
+contraction algorithm outputs that particular
+min cut. So we're gonna instantiate the
+
+50
+00:04:00,459 --> 00:04:08,038
+analysis with a particular minimum cut (Ai, Bi). And what we proved in the analysis
+
+51
+00:04:08,038 --> 00:04:14,206
+is that the probability that the algorithm
+outputs the cut (Ai, Bi), not just any/all
+
+52
+00:04:14,206 --> 00:04:20,799
+min cut. But, in fact, this exact
+cut (Ai, Bi) is bounded below by. We, in
+
+53
+00:04:20,799 --> 00:04:25,595
+the end, we made a sloppy inequality. We
+said it's at least 1/(N^2). But
+
+54
+00:04:25,595 --> 00:04:32,113
+if you go back to the analysis, you'll see
+that it was, in fact, 2/N(N-1),
+
+55
+00:04:32,113 --> 00:04:40,540
+also known as 1/(N choose 2).
+So instantiating the contraction
+
+56
+00:04:40,540 --> 00:04:44,087
+algorithm success probability analysis
+without all of the repeated trials
+
+57
+00:04:44,087 --> 00:04:50,028
+business, we show that for each of these T
+cuts, for each fixed cut (Ai, Bi), the
+
+58
+00:04:50,028 --> 00:04:56,349
+probability that this algorithm outputs
+that particular cut is at least 1/(N choose 2).
+
+59
+00:04:56,349 --> 00:05:03,137
+>>Let's introduce a name for
+this event, the event that the contraction
+
+60
+00:05:03,137 --> 00:05:09,608
+algorithm outputs the Ith min cut. Let's
+call this Si. The key observation is that
+
+61
+00:05:09,608 --> 00:05:17,271
+the Sis are disjoint events. Remember an
+event is just a subset of stuff that could
+
+62
+00:05:17,271 --> 00:05:21,240
+happen. So one thing that could happen is
+that the algorithm outputs the Ith main
+
+63
+00:05:21,240 --> 00:05:25,009
+cuts, and by this joint, we just mean that
+there is no outcome that in a given pair
+
+64
+00:05:25,009 --> 00:05:28,773
+of events. And that's because the
+contraction algorithm at N to the [inaudible],
+
+65
+00:05:28,773 --> 00:05:33,555
+once it makes its conflicts, it
+outputs a single cut is a distinct cut. It
+
+66
+00:05:33,555 --> 00:05:39,773
+can only output a dest one of them. >>Why is
+it important that these Sis are disjoint
+
+67
+00:05:39,773 --> 00:05:44,999
+events? Well, with disjoint events, the
+probabilities <i>add</i> the probability of the
+
+68
+00:05:44,999 --> 00:05:49,586
+union of a bunch of disjoint events is the
+sum of the probabilities of constituent
+
+69
+00:05:49,586 --> 00:05:54,532
+events. If you want to think about this
+pictorially, and just draw a big box,
+
+70
+00:05:54,532 --> 00:05:59,853
+denoting everything that could happen
+omega, and then these SIs just these
+
+71
+00:05:59,853 --> 00:06:08,175
+[inaudible] that don't overlap. So S1, S2, S3,
+and so on. Now the sum or probabilities of
+
+72
+00:06:08,175 --> 00:06:13,695
+this joint events can sum to, at most,
+1, right? The probability of all of
+
+73
+00:06:13,695 --> 00:06:19,031
+omega is 1, and these SIs have not
+overlap and are packed into omega, so the
+
+74
+00:06:19,031 --> 00:06:25,487
+sum of their probabilities is gonna be
+smaller. >>We're adding up formally. We have
+
+75
+00:06:25,487 --> 00:06:30,860
+that the sum of the probabilities. Which
+we can lower bound by the number of
+
+76
+00:06:30,860 --> 00:06:35,820
+different events. And remember there are T
+different min cuts for some parameter T.
+
+77
+00:06:35,820 --> 00:06:40,719
+For each min cut (Ai, Bi), a lower bound of
+the probability that, that could spit out
+
+78
+00:06:40,719 --> 00:06:45,497
+as output is 1/(N choose 2). So a
+lower bound on the sum of all of these
+
+79
+00:06:45,497 --> 00:06:50,094
+probabilities is the number of them, T
+times the probability lower bound,
+
+80
+00:06:50,094 --> 00:06:55,536
+1/(N choose 2), and this has got to be
+at most 1. Rearranging, what do we find?
+
+81
+00:06:55,536 --> 00:07:01,926
+T, the number of different mid-cuts, is
+bounded above by N choose 2. Exactly the
+
+82
+00:07:01,926 --> 00:07:08,475
+lower bound provided by the N cycle. The N
+cycle has N choose 2 distinct minimum
+
+83
+00:07:08,475 --> 00:07:14,865
+cuts. No other graph has more. Every graph
+has only a polynomial number indeed, at
+
+84
+00:07:14,865 --> 00:07:18,060
+most a quadratic number of minimum cuts.

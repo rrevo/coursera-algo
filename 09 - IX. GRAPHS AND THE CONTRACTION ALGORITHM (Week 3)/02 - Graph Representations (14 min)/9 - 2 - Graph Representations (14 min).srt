@@ -1,0 +1,968 @@
+1
+00:00:00,012 --> 00:00:03,675
+Okay, so this video's not about any
+particular graph problem, not about a, any
+
+2
+00:00:03,687 --> 00:00:07,450
+particular graph algorithm. Just, sort of,
+the preliminaries we need to discuss
+
+3
+00:00:07,462 --> 00:00:11,250
+algorithms on graphs. How do we measure
+their size? How do we represent them, and
+
+4
+00:00:11,262 --> 00:00:15,150
+so on. Remember what a graph is, it really
+has two ingredients. First of all, there's
+
+5
+00:00:15,162 --> 00:00:18,475
+this set of objects we're talking about.
+Those might be called vertices.
+
+6
+00:00:18,562 --> 00:00:22,450
+Synonymously, we might call them nodes. We
+represent pair wise relationships using
+
+7
+00:00:22,462 --> 00:00:26,882
+edges. These can be either un-directed in
+which case, they're ordered pairs or an
+
+8
+00:00:26,894 --> 00:00:30,893
+edge can be directed from 1 to another. In
+that case, they're ordered pairs, and we
+
+9
+00:00:30,905 --> 00:00:34,486
+have a directed graph. Now, when we talk
+about say, the size of a graph, or the
+
+10
+00:00:34,498 --> 00:00:38,524
+running time of an algorithm that operates
+on a graph. We need to think about what we
+
+11
+00:00:38,536 --> 00:00:42,148
+mean by input size. In particular, for a
+graph, there's really two different
+
+12
+00:00:42,160 --> 00:00:46,055
+parameters that control how big it is,
+unlike an array. For arrays, we just had a
+
+13
+00:00:46,067 --> 00:00:50,066
+single number, the length. For graphs, we
+have the number of vertices, and we have
+
+14
+00:00:50,078 --> 00:00:54,429
+the number of edges.
+Usually we'll use the notation n for the
+
+15
+00:00:54,441 --> 00:00:58,600
+number vertices, m for the number of
+edges. So the next quiz will ask you to
+
+16
+00:00:58,612 --> 00:01:03,126
+think about how the number of edges m, can
+depend on the number of vertices, n. So,
+
+17
+00:01:03,224 --> 00:01:07,780
+in particular, I want you to think about
+in this quiz, an un-directed graph It has
+
+18
+00:01:07,792 --> 00:01:11,859
+n vertices. There's no parallel edges.
+'Kay, so for a given pair of vertices,
+
+19
+00:01:11,954 --> 00:01:16,087
+there's either zero or one edge between
+them. Moreover, let's assume that the
+
+20
+00:01:16,099 --> 00:01:19,768
+graph is unconnected. 'Kay?
+So I don't want you to think about graphs
+
+21
+00:01:19,780 --> 00:01:24,076
+that have zero edges. Now, I haven't
+defined what a graph is. What it means for
+
+22
+00:01:24,088 --> 00:01:28,554
+a graph to be connected formally, yet, but
+I hope you get the idea. It means it's in
+
+23
+00:01:28,566 --> 00:01:33,041
+one piece, you can't break it into two
+parts that have no edges crossing between
+
+24
+00:01:33,053 --> 00:01:37,342
+them. So, for such a graph, no parallel
+edges, in one piece, n vertices, think
+
+25
+00:01:37,354 --> 00:01:41,661
+about what is the minimum number of edges
+it could possibly have, and what is the
+
+26
+00:01:41,673 --> 00:01:46,148
+maximum number of edg es, as a function of
+n, that it could possibly have. All right,
+
+27
+00:01:46,244 --> 00:01:50,916
+so the correct option is the first one The
+fewest number of edges that a connected
+
+28
+00:01:50,928 --> 00:01:54,768
+undirected graph we can have is n minus 1,
+and the maximum number of edges that an
+
+29
+00:01:54,780 --> 00:01:58,889
+undirected graph with no parallel edges
+can have is n times n minus 1 over 2,
+
+30
+00:01:58,987 --> 00:02:03,343
+better known as n choose 2. So why does it
+need at least n minus 1 edges, if it's
+
+31
+00:02:03,355 --> 00:02:07,985
+going to be in one piece. Well think about
+at, adding the edges one at a time. Okay,
+
+32
+00:02:07,997 --> 00:02:12,445
+on each of the edges of the graph. Now,
+initially, you just have a graph with zero
+
+33
+00:02:12,457 --> 00:02:16,900
+edges, the graph has indifferent pieces
+and isolated vertices has no edges at all.
+
+34
+00:02:16,997 --> 00:02:21,360
+Now each time you add one edge, what you
+do is you take two of the existing pieces,
+
+35
+00:02:21,457 --> 00:02:25,655
+at best, and fuse them into one. So, the
+maximum decrease you can have in the
+
+36
+00:02:25,667 --> 00:02:30,005
+number of different pieces of a graph is
+it can decrease by 1 each time you add an
+
+37
+00:02:30,017 --> 00:02:34,150
+edge. So from a starting point of n
+different pieces, you've got to get down
+
+38
+00:02:34,162 --> 00:02:38,645
+to 1 piece. So that requires the addition
+of n minus 1 edges. You can also convince
+
+39
+00:02:38,657 --> 00:02:43,040
+yourself of this best, by drawing a few
+pictures and noticing that trees achieve
+
+40
+00:02:43,052 --> 00:02:47,588
+this bound exactly, so for example here is
+a 4 vertex tree that has 3 edges. So this
+
+41
+00:02:47,600 --> 00:02:51,817
+is a case where m is indeed, n minus 1.
+Now, for the upper bound, why can't you
+
+42
+00:02:51,829 --> 00:02:56,037
+have more than n choose 2? Well, it's
+clear that the largest number of edges you
+
+43
+00:02:56,049 --> 00:03:00,348
+can have is for the complete graph. Where
+every single pair of edges has 1 between
+
+44
+00:03:00,360 --> 00:03:05,590
+them. Again, there's no parallel arcs and
+edges are unordered. So, there's at most,
+
+45
+00:03:05,697 --> 00:03:10,595
+n choose 2 possibilities of where to put
+an edge. So again, if n equals 4, here
+
+46
+00:03:10,607 --> 00:03:15,220
+would be an example with a maximum
+possible number, 6 edges. So, now that
+
+47
+00:03:15,232 --> 00:03:20,100
+I've got you thinking about how the number
+of edges can vary with the number of
+
+48
+00:03:20,112 --> 00:03:24,378
+vertices. Let me talk about the
+distinction between sparse and dense
+
+49
+00:03:24,390 --> 00:03:28,631
+graphs. It's important to distinguish
+between these two concepts because some
+
+50
+00:03:28,643 --> 00:03:32,884
+data structures and algorithms are better
+suited for sparse graphs. Other data
+
+51
+00:03:32,896 --> 00:03:37,069
+structures and algorithms are better
+suited for dense graphs. So, to make this
+
+52
+00:03:37,081 --> 00:03:41,320
+precise, let me just put down this very
+common notation n is the number of
+
+53
+00:03:41,332 --> 00:03:46,652
+vertices of the graph under discussion, m
+is the number of inches. This is quite
+
+54
+00:03:46,664 --> 00:03:52,585
+standard notation. Please get used to it
+and use it yourself. If you reverse these,
+
+55
+00:03:52,703 --> 00:03:59,029
+you will confuse a lot of people who have
+familiarity with graph algorithms and data
+
+56
+00:03:59,041 --> 00:04:05,373
+structures. Now one thing we learned from
+the previous quiz is the following. So in
+
+57
+00:04:05,385 --> 00:04:11,424
+most applications, not all applications,
+but most applications, m is at least
+
+58
+00:04:11,436 --> 00:04:15,946
+linear in n. Remember in the quiz we saw
+is at least n minus 1 if you wanted the
+
+59
+00:04:15,958 --> 00:04:19,798
+graph to be connected, and it's also big O
+of n squared. This is under the assumption
+
+60
+00:04:19,810 --> 00:04:24,156
+that there's no parallel arcs. Now, there
+are cases where we want to allow parallel
+
+61
+00:04:24,168 --> 00:04:27,894
+arcs. In fact we'll do that in the
+contraction algorithm for the min cut
+
+62
+00:04:27,906 --> 00:04:31,646
+problem. There are cases where we want to
+allow the number of edges to drop so low,
+
+63
+00:04:31,730 --> 00:04:35,054
+that the graph breaks into multiple
+pieces. For example, when we talk about
+
+64
+00:04:35,066 --> 00:04:38,600
+connected components but more often than
+not, we're thinking about a connected
+
+65
+00:04:38,612 --> 00:04:42,274
+graph with no parallel edges. And then we
+can pin down the number of edges m to be
+
+66
+00:04:42,286 --> 00:04:45,619
+somewhere between the linear and the
+number of nodes, linear and n and
+
+67
+00:04:45,631 --> 00:04:49,897
+quadratic in it. Now I'm not going to give
+you a super formal definition of what a
+
+68
+00:04:49,909 --> 00:04:54,092
+sparse or a dense graph is, and people are
+a little loose with this, this terminology
+
+69
+00:04:54,328 --> 00:04:58,718
+in practice. But basically, sparse means
+you're closer to the lower bound, closer
+
+70
+00:04:58,730 --> 00:05:03,233
+to linear. Dense means, you're closer to
+the upper bound, closer to quadratic. Now
+
+71
+00:05:03,245 --> 00:05:07,148
+I know this leaves ambiguity when the
+number of edges is something you know like
+
+72
+00:05:07,478 --> 00:05:11,656
+n to the 3 halves. usually in that case
+you'd think of that as a dense graph. So
+
+73
+00:05:11,668 --> 00:05:15,615
+usually anything which is more than N
+times logarythmic terms, you'd think of
+
+74
+00:05:15,627 --> 00:05:20,074
+that as a dense graph. But again, people
+are a little bit sloppy with this when
+
+75
+00:05:20,086 --> 00:05:24,268
+they talk about graphs. Next I want to
+discuss two representations of graphs and
+
+76
+00:05:24,501 --> 00:05:28,480
+we're mostly going to be using the s econd
+one in this course, but this first one,
+
+77
+00:05:28,574 --> 00:05:32,888
+the adjacency matrix, I do want to mention
+just briefly, just on this slide. This is
+
+78
+00:05:32,900 --> 00:05:38,072
+the supernatural idea where you represent
+the edges in a graph using a matrix. Let
+
+79
+00:05:38,084 --> 00:05:43,096
+me describe it first for undirected
+graphs. So, the matrix is going to be
+
+80
+00:05:43,108 --> 00:05:48,573
+denoted by capital A, and it says square n
+by n matrix where n is the number of
+
+81
+00:05:48,585 --> 00:05:54,247
+vertices of the graph. And the semantics
+are the i-jth entry of the matrix is 1. If
+
+82
+00:05:54,259 --> 00:05:58,566
+and only if there's an edge between the
+vertices i and j in the graph. I'm
+
+83
+00:05:58,578 --> 00:06:03,167
+assuming here that the vertices are named
+1, 2, 3, 4, et cetera all the way up to n.
+
+84
+00:06:03,270 --> 00:06:08,228
+It's easy to add bells and whistles to the
+adjacency matrix to accommodate parallel
+
+85
+00:06:08,240 --> 00:06:13,429
+edges to accommodate edge weights, which
+is accommodate directed arcs, directed
+
+86
+00:06:13,441 --> 00:06:18,512
+edges. If you wanted to have parallel
+arcs, you could just have Aij denote the
+
+87
+00:06:18,524 --> 00:06:24,221
+number of arcs that are between i and j.
+If edges have different weights, you could
+
+88
+00:06:24,233 --> 00:06:29,354
+just have Aij be the weight of the ij
+edge. And for the directed graph you could
+
+89
+00:06:29,366 --> 00:06:34,343
+use plus ones and minus ones. So if the
+arc is directed from i to j, you'd set i,
+
+90
+00:06:34,452 --> 00:06:38,748
+Aij to be plus 1. If the arc is directed
+from j to i, you'd set Aij to minus 1.
+
+91
+00:06:38,843 --> 00:06:42,570
+There are many metrics by which you can
+evaluate a data structure, or a
+
+92
+00:06:42,582 --> 00:06:47,362
+representation. two important ones I want
+to discuss here. First of all, the number
+
+93
+00:06:47,374 --> 00:06:51,532
+of resources it requires and in this
+context, that's the amount of space that
+
+94
+00:06:51,544 --> 00:06:56,160
+the data structure needs. The second thing
+is what are the operations of the data
+
+95
+00:06:56,172 --> 00:07:00,945
+structure supports. So let's just begin
+with space requirements. What are they for
+
+96
+00:07:00,957 --> 00:07:05,327
+the adjacency matrix? Alright, so the
+answer at least with the sort of straight
+
+97
+00:07:05,339 --> 00:07:09,633
+forward way of storing a matrix is n
+squared. And this is n dependent of the
+
+98
+00:07:09,645 --> 00:07:14,279
+number of edges. So you could try to beat
+this down for sparse graphs using sparse
+
+99
+00:07:14,291 --> 00:07:18,235
+matrix tricks. But for the basic idea of
+just actually representing an n by n
+
+100
+00:07:18,247 --> 00:07:22,052
+matrix, you got n squared entries, you
+gotta store one bit in each whether the
+
+101
+00:07:22,064 --> 00:07:25,816
+edge is there or not. So that's going to
+give yo u n squared space. The constants
+
+102
+00:07:25,828 --> 00:07:29,605
+are, of course, very small, because you're
+just storing one bit per entry. But
+
+103
+00:07:29,617 --> 00:07:33,347
+nonetheless this is quadratic in the
+number of vertices. Now that's going to be
+
+104
+00:07:33,359 --> 00:07:37,239
+fine if you have a dense graph, the number
+of edges is as high as n squared, then
+
+105
+00:07:37,251 --> 00:07:41,825
+you're not really wasting anything in this
+representation. But in a sparse graph, if
+
+106
+00:07:41,837 --> 00:07:46,870
+m is much closer to linear, then this is a
+super wasteful representation. Let's talk
+
+107
+00:07:46,882 --> 00:07:50,800
+about the ajacently list representation,
+this is the, the dominant one we'll be
+
+108
+00:07:50,812 --> 00:07:55,381
+using in this class. This has several
+ingredients. So, first you keep track of
+
+109
+00:07:55,393 --> 00:07:59,610
+both the vertices and the edges as
+independent entities. So you're going to
+
+110
+00:07:59,622 --> 00:08:03,580
+have an array, or a list of each. And then
+we want these two arrays to
+
+111
+00:08:03,592 --> 00:08:08,357
+cross-reference each other in the obvious
+way. So given a vertex, you want to know
+
+112
+00:08:08,369 --> 00:08:12,730
+which edges it's involved in. Given an
+edge, you want to know what its endpoints
+
+113
+00:08:12,742 --> 00:08:16,853
+are. So, let's say first, most simply,
+each edge is going to have two pointers,
+
+114
+00:08:16,947 --> 00:08:21,229
+one for each of the two endpoints. And in
+directed graph, of course, it would keep
+
+115
+00:08:21,241 --> 00:08:25,491
+track of which one is the head and which
+one is the tail. Now, each vertex is going
+
+116
+00:08:25,503 --> 00:08:30,053
+to point to all of the edges of which it's
+a member. Now in an undirected graph, it's
+
+117
+00:08:30,065 --> 00:08:33,829
+clear what I mean by that. In a directed
+graph, you could do it in a couple ways.
+
+118
+00:08:33,918 --> 00:08:37,813
+Generally you'd have a vertex, keep track
+of all of the edges, for which it is the
+
+119
+00:08:37,825 --> 00:08:41,924
+tail. That is, all of the edges which you
+can follow one hop out from the edge. If
+
+120
+00:08:41,936 --> 00:08:45,960
+you wanted to, you can also have a second
+array, at a more expense of storage, where
+
+121
+00:08:45,972 --> 00:08:49,817
+the vertex also keeps track of the edges
+pointing to it. The edges for which it's
+
+122
+00:08:49,829 --> 00:08:55,034
+the head. So, let me ask you the same
+question I did with an adjacency matrix.
+
+123
+00:08:55,149 --> 00:09:00,969
+What is the space required of an adjacency
+list, as a function of the number of edges
+
+124
+00:09:00,981 --> 00:09:06,305
+m, and the number of vertices n, of the
+graph? So, the correct answer to this
+
+125
+00:09:06,317 --> 00:09:11,772
+question is the third option, theta of m
+plus n, which we're going to think of as
+
+126
+00:09:11,784 --> 00:09:16,163
+linear space in the size of the gra ph.
+So, this quiz is, is a little tricky. So,
+
+127
+00:09:16,175 --> 00:09:20,127
+it's explain the answer when we return to
+the slide with the ingredients of
+
+128
+00:09:20,139 --> 00:09:24,095
+adjacency lists. And let's compute the
+space for each of these four ingredients
+
+129
+00:09:24,107 --> 00:09:28,083
+separately. Most of them are
+straightforward. For example, consider the
+
+130
+00:09:28,095 --> 00:09:32,418
+first ingredient. This is just an array,
+or a list of the n vertices. And we just
+
+131
+00:09:32,430 --> 00:09:36,499
+need constant space per vertex to keep
+track of its existence. So this is going
+
+132
+00:09:36,499 --> 00:09:40,929
+to be theta of n, linear in the number of
+vertices. Similarly, for the m edges, we
+
+133
+00:09:40,941 --> 00:09:45,283
+just need linear space in the number of
+edges to remember their existence. So
+
+134
+00:09:45,295 --> 00:09:49,357
+that's going to be theta of m. Now, each
+edge has to keep track of both of its
+
+135
+00:09:49,369 --> 00:09:54,091
+endpoints. So that's two pointers, but two
+is a constant. For each of the m edges, we
+
+136
+00:09:54,103 --> 00:09:58,126
+have a constant space to keep track of
+endpoints. So that's going to give us
+
+137
+00:09:58,138 --> 00:10:04,026
+another theta of m constant per edge. Now,
+this fourth case, you might be feeling
+
+138
+00:10:04,038 --> 00:10:10,006
+kind of nervous, because a vertex, in
+principle could have edges involving all n
+
+139
+00:10:10,018 --> 00:10:15,022
+minus 1 of the vertices. So the number of
+point or is it a single vertex could be
+
+140
+00:10:15,034 --> 00:10:19,341
+theta of n. Also you could have you know,
+you do have n vertices that could be theta
+
+141
+00:10:19,353 --> 00:10:23,478
+of n squared. And certainly in something
+like a complete graph you really would
+
+142
+00:10:23,490 --> 00:10:27,747
+have that function. But the point is in
+sparse graphs n, n squared is way overkill
+
+143
+00:10:27,759 --> 00:10:32,073
+to the space needed by this fourth set of
+pointers. Actually, if you think about it
+
+144
+00:10:32,162 --> 00:10:37,568
+for each pointer in the fourth category, a
+vertex pointing to a given edge, there is
+
+145
+00:10:37,580 --> 00:10:42,911
+a pointer in the third category pointing
+in the opposite direction, from that edge
+
+146
+00:10:42,923 --> 00:10:48,064
+back to that vertex. So, there's actually
+a one to one correspondence. Between
+
+147
+00:10:48,076 --> 00:10:52,861
+pointers in the third category, and
+pointers in the fourth category. Since the
+
+148
+00:10:52,873 --> 00:10:57,507
+third category has space theta of m, so
+does all of the pointers in the fourth
+
+149
+00:10:57,519 --> 00:11:02,178
+category. So adding up over the four
+ingredients, we have one theta of n, and
+
+150
+00:11:02,190 --> 00:11:07,315
+three theta of ms, so that's going to give
+us overall a theta of m plus n. If you
+
+151
+00:11:07,327 --> 00:11:13,532
+prefer, another way you could think about
+this would be theta of the max of m and n.
+
+152
+00:11:13,656 --> 00:11:19,575
+These are the same up to a constant
+factor. Now, as we discussed in a previous
+
+153
+00:11:19,587 --> 00:11:23,860
+slide. Often, m is going to be bigger than
+n, but I wanted to do a generic analysis
+
+154
+00:11:23,872 --> 00:11:27,800
+here, which applies even if the graph is
+not connected, even, even if it is in
+
+155
+00:11:27,812 --> 00:11:31,805
+multiple pieces. So the space of the
+adjacency list is within a constant factor
+
+156
+00:11:31,817 --> 00:11:35,970
+the same as the number of ingredients in
+the graph, the number of vertices plus the
+
+157
+00:11:35,982 --> 00:11:39,750
+number of edges. So in that sense, that's
+exactly what you want. Now being
+
+158
+00:11:39,762 --> 00:11:43,423
+confronted with these two graph
+representations that I've shown you I'm
+
+159
+00:11:43,435 --> 00:11:48,336
+sure you're asking, well, which one should
+you remember? Which one should you use?
+
+160
+00:11:48,439 --> 00:11:53,044
+And the answer, as it so often is, is it
+depends. It depends on two things. It
+
+161
+00:11:53,056 --> 00:11:57,925
+depends on the density of your graph. It
+depends on how m compares to n. And it
+
+162
+00:11:57,937 --> 00:12:02,715
+also depends on what kind of operations
+that you support, want to support. Now
+
+163
+00:12:02,727 --> 00:12:07,420
+given what we're covering in this class,
+and also the motivating applications I
+
+164
+00:12:07,432 --> 00:12:12,185
+have in mind I can give you basically a
+clean answer to this question for the
+
+165
+00:12:12,197 --> 00:12:16,630
+purposes of these five weeks. Which is
+we're going to be focusing on adjacency
+
+166
+00:12:16,642 --> 00:12:21,435
+lists. The reason we're going to focus on
+adjacency lists in this class, is both, is
+
+167
+00:12:21,447 --> 00:12:26,350
+for both of these reasons, both because of
+the operations we want and both because of
+
+168
+00:12:26,362 --> 00:12:29,775
+the graph density and motivating
+applications. So, first of all, most of
+
+169
+00:12:29,787 --> 00:12:33,525
+the graph primitives, not all, but most,
+will be dealing with graph search and
+
+170
+00:12:33,537 --> 00:12:36,975
+adjacency lists are perfect for doing
+graph search. You get to a node. You
+
+171
+00:12:36,987 --> 00:12:40,870
+follow an outgoing arc. You go to another
+node. You follow an outgoing arc and so
+
+172
+00:12:40,882 --> 00:12:44,605
+on. And so, adjacency lists are the
+perfect thing to do graph search.
+
+173
+00:12:44,702 --> 00:12:49,215
+Adjacency matrices are definitely good for
+certain kinds of graph operations. But
+
+174
+00:12:49,227 --> 00:12:53,285
+they're not things we're really going to
+be covering in this class. So that's
+
+175
+00:12:53,297 --> 00:12:57,345
+reason one. Reason two is, a lot of the
+motivations for graph primitives these
+
+176
+00:12:57,357 --> 00:13:01,740
+days comes from massive, massive networks.
+I mentioned earlier how the web ca n be
+
+177
+00:13:01,752 --> 00:13:06,170
+fruitfully thought of as a directed graph.
+Where the vertices are individual web
+
+178
+00:13:06,182 --> 00:13:10,747
+pages. And directed arcs correspond to
+hyperlinks, going from the page with the
+
+179
+00:13:10,759 --> 00:13:15,289
+hyperlink, pointing to the one that the
+hyperlink goes to. Now, it's hard to get
+
+180
+00:13:15,301 --> 00:13:19,967
+an exact measurement of the web graph, but
+a conservative lower bound on the number
+
+181
+00:13:19,979 --> 00:13:25,190
+of vertices is something like 10 billion.
+So that's 10 to the 10. Now that's pushing
+
+182
+00:13:25,202 --> 00:13:30,120
+the limits of what computers can do, but
+it's within the limits. So if you work
+
+183
+00:13:30,132 --> 00:13:35,215
+hard, you can actually operate on graphs
+with 10 to the 10 nodes. Now, suppose we
+
+184
+00:13:35,227 --> 00:13:40,310
+use an adjacency matrix representation. So
+if n is 10 to the 10, then n squared is
+
+185
+00:13:40,322 --> 00:13:44,410
+going to be like 10 to the 20. And now
+we're getting close to the estimated
+
+186
+00:13:44,422 --> 00:13:49,000
+number of atoms in the known universe. So
+that is clearly not feasible now and it's
+
+187
+00:13:49,012 --> 00:13:53,285
+not going to be feasible ever. So the
+adjacency matrix representation is totally
+
+188
+00:13:53,297 --> 00:13:58,045
+out for, huge sparse graphs like the web
+graph. Adjacency lists, well, the degree,
+
+189
+00:13:58,142 --> 00:14:02,675
+on average, in the web, is thought to be
+something like 10. So, the number of edges
+
+190
+00:14:02,687 --> 00:14:06,760
+is only going to be something like 10 to
+the 11. And then the adjacency of this
+
+191
+00:14:06,772 --> 00:14:11,350
+representation will be proportional to
+that. And again, that's really pushing
+
+192
+00:14:11,362 --> 00:14:16,423
+what we can do with current technology,
+but it is within the limits, so using that
+
+193
+00:14:16,435 --> 00:14:21,580
+representation we can do non-trivial
+computations on graphs, even at the scale
+
+194
+00:14:21,592 --> 00:14:22,551
+of the web graph.

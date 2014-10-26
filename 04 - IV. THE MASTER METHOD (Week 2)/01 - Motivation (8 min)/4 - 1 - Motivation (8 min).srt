@@ -1,0 +1,534 @@
+1
+00:00:00,000 --> 00:00:03,494
+In this series of videos, we'll study the
+master method, which is a general
+
+2
+00:00:03,494 --> 00:00:06,847
+mathematical tool for analyzing the
+running time of divide-and-conquer
+
+3
+00:00:06,847 --> 00:00:10,577
+algorithms. We'll begin, in this video,
+motivating the method, then we'll give its
+
+4
+00:00:10,577 --> 00:00:14,308
+formal description. That'll be followed by
+a video working through six examples.
+
+5
+00:00:14,308 --> 00:00:18,133
+Finally, we'll conclude with three videos
+that discuss proof of the master method,
+
+6
+00:00:18,133 --> 00:00:21,627
+with a particular emphasis on the
+conceptual interpretation of the master
+
+7
+00:00:21,627 --> 00:00:25,452
+method's three cases. So, lemme say at the
+outset that this lecture's a little bit
+
+8
+00:00:25,452 --> 00:00:29,088
+more mathematical than the previous two,
+but it's certainly not just math for
+
+9
+00:00:29,088 --> 00:00:32,772
+math's sake. We'll be rewarded for our
+work with this powerful tool, the master
+
+10
+00:00:32,772 --> 00:00:36,629
+method, which has a lot of. The power it
+will give us good advice on which divide
+
+11
+00:00:36,629 --> 00:00:40,621
+and conquer algorithms are likely to run
+quickly and which ones are likely to run
+
+12
+00:00:40,621 --> 00:00:44,371
+less quickly, indeed it's sort of a
+general truism that. Novel algorithmic
+
+13
+00:00:44,371 --> 00:00:49,398
+ideas often require mathematical analyis
+to properly evaluate. This lecture will be
+
+14
+00:00:49,398 --> 00:00:53,168
+one example of that truism. As a
+motivating example, consider the
+
+15
+00:00:53,168 --> 00:00:57,763
+computational problem of multiplying two
+n-digit numbers. Recall from our first set
+
+16
+00:00:57,763 --> 00:01:01,859
+of lectures that we all learned the
+iterative grade school multiplication
+
+17
+00:01:01,859 --> 00:01:06,066
+algorithm, and that, that requires a
+number of basic operations, additions and
+
+18
+00:01:06,066 --> 00:01:10,495
+multiplications between single digits,
+which grows quadratically with the number
+
+19
+00:01:10,495 --> 00:01:15,311
+of digits n. On the other hand, we also
+discussed an interesting recursive
+
+20
+00:01:15,311 --> 00:01:19,362
+approach using the divide and conquer
+paradigm. So recall divide and conquer
+
+21
+00:01:19,362 --> 00:01:22,561
+necessitates identifying smaller
+subproblems. So for integer
+
+22
+00:01:22,561 --> 00:01:26,665
+multiplication, we need to identify
+smaller numbers that we wanna multiply. So
+
+23
+00:01:26,665 --> 00:01:31,143
+we proceeded in the obvious way, breaking
+each of the two numbers into its left half
+
+24
+00:01:31,143 --> 00:01:35,460
+of the digits, and its right half of the
+digits. For convenience, I'm assuming that
+
+25
+00:01:35,460 --> 00:01:39,725
+the number of digits N is even, but it
+really doesn't matter. Having decomposed X
+
+26
+00:01:39,725 --> 00:01:44,125
+and Y in this way, we can now expand the
+product and see what we get. So let's put
+
+27
+00:01:44,125 --> 00:01:49,079
+a box around this expression, and call it
+star. So we began with the sort of obvious
+
+28
+00:01:49,079 --> 00:01:53,256
+recursive algorithm, where we just
+evaluate the expression star in the
+
+29
+00:01:53,256 --> 00:01:57,613
+straightforward way. That is, star
+contains four products involving N over
+
+30
+00:01:57,613 --> 00:02:01,970
+two digit numbers. A, C, A, D, V, C, and
+B, D. So we make four recursive calls to
+
+31
+00:02:01,970 --> 00:02:06,625
+compute them, and then we complete the
+evaluation in the natural way. Namely, we
+
+32
+00:02:06,625 --> 00:02:11,340
+append zeros as necessary, and add up
+these three terms to get the final result.
+
+33
+00:02:11,340 --> 00:02:16,140
+The way wereason about the running time of
+recursive algorithms like this one is
+
+34
+00:02:16,140 --> 00:02:20,822
+using what's called a recurrence. So to
+intrduce a recurrence let me first make
+
+35
+00:02:20,822 --> 00:02:25,564
+some notation. T of N. This is going to be
+the quantity that we really care about,
+
+36
+00:02:25,564 --> 00:02:30,483
+the quantity that we want to upward boun.
+Namely this will be the worse case number
+
+37
+00:02:30,483 --> 00:02:34,810
+of operations that this recursive
+algorithm requires to multiply two end
+
+38
+00:02:34,810 --> 00:02:39,146
+digit numbers. A recurrence, then, is
+simply a way to express T of N in terms of
+
+39
+00:02:39,146 --> 00:02:43,695
+T of smaller numbers. That is, the running
+time of an algorithm in terms of the work
+
+40
+00:02:43,695 --> 00:02:47,914
+done by its recursive calls. So every
+recurrence has two ingredients. First of
+
+41
+00:02:47,914 --> 00:02:52,023
+all, it has a base case describing the
+running time when there's no further
+
+42
+00:02:52,023 --> 00:02:55,750
+recursion. And in this integer
+multiplication algorithm, like in most
+
+43
+00:02:55,750 --> 00:03:00,188
+divide and conquer algorithms, the base
+case is easy. Once you get down to a small
+
+44
+00:03:00,188 --> 00:03:04,079
+input, in this case, two one digit
+numbers, then the running time in just
+
+45
+00:03:04,079 --> 00:03:08,871
+constant. All you do is multiply the two
+digits and return the result. So I'm gonna
+
+46
+00:03:08,871 --> 00:03:13,107
+express that by just declaring the T of
+one, the time needed to multiply one digit
+
+47
+00:03:13,107 --> 00:03:17,292
+numbers, is bounded above by a constant.
+I'm not gonna bother to specify what this
+
+48
+00:03:17,292 --> 00:03:21,631
+constant is. You can think of it as one or
+two if you like. It's not gonna matter for
+
+49
+00:03:21,631 --> 00:03:25,659
+what's to follow. The second ingredient in
+a recurrence is the important one and it's
+
+50
+00:03:25,659 --> 00:03:29,318
+what happens in the general case, when
+you're not in the base case and you make
+
+51
+00:03:29,318 --> 00:03:32,930
+recursive calls. And all you do is write
+down the running time in terms of two
+
+52
+00:03:32,930 --> 00:03:36,589
+pieces. First of all, the work done by the
+recursive calls and second of all, the
+
+53
+00:03:36,589 --> 00:03:40,284
+work that's done right here, now. Work
+done outside of the recursive calls. So on
+
+54
+00:03:40,284 --> 00:03:44,366
+the left hand side of this general case we
+just write T of N and then we want
+
+55
+00:03:44,366 --> 00:03:48,814
+upper bound on T of N in terms of the work
+done in recursive goals and the work done
+
+56
+00:03:48,814 --> 00:03:52,792
+outside of recursive goals. And I hope
+it's self evident what the recurrence
+
+57
+00:03:52,792 --> 00:03:57,031
+should be in this recursive algorithm for
+integer multiplication, as we discussed
+
+58
+00:03:57,031 --> 00:04:01,270
+there's exactly four recursive calls and
+each is invoked on a pair of N over two
+
+59
+00:04:01,270 --> 00:04:05,771
+digit numbers so that gives four times the
+time needed to multiply ten over two digit
+
+60
+00:04:05,771 --> 00:04:09,644
+numbers. So what do we do outside of the
+recursive call well we've had the
+
+61
+00:04:09,644 --> 00:04:14,125
+recursive calls with a bunch of zero's and
+we add them up. And I'll leave it to you
+
+62
+00:04:14,125 --> 00:04:18,868
+to verify that grade school addition, in
+fact runs in time linear in the number of
+
+63
+00:04:18,868 --> 00:04:23,148
+digits. So putting it all together the
+amount of work we do outside of the
+
+64
+00:04:23,148 --> 00:04:28,364
+recursive calls is linear. That is it's
+big O. Of N. Let's move on to the second,
+
+65
+00:04:28,364 --> 00:04:33,005
+more clever, recursive algorithm for
+integer multiplication which dates back to
+
+66
+00:04:33,005 --> 00:04:37,530
+Gas. Gauss's insight was to realize that,
+in the expression, star, that we're trying
+
+67
+00:04:37,530 --> 00:04:41,987
+to evaluate, there's really only three
+fundamental quantities that we care about,
+
+68
+00:04:41,987 --> 00:04:46,444
+the coefficients for each of the three
+terms in the expression. So, this leads us
+
+69
+00:04:46,444 --> 00:04:50,678
+to hope that, perhaps, we can compute
+these three quantities using only three
+
+70
+00:04:50,678 --> 00:04:55,340
+recursive calls, rather than four. And,
+indeed, we can. So what we do is we
+
+71
+00:04:55,340 --> 00:05:01,892
+recursively compute A times C, like
+before, and B times D like before. But
+
+72
+00:05:01,892 --> 00:05:09,140
+then we compute the product of A plus B
+with C plus D. And the very cute fact. Is
+
+73
+00:05:09,140 --> 00:05:15,780
+if we number these three products one two
+and three that's the final quantity that
+
+74
+00:05:15,780 --> 00:05:22,420
+we care about the coefficients of the ten
+to the N over two term namely AD plus BC.
+
+75
+00:05:22,420 --> 00:05:28,900
+Is nothing more than the third product
+minus each of the first two. So that's the
+
+76
+00:05:28,900 --> 00:05:35,300
+new algorithm, what's the new occurrence?
+The base case obviously is exactly the
+
+77
+00:05:35,300 --> 00:05:40,256
+same as before. So the question then is,
+how does the general case change, and,
+
+78
+00:05:40,256 --> 00:05:46,568
+I'll let you answer this in the following
+quiz. So the correct response for this
+
+79
+00:05:46,568 --> 00:05:51,186
+quiz is the second one. Namely, the only
+thing that changes with respect to the
+
+80
+00:05:51,186 --> 00:05:55,648
+first recurrence, is that the number of
+recursive calls drops from four down to
+
+81
+00:05:55,648 --> 00:06:00,222
+three. A coupla quick comments. So, first
+of all, I'm being a little bit sloppy when
+
+82
+00:06:00,222 --> 00:06:05,080
+I say there's three recursive calls, each
+on digits, each on numbers with n over two
+
+83
+00:06:05,080 --> 00:06:09,654
+digits. When you take the sums a plus b
+and c plus d, those might well have n over
+
+84
+00:06:09,654 --> 00:06:13,890
+two plus one digits. Amongst friends,
+let's ignore that, let's just call it n
+
+85
+00:06:13,890 --> 00:06:18,408
+over two digits and each did recursive
+calls. As usual, the extra plus one is not
+
+86
+00:06:18,408 --> 00:06:22,709
+gonna matter in the final analysis.
+Secondly, I'm ignoring exactly. What the
+
+87
+00:06:22,709 --> 00:06:26,959
+constant factor is in the linear work done
+outside of the recursive calls. Indeed,
+
+88
+00:06:26,959 --> 00:06:30,580
+it's a little bit bigger in Gaus's
+algorithm than it is in the naive
+
+89
+00:06:30,580 --> 00:06:34,882
+algorithm with four recursive calls. But
+it's only a constant factor and that's
+
+90
+00:06:34,882 --> 00:06:38,922
+gonna be supressed in the big O notation.
+So let's look at this occurance and
+
+91
+00:06:38,922 --> 00:06:43,015
+compare it to two other recurrences, one
+bigger, one smaller. So first of all, as
+
+92
+00:06:43,015 --> 00:06:46,792
+we noted, it differs from the previous
+recurrence of the naive recursive
+
+93
+00:06:46,792 --> 00:06:51,095
+algorithm in having one fewer recursive
+calls. So we have no idea what the running
+
+94
+00:06:51,095 --> 00:06:55,502
+time is of either of these two recursive
+algorithms but we should be confident that
+
+95
+00:06:55,502 --> 00:06:59,756
+this one's. Certainly can only be better,
+that's for sure. Another point of contrast
+
+96
+00:06:59,756 --> 00:07:03,898
+is Merge Short. So think about what the
+recurrence would look like for the Merge
+
+97
+00:07:03,898 --> 00:07:07,885
+Short algorithm. It would be almost
+identical to this one, except instead of a
+
+98
+00:07:07,885 --> 00:07:11,872
+three, we'd have a two, right? Merge Short
+makes two recursive calls, each on an
+
+99
+00:07:11,872 --> 00:07:15,910
+array of half the size. And outside of the
+recursive calls, it does linear work,
+
+100
+00:07:15,910 --> 00:07:20,052
+mainly for the merged subroutine. We know
+the running time of Merge Short. It's N
+
+101
+00:07:20,052 --> 00:07:24,039
+log n. So this algorithm, Gaus's
+algorithm is gonna be worse, but we don't
+
+102
+00:07:24,039 --> 00:07:28,116
+know by how much. So while we have a
+couple clues about what the running time
+
+103
+00:07:28,116 --> 00:07:32,326
+of this algorithm might be more or less
+than, honestly, we have no idea what the
+
+104
+00:07:32,326 --> 00:07:36,322
+running time of Gaus's recursive
+algorithm for integer multiplication
+
+105
+00:07:36,322 --> 00:07:40,585
+really is. It is not obvious, we currently
+have no intuition for it. We don't know
+
+106
+00:07:40,585 --> 00:07:44,900
+what the solution to this recurrence is.
+But it will be one super special case of
+
+107
+00:07:44,900 --> 00:07:47,565
+the general master method, which we'll
+tackle next.

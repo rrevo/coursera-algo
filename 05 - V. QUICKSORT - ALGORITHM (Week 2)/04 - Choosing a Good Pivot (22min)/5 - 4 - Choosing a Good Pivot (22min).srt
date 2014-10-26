@@ -1,0 +1,1496 @@
+1
+00:00:01,128 --> 00:00:04,524
+So let's review this story so far. We've
+been discussing the quick sort algorithm,
+
+2
+00:00:04,524 --> 00:00:08,906
+here again is its high level description.
+So quick sort you call two subroutines
+
+3
+00:00:08,906 --> 00:00:12,773
+first and then you make two recursive
+calls. So the first subroutine,
+
+4
+00:00:12,773 --> 00:00:17,373
+ChoosePivot , we haven't discussed yet at all.  That will be one of the main topics of this video.
+
+5
+00:00:17,373 --> 00:00:21,156
+But the job of the choose pivot subroutine is to somehow select one
+
+6
+00:00:21,156 --> 00:00:25,811
+of the N elements in the input array to
+act as a pivot element. Now, what does it
+
+7
+00:00:25,811 --> 00:00:28,893
+mean to be a pivot? Well, that comes into
+play in the second subroutine. The
+
+8
+00:00:28,893 --> 00:00:32,095
+partition subroutine, which we did discuss
+quite a bit in a previous video. So what
+
+9
+00:00:32,095 --> 00:00:35,875
+partition does is it rearranges the
+elements in the input array, so that it
+
+10
+00:00:35,875 --> 00:00:38,640
+has the following property. So that the
+pivot P winds up in its rightful position.
+
+11
+00:00:38,640 --> 00:00:43,685
+That is, it's to the right of all of the
+elements less than it. And it's to the
+
+12
+00:00:43,685 --> 00:00:47,165
+left of all of the elements bigger than
+it. The stuff less than it's to the left
+
+13
+00:00:47,165 --> 00:00:51,640
+in some jumbled order. The stuff bigger
+than it is to the right in some jumbled
+
+14
+00:00:51,640 --> 00:00:54,641
+order. That's what's listed here as the
+first part and the second part of the
+
+15
+00:00:54,641 --> 00:00:58,442
+partitioned array. Now, once you've done
+this partitioning you're good to go. You
+
+16
+00:00:58,442 --> 00:01:03,175
+just recursively solve recursively sort
+the first part. After you get them in the
+
+17
+00:01:03,175 --> 00:01:06,191
+right order, you call Quick Sort again and
+recursively sort the right part. And,
+
+18
+00:01:06,191 --> 00:01:09,908
+bingo, the entire array is sorted. You
+don't need to combine step. You don't need
+
+19
+00:01:09,908 --> 00:01:13,506
+a [inaudible] step. Moreover, recall in a
+previous video we saw that the partition
+
+20
+00:01:13,506 --> 00:01:17,603
+array can be implemented in linear time
+and, moreover, it works in place with
+
+21
+00:01:17,603 --> 00:01:20,825
+essentially, no additional storage. We,
+also, in an optional video formally
+
+22
+00:01:20,825 --> 00:01:25,375
+prove the correctness of Quick Sort. And
+remember, QuickSort is independent of how
+
+23
+00:01:25,375 --> 00:01:29,173
+you implement the ChoosePivot subroutine.
+So what we're going to do now is discuss
+
+24
+00:01:29,173 --> 00:01:32,909
+the running time of the QuickSort
+algorithm. And this is where the choice of
+
+25
+00:01:32,909 --> 00:01:37,408
+the pivot is very important.
+
+26
+00:01:37,408 --> 00:01:39,037
+So what everybody should be wondering about at
+
+27
+00:01:39,037 --> 00:01:42,274
+this point is, "Is Quick Sort a good
+algorithm? Does it run fast?"  The bar is
+
+28
+00:01:42,274 --> 00:01:46,525
+pretty high. We already have MergeSort,
+which is a very excellent, practical, n
+
+29
+00:01:46,525 --> 00:01:54,658
+log n algorithm. [sound] The key point to
+realize at this juncture is that we are
+
+30
+00:01:54,658 --> 00:02:00,249
+not currently in a position to discuss the
+running time of the quick sort algorithm,
+
+31
+00:02:00,249 --> 00:02:03,233
+the reason is we do not have enough
+information. The running time of the quick
+
+32
+00:02:03,233 --> 00:02:09,091
+sort depends crucially on how you choose
+the pivot. It depends crucially on the
+
+33
+00:02:10,075 --> 00:02:10,075
+quality of the pivot chosen.
+
+34
+00:02:15,148 --> 00:02:22,516
+You'd be right to wonder what I mean by a pivot's
+quality. And basiclaly what I mean is
+
+35
+00:02:24,178 --> 00:02:24,178
+pivot is good if it splits the partitioned
+
+36
+00:02:24,178 --> 00:02:24,179
+array into roughly two equal-sized
+subproblems. And it's bad, it's of low
+
+37
+00:02:24,179 --> 00:02:24,179
+quality if we get very unbalanced
+subproblems. So to understand both what I
+
+38
+00:02:24,179 --> 99:59:59,000
+mean and the ramifications of having
+good-quality and bad-quality pivots, let's
+
+39
+99:59:59,000 --> 99:59:59,000
+walk through a couple of quiz questions.
+This first quiz, quiz question is meant to
+
+40
+99:59:59,000 --> 99:59:59,000
+explore a sort of worst case execution of
+the quick sort algorithm. What happens
+
+41
+99:59:59,000 --> 99:59:59,000
+when you choose pivots that are very
+poorly suited for the particular input
+
+42
+99:59:59,000 --> 99:59:59,000
+array. Let me be more specific. Suppose we
+use the most naive choose pivot
+
+43
+99:59:59,000 --> 99:59:59,000
+implementation like we were discussing in
+the partition video. So, remember, here we
+
+44
+99:59:59,000 --> 99:59:59,000
+just pluck out the first element of the
+array and we use that as the pivot. So
+
+45
+99:59:59,000 --> 99:59:59,000
+suppose that's how we implement the choose
+pivot subroutine, and moreover, suppose
+
+46
+99:59:59,000 --> 99:59:59,000
+that the input array to quicksort is an
+array that's already in sorted order. So,
+
+47
+99:59:59,000 --> 99:59:59,000
+for example, if we just have the numbers
+one through eight, it would be one, two,
+
+48
+99:59:59,000 --> 99:59:59,000
+three, four, five, six, seven, eight, in
+order. My question for you is, what is the
+
+49
+99:59:59,000 --> 99:59:59,000
+running time of this recursive quicksort
+algorithm on an already sorted array if
+
+50
+99:59:59,000 --> 99:59:59,000
+we always use the first element of a
+subarray as the pivot?  Okay so this is a
+
+51
+99:59:59,000 --> 99:59:59,000
+slightly tricky, but actually a very
+important question. So the answer is the
+
+52
+99:59:59,000 --> 99:59:59,000
+fourth one. So it turns out that quick
+sort, if you pass it an already sorted
+
+53
+99:59:59,000 --> 99:59:59,000
+array and you're using the first element
+as pivot elements, it runs in quadratic
+
+54
+99:59:59,000 --> 99:59:59,000
+time. And remember, for a sorting
+algorithm, quadratic is bad. It's bad in
+
+55
+99:59:59,000 --> 99:59:59,000
+the sense that we can do better.  Merge short runs in time n log n, which is
+
+56
+99:59:59,000 --> 99:59:59,000
+much better that n-squared, and if we are
+happy with an n-squared running time, we
+
+57
+99:59:59,000 --> 99:59:59,000
+wouldn't have to resort to these sort of
+relatively exotic sorting algorithms. We
+
+58
+99:59:59,000 --> 99:59:59,000
+could just use insertion sort and we'd be
+fine, we'd get that same quadratic running
+
+59
+99:59:59,000 --> 99:59:59,000
+time. Okay so now I owe you an
+explanation. Why is it that QuickSort
+
+60
+99:59:59,000 --> 99:59:59,000
+can actually run in quadratic time in this
+unlucky case of being passed already
+
+61
+99:59:59,000 --> 99:59:59,000
+sorted input array. Well, to understand,
+let's think about what pivot gets chosen
+
+62
+99:59:59,000 --> 99:59:59,000
+and what are the ramifications of that
+pivot choice for how the array gets
+
+63
+99:59:59,000 --> 99:59:59,000
+partitioned, and then what the recursion
+looks like. So. Let's just think of the
+
+64
+99:59:59,000 --> 99:59:59,000
+array as being the numbers one through n
+in sorted order. What is gonna be our
+
+65
+99:59:59,000 --> 99:59:59,000
+pivot?  Well, by definition we're choosing
+the first element of the pivot, so the
+
+66
+99:59:59,000 --> 99:59:59,000
+pivot is just gonna be one. Now we're
+going to invoke the partition subroutine
+
+67
+99:59:59,000 --> 99:59:59,000
+and if you go back to the pseudo code of
+the partition's subroutine, you'll notice
+
+68
+99:59:59,000 --> 99:59:59,000
+that if you pass in an already sorted
+array, it's gonna do essentially nothing.
+
+69
+99:59:59,000 --> 99:59:59,000
+It's just gonna advance the n [inaudible]
+and j until it falls off the end of the
+
+70
+99:59:59,000 --> 99:59:59,000
+array. And it's just going to return back
+to us the same array that it was pathed as
+
+71
+99:59:59,000 --> 99:59:59,000
+input. So, partitioned subroutine is given
+an already sorted array, returns an
+
+72
+99:59:59,000 --> 99:59:59,000
+already sorted array. Okay? So we have
+just a pivot one in the first position and
+
+73
+99:59:59,000 --> 99:59:59,000
+then the numbers two through n in order in
+the remainder of the positions. So if we
+
+74
+99:59:59,000 --> 99:59:59,000
+draw our usual picture of what a,
+partitioned array looks like, with
+
+75
+99:59:59,000 --> 99:59:59,000
+everything, less than the pivot, to the
+left, everything bigger than the pivot, to
+
+76
+99:59:59,000 --> 99:59:59,000
+the right. Well, since nothing is less
+than the pivot, this stuff is going to be
+
+77
+99:59:59,000 --> 99:59:59,000
+empty. This will not exist, and to the
+right of the pivot, this will have length,
+
+78
+99:59:59,000 --> 99:59:59,000
+N minus one, and moreover it will still be
+sorted. So once partition completes, we go
+
+79
+99:59:59,000 --> 99:59:59,000
+back to the outer call of quick sort,
+which then calls itself recursively twice.
+
+80
+99:59:59,000 --> 99:59:59,000
+Now in this case, one of the recursive
+calls is just vacuous. There's just an
+
+81
+99:59:59,000 --> 99:59:59,000
+empty array. There's nothing to do. So
+really there's only one recursive call,
+
+82
+99:59:59,000 --> 99:59:59,000
+and that happens on a problem of size only
+one less. So this is about the most
+
+83
+99:59:59,000 --> 99:59:59,000
+unbalanced split we could possibly see.
+Right? Where one side has zero elements,
+
+84
+99:59:59,000 --> 99:59:59,000
+one side's N minus one. That's not really good any worse than that. And this
+
+85
+99:59:59,000 --> 99:59:59,000
+is going to keep happening over and over
+and over again. We're gonna recurse on the
+
+86
+99:59:59,000 --> 99:59:59,000
+numbers two through n. We're gonna choose
+the first element, the two as the pivot.
+
+87
+99:59:59,000 --> 99:59:59,000
+Again, we'll feed it to partition, we'll
+get back the exact same subarray that we
+
+88
+99:59:59,000 --> 99:59:59,000
+handed it in, we get to the numbers two
+through n in sorted order. We exclude the
+
+89
+99:59:59,000 --> 99:59:59,000
+pivot two. We recourse on the numbers
+three through n, a subarray of length n -
+
+90
+99:59:59,000 --> 99:59:59,000
+two. The next recursion level, we recurse
+on an array of size, of length n - three,
+
+91
+99:59:59,000 --> 99:59:59,000
+then n - four, then n - five, and so on,
+until finally, after [inaudible] a
+
+92
+99:59:59,000 --> 99:59:59,000
+recursion depth of n roughly, we got down
+to just the last element. N, the base case
+
+93
+99:59:59,000 --> 99:59:59,000
+kicks in and we return that and Quick Sort
+completes. So that's how Quick Sort is
+
+94
+99:59:59,000 --> 99:59:59,000
+gonna execute on this particular input
+with these particular pivot choices, so
+
+95
+99:59:59,000 --> 99:59:59,000
+what running time does that give to us?
+Well. The first observation is that, you
+
+96
+99:59:59,000 --> 99:59:59,000
+know in each recursive call we do have to
+invoke the partition at sub-routine, and
+
+97
+99:59:59,000 --> 99:59:59,000
+the partition sub-routine does look at,
+every element in the array it is passed as
+
+98
+99:59:59,000 --> 99:59:59,000
+input. So if we pass partition in array of
+like K, it's gonna do at least K
+
+99
+99:59:59,000 --> 99:59:59,000
+operations Cuz it looks at each element at
+least once. So the run time is going to be
+
+100
+99:59:59,000 --> 99:59:59,000
+bounded below, by the work we do on the
+outermost call, which is on an array of
+
+101
+99:59:59,000 --> 99:59:59,000
+like M. Plus the amount we do in the
+second level of recursion, which is on a
+
+102
+99:59:59,000 --> 99:59:59,000
+subarray of length n - one, plus n - two,
+plus blah, blah, blah, blah, blah, all the
+
+103
+99:59:59,000 --> 99:59:59,000
+way down to plus one for the very last
+level of recursion. So this is a lower ban
+
+104
+99:59:59,000 --> 99:59:59,000
+on our running time and this is already
+theta of n squared. So one easy way to see
+
+105
+99:59:59,000 --> 99:59:59,000
+why this sum, N+N-1+ etcetera, etcetera,
+leads to a bound of N squared, [inaudible]
+
+106
+99:59:59,000 --> 99:59:59,000
+just focus on the first half of the terms.
+So the first N over two terms in the sum
+
+107
+99:59:59,000 --> 99:59:59,000
+are all of magnitude at least N over two.
+So the sums at least N squared over four.
+
+108
+99:59:59,000 --> 99:59:59,000
+It's also evident that this sum is at
+most, N squared. So, overall, the running
+
+109
+99:59:59,000 --> 99:59:59,000
+time of Quick Sort on this bad input is
+going to be quadratic. Now having
+
+110
+99:59:59,000 --> 99:59:59,000
+understood what the worst case performance
+the Quick Sort algorithm is, let's move on
+
+111
+99:59:59,000 --> 99:59:59,000
+to discuss its best case running time. Now
+we don't generally care about the best
+
+112
+99:59:59,000 --> 99:59:59,000
+case performance of algorithms for its own
+case, the reason that we wanna think about
+
+113
+99:59:59,000 --> 99:59:59,000
+Quick Sort in the best case, first of all
+it'll give us better intuition for how the
+
+114
+99:59:59,000 --> 99:59:59,000
+algorithm works, second of all it will
+draw a line in the sand. Its average case
+
+115
+99:59:59,000 --> 99:59:59,000
+running time certainly can't be better
+than the best case so this will give us a
+
+116
+99:59:59,000 --> 99:59:59,000
+target for what we're shooting for in our
+subsequent mathematical analysis. So what
+
+117
+99:59:59,000 --> 99:59:59,000
+with the best case, what is the highest
+quality pivot we could hope for, well
+
+118
+99:59:59,000 --> 99:59:59,000
+again. We think of the quality of a pivot
+as the amount of balance that it provides
+
+119
+99:59:59,000 --> 99:59:59,000
+between the two subproblems. So ideally,
+we choose a pivot which gave us two
+
+120
+99:59:59,000 --> 99:59:59,000
+subproblems, both of size n/2 or less. And
+there's a name for the. Element that would
+
+121
+99:59:59,000 --> 99:59:59,000
+give us that perfectly balanced split.
+It's the median element of the array,
+
+122
+99:59:59,000 --> 99:59:59,000
+okay? The element where exactly half of
+the elements are less than it and half of
+
+123
+99:59:59,000 --> 99:59:59,000
+the elements are bigger than it. That
+would give us essentially perfect 50/50
+
+124
+99:59:59,000 --> 99:59:59,000
+split of the input array. So here's the
+question. Suppose we had some input and we
+
+125
+99:59:59,000 --> 99:59:59,000
+ran quicksort and everything just worked
+out in our favor in the, magically in the
+
+126
+99:59:59,000 --> 99:59:59,000
+best possible way. That is, in every
+single recursive indication of quicksort
+
+127
+99:59:59,000 --> 99:59:59,000
+on any sub-array of the original input
+array, suppose we happen. To get as our
+
+128
+99:59:59,000 --> 99:59:59,000
+pivot the median element. That is, suppose
+in every single recursive call we wind up
+
+129
+99:59:59,000 --> 99:59:59,000
+getting a perfect 50, 50 split of the
+input array before we recurse. This
+
+130
+99:59:59,000 --> 99:59:59,000
+question asks you to analyze the running
+time of this algorithm in this magical
+
+131
+99:59:59,000 --> 99:59:59,000
+best case scenario. So the answer to this
+third to this question is the third
+
+132
+99:59:59,000 --> 99:59:59,000
+option. The answer is it runs in n log n
+time. Why is that? Well, the reason is
+
+133
+99:59:59,000 --> 99:59:59,000
+that then the recurrence which governs the
+running time of quicksort is, exactly
+
+134
+99:59:59,000 --> 99:59:59,000
+matches the recurrence that governs the
+merge sort running time, which we already
+
+135
+99:59:59,000 --> 99:59:59,000
+know is n log n. That is, the running time
+Quick Sort requires, in this magical,
+
+136
+99:59:59,000 --> 99:59:59,000
+special case, on an array of like N well,
+as usual you have a recurrence in two
+
+137
+99:59:59,000 --> 99:59:59,000
+parts. There is the work that gets done by
+the recursive calls and there is the work
+
+138
+99:59:59,000 --> 99:59:59,000
+that gets done now. Now by assumption, we
+wind up picking the Median as the Pivot.
+
+139
+99:59:59,000 --> 99:59:59,000
+So there's going to be two recursive
+calls, each of which will be on
+
+140
+99:59:59,000 --> 99:59:59,000
+[inaudible] input of size of most and over
+two, and we can write this. This is
+
+141
+99:59:59,000 --> 99:59:59,000
+because the Pivot equals the Mid-Median.
+So this is not true for quicksort in
+
+142
+99:59:59,000 --> 99:59:59,000
+general. It's only true in this magical
+case where the pivot is the median. So
+
+143
+99:59:59,000 --> 99:59:59,000
+that's what's gets done by the two
+recursive calls, and then how much work do
+
+144
+99:59:59,000 --> 99:59:59,000
+we do outside of the recursive calls?
+Well, we have to do the choose pivot
+
+145
+99:59:59,000 --> 99:59:59,000
+subroutine, and I guess strictly speaking
+I haven't said how that was implemented,
+
+146
+99:59:59,000 --> 99:59:59,000
+but let's assume that choose pivot does
+only a linear amount of work. And then as
+
+147
+99:59:59,000 --> 99:59:59,000
+we've seen, the partition subroutine only
+does a linear amount of work as well. So
+
+148
+99:59:59,000 --> 99:59:59,000
+let's say oh then, for work outside of the
+recursive calls. And what do we know? We
+
+149
+99:59:59,000 --> 99:59:59,000
+know this implies [inaudible] using the
+master method or just by using the exact
+
+150
+99:59:59,000 --> 99:59:59,000
+same argument as from [inaudible]. This
+gives us a running time bound of N log in.
+
+151
+99:59:59,000 --> 99:59:59,000
+Then again something I haven't really been
+emphasizing but which is true is that
+
+152
+99:59:59,000 --> 99:59:59,000
+actually we can write. Theta of N log N.
+And that's because, in the recurrence, in
+
+153
+99:59:59,000 --> 99:59:59,000
+fact, we know that the work done outside
+of the recursive calls is exactly theta of
+
+154
+99:59:59,000 --> 99:59:59,000
+N, okay? Partition needs really linear
+time, not just big O of N time. In fact,
+
+155
+99:59:59,000 --> 99:59:59,000
+the work done outside of the recursive
+calls is theta of N. That's because the
+
+156
+99:59:59,000 --> 99:59:59,000
+partition subroutine does indeed look at
+every entry in the array that it's passed.
+
+157
+99:59:59,000 --> 99:59:59,000
+And as a result, we didn't really discuss
+this so much in the master method. But as
+
+158
+99:59:59,000 --> 99:59:59,000
+I mentioned in passing, if you have
+recurrences which are tight in this sense,
+
+159
+99:59:59,000 --> 99:59:59,000
+then the, the results of the master
+method, can also be strengthened to be
+
+160
+99:59:59,000 --> 99:59:59,000
+theta instead of just big O. But those are
+just some extra details. The upshot of
+
+161
+99:59:59,000 --> 99:59:59,000
+this quiz is that even in the best case,
+even if we magically get perfect pivots
+
+162
+99:59:59,000 --> 99:59:59,000
+throughout the entire trajectory of
+quicksort, the best we can hope for is an
+
+163
+99:59:59,000 --> 99:59:59,000
+n log n upper bound. It's not gonna get
+any better than that. So the question is,
+
+164
+99:59:59,000 --> 99:59:59,000
+how do we have a principled way of
+choosing pivots so that we get this best
+
+165
+99:59:59,000 --> 99:59:59,000
+case, or something like it that's best
+case n log n running time? So that's what
+
+166
+99:59:59,000 --> 99:59:59,000
+that problem that we have to solve next.
+So the last couple quizzes have identified
+
+167
+99:59:59,000 --> 99:59:59,000
+a super important question as far as the
+implementation of Quick Sort, which is how
+
+168
+99:59:59,000 --> 99:59:59,000
+are we going to choose these pivots,
+right. We now know they have a big
+
+169
+99:59:59,000 --> 99:59:59,000
+influence on the running time of our
+algorithm. It could be as bad as N squared
+
+170
+99:59:59,000 --> 99:59:59,000
+or as good as N log N. We really want to
+be on the N log N side. So key question.
+
+171
+99:59:59,000 --> 99:59:59,000
+How to choose pivots. [sound] And
+quicksort is the first killer application
+
+172
+99:59:59,000 --> 99:59:59,000
+we're going to see of the idea of
+randomized algorithms, that is, allowing
+
+173
+99:59:59,000 --> 99:59:59,000
+your algorithms to flip coins in the code
+so that you get some kind of good
+
+174
+99:59:59,000 --> 99:59:59,000
+performance on average. So the big idea.
+Is random [sound] pivots. By which I mean.
+
+175
+99:59:59,000 --> 99:59:59,000
+For every time we recursively call quick
+sort and we are passed some sub-array of
+
+176
+99:59:59,000 --> 99:59:59,000
+length k. Among the k candidate pivot
+elements in the subarray, we're going to
+
+177
+99:59:59,000 --> 99:59:59,000
+choose each one with eq, equally likely.
+With probability of one over K, and we're
+
+178
+99:59:59,000 --> 99:59:59,000
+gonna make a new random choice every time
+we have a recursive call. And then we're
+
+179
+99:59:59,000 --> 99:59:59,000
+just gonna see how the algorithm does. So
+this is our first example of a randomized
+
+180
+99:59:59,000 --> 99:59:59,000
+algorithm. This is an algorithm, where, if
+you feed it exactly the same input, it
+
+181
+99:59:59,000 --> 99:59:59,000
+will actually run differently on different
+executions. And that?s ?cause there's
+
+182
+99:59:59,000 --> 99:59:59,000
+randomness internal to the code of the
+algorithm. Now, it's not necessarily
+
+183
+99:59:59,000 --> 99:59:59,000
+intuitive that randomization should have
+any purpose in computation, in software
+
+184
+99:59:59,000 --> 99:59:59,000
+design and algorithm design. But, in fact,
+and this has been sort of one of the real
+
+185
+99:59:59,000 --> 99:59:59,000
+breakthroughs in algorithm design. Mostly
+in the'70s, realizing how important this
+
+186
+99:59:59,000 --> 99:59:59,000
+is. That the use of randomization can make
+algorithms more elegant. Simpler, easer to
+
+187
+99:59:59,000 --> 99:59:59,000
+code, more faster. Or just simply you can
+solve problems that you could not solve,
+
+188
+99:59:59,000 --> 99:59:59,000
+at least not solve as easily without the
+use of randomization so it's really one
+
+189
+99:59:59,000 --> 99:59:59,000
+thing that should be in your toolbox as an
+algorithm designer, randomization. Quick
+
+190
+99:59:59,000 --> 99:59:59,000
+Sort will be the first kill, killer
+application but we'll see a couple more
+
+191
+99:59:59,000 --> 99:59:59,000
+later in the course. Now, by the end of
+this sequence of videos, I'll have given
+
+192
+99:59:59,000 --> 99:59:59,000
+you a complete, rigorous argument about
+why this works. Why with random pivots,
+
+193
+99:59:59,000 --> 99:59:59,000
+quicksort always runs very quickly on
+average. But, you know, before we begin to
+
+194
+99:59:59,000 --> 99:59:59,000
+say anything too formal, let's develop a
+little bit of. Intuition, or at least kind
+
+195
+99:59:59,000 --> 99:59:59,000
+of a daydream, about why on earth could
+this possibly work. Why on earth could
+
+196
+99:59:59,000 --> 99:59:59,000
+this possibly be a good idea, to have
+randomness internal to our quicksort
+
+197
+99:59:59,000 --> 99:59:59,000
+implementation. Well, so first just, you
+know, very high level. What would be sort
+
+198
+99:59:59,000 --> 99:59:59,000
+of the hope or the dream? The hope would
+be, you know, random pivots are not gonna
+
+199
+99:59:59,000 --> 99:59:59,000
+be perfect. I mean, you're not gonna just
+sort of guess the median. You only have a
+
+200
+99:59:59,000 --> 99:59:59,000
+one in n chance of figuring out which one
+the median is. But the hope is that most
+
+201
+99:59:59,000 --> 99:59:59,000
+choices of a pivot will be good enough. So
+that's pretty fuzzy. Let's drill down a
+
+202
+99:59:59,000 --> 99:59:59,000
+little bit and develop this intuition
+further. Let me describe it in two steps.
+
+203
+99:59:59,000 --> 99:59:59,000
+[sound] The first claim is that, you know
+in our last quiz we said suppose we get
+
+204
+99:59:59,000 --> 99:59:59,000
+lucky and we always pick the median in
+every single recursive call. We observed
+
+205
+99:59:59,000 --> 99:59:59,000
+we'd do great. We'd get enlogin running
+time. So now let?s observe that actually
+
+206
+99:59:59,000 --> 99:59:59,000
+to get the enlogin running time that it's
+not important that we magically get the
+
+207
+99:59:59,000 --> 99:59:59,000
+median every single recursive call. If we
+get any kind of reasonable pivot by which
+
+208
+99:59:59,000 --> 99:59:59,000
+a pivot that gives us some kind of
+approximately balanced split of the
+
+209
+99:59:59,000 --> 99:59:59,000
+problems again, we are gonna be good. So
+the last quiz really wasn't particular to
+
+210
+99:59:59,000 --> 99:59:59,000
+getting the exact median. Near medians are
+also fine. To be concrete, suppose we
+
+211
+99:59:59,000 --> 99:59:59,000
+always pick a pivot which guarantees us a
+split of 25 to 75 or better. That is both
+
+212
+99:59:59,000 --> 99:59:59,000
+recursive calls should be called on a
+raise of size. And most 75 percent of the
+
+213
+99:59:59,000 --> 99:59:59,000
+one that we started with. So precisely, if
+we always get a 25/75 split or better in
+
+214
+99:59:59,000 --> 99:59:59,000
+every recursive call. I claim that the
+running time of Quick Sort in that event
+
+215
+99:59:59,000 --> 99:59:59,000
+will be Big O of N log N. Just like it was
+in the last quiz where we were, we were
+
+216
+99:59:59,000 --> 99:59:59,000
+actually assuming something much stronger,
+that we were getting the median. Now this
+
+217
+99:59:59,000 --> 99:59:59,000
+is not so obvious, the fact that 25/75
+splits guarantee N log N running time. For
+
+218
+99:59:59,000 --> 99:59:59,000
+those of you that are feeling keen, you
+might wanna try to prove this. You can
+
+219
+99:59:59,000 --> 99:59:59,000
+prove this using a recursion tree
+argument. But because you don't have
+
+220
+99:59:59,000 --> 99:59:59,000
+balanced subproblems, you have to work a
+little bit harder than you do in the cases
+
+221
+99:59:59,000 --> 99:59:59,000
+covered by the master method. So that's
+the first part of the intuition. And this
+
+222
+99:59:59,000 --> 99:59:59,000
+is what we mean by [inaudible] being good
+enough. If we get a 25/75 split or better,
+
+223
+99:59:59,000 --> 99:59:59,000
+we're good to go. If we get our desired,
+our target N log N running time. So the
+
+224
+99:59:59,000 --> 99:59:59,000
+second part of the intuition is to realize
+that, actually, we don't have to get all
+
+225
+99:59:59,000 --> 99:59:59,000
+that lucky to just be getting a 25/75
+split. That's actually a pretty modest
+
+226
+99:59:59,000 --> 99:59:59,000
+goal. And even this modest goal is enough
+to get the N log N running time. Right? So
+
+227
+99:59:59,000 --> 99:59:59,000
+suppose our array contains the numbers,
+the integers between one and 100, so it's
+
+228
+99:59:59,000 --> 99:59:59,000
+an array of length 100. Think for a
+second, which of those elements is gonna
+
+229
+99:59:59,000 --> 99:59:59,000
+give us a split? That's 25, 75, or better.
+So if we pick any element between 26 and
+
+230
+99:59:59,000 --> 99:59:59,000
+75. Inclusive. Will be totally good.
+Right. We pick something that's at least
+
+231
+99:59:59,000 --> 99:59:59,000
+26. That means that the left subproblem is
+going to have at least the elements one
+
+232
+99:59:59,000 --> 99:59:59,000
+through 25. That'll even have at least 25
+percent of the elements. If we pick
+
+233
+99:59:59,000 --> 99:59:59,000
+something less than 75, then the right
+subproblem will have all of the elements
+
+234
+99:59:59,000 --> 99:59:59,000
+76 through 100 after we partition. So,
+we'll also have at least 25 percent of the
+
+235
+99:59:59,000 --> 99:59:59,000
+elements. So anything between 26 and 75
+gives us a 75, 25 split or better. But
+
+236
+99:59:59,000 --> 99:59:59,000
+that's a full half of the elements. So
+it's as good as just flipping one
+
+237
+99:59:59,000 --> 99:59:59,000
+[inaudible] fair coin and hoping we get
+heads. So with 50 percent probability, we
+
+238
+99:59:59,000 --> 99:59:59,000
+get a split good enough to get the. Isn't
+enough to get this N log inbound. And so,
+
+239
+99:59:59,000 --> 99:59:59,000
+again, the high level hope is that often
+enough, you know, half of the time, we get
+
+240
+99:59:59,000 --> 99:59:59,000
+these you know, good enough splits. 25, 75
+splits or better. So, that would soon
+
+241
+99:59:59,000 --> 99:59:59,000
+suggest and end log and running time of
+average is a legitimate hope. So thats the
+
+242
+99:59:59,000 --> 99:59:59,000
+hell of a intuition, but if I were you I
+would certainly not be content with this
+
+243
+99:59:59,000 --> 99:59:59,000
+somewhat hand wavy explanation that I've
+given you so far. What I've told you is
+
+244
+99:59:59,000 --> 99:59:59,000
+sort of the hope, the dream, why there is
+at least a chance, this might work. But,
+
+245
+99:59:59,000 --> 99:59:59,000
+but the question remains, and I would
+encourage such skepticism, which is, does
+
+246
+99:59:59,000 --> 99:59:59,000
+this really work. And to answer that we're
+gonna have to do some actual mathematical
+
+247
+99:59:59,000 --> 99:59:59,000
+analysis and that's what I am gonna show
+you. I am gonna show you complete vigorous
+
+248
+99:59:59,000 --> 99:59:59,000
+analysis of the quick sword algorithm with
+random pivots and we'll show that yes in
+
+249
+99:59:59,000 --> 99:59:59,000
+fact it does really work. And this
+highlights what's gonna be a recurring
+
+250
+99:59:59,000 --> 99:59:59,000
+theme in this course and a recurring theme
+in this just study and understanding of
+
+251
+99:59:59,000 --> 99:59:59,000
+algorithm which is quite often there's
+some fundamental problem we are trying to
+
+252
+99:59:59,000 --> 99:59:59,000
+go to the solution and you come up with a
+novel idea. It might be brilliant. And it
+
+253
+99:59:59,000 --> 99:59:59,000
+might suck, and you have no idea. Now
+obviously you can cut up the idea, run it
+
+254
+99:59:59,000 --> 99:59:59,000
+on some concrete instances, and get a feel
+for you know, whether it seems like a good
+
+255
+99:59:59,000 --> 99:59:59,000
+idea or not, but if you really wanna know
+fundamentally what makes the idea good or
+
+256
+99:59:59,000 --> 99:59:59,000
+what makes the idea bad, really you need
+to turn to mathematical analysis to give
+
+257
+99:59:59,000 --> 99:59:59,000
+you a complete explanation. And that's
+exactly what we're going to do with Quick
+
+258
+99:59:59,000 --> 99:59:59,000
+Sort and then we'll explain in a very deep
+way why it works so well. Specifically, in
+
+259
+99:59:59,000 --> 99:59:59,000
+the next sequence of three videos, I'm
+going to show you an analysis, a proof of
+
+260
+99:59:59,000 --> 99:59:59,000
+the following theorem about quicksort. So
+under no assumptions about the data, that
+
+261
+99:59:59,000 --> 99:59:59,000
+is for every input array of a given
+length, say n, the average running time. A
+
+262
+99:59:59,000 --> 99:59:59,000
+quick sort implemented with random pivots
+is [inaudible] than log in. And again, In
+
+263
+99:59:59,000 --> 99:59:59,000
+fact it's theta and then log in, but we'll
+just focus on the big O of N log in part.
+
+264
+99:59:59,000 --> 99:59:59,000
+So this is a very, very cool theorem about
+this randomized Quick Sort algorithm. One
+
+265
+99:59:59,000 --> 99:59:59,000
+thing I wanna be clear so that you don't
+undersell this guarantee in your own mind,
+
+266
+99:59:59,000 --> 99:59:59,000
+this is a worst case guarantee with
+respect to the input. If you'll notice at
+
+267
+99:59:59,000 --> 99:59:59,000
+the beginning of this theorem, what do we
+say, for every input array of linked in.
+
+268
+99:59:59,000 --> 99:59:59,000
+Alright so we have absolutely no
+assumptions about the data so this is a
+
+269
+99:59:59,000 --> 99:59:59,000
+totally and general purpose sorting
+subroutine which you can use whenever you
+
+270
+99:59:59,000 --> 99:59:59,000
+want even if you have no idea where the
+data's coming from and these guarantees
+
+271
+99:59:59,000 --> 99:59:59,000
+are still going to be true. This of course
+is something I held forth about at some
+
+272
+99:59:59,000 --> 99:59:59,000
+length back in our Guiding Principles
+video. When I argued that, if you can get
+
+273
+99:59:59,000 --> 99:59:59,000
+away with it, what you really want is
+general purpose algorithms which make no
+
+274
+99:59:59,000 --> 99:59:59,000
+data assumptions so they can be used over
+and over again in all kinds of different
+
+275
+99:59:59,000 --> 99:59:59,000
+contexts and it still have guarantees, and
+quicksort is one of those. So, basically,
+
+276
+99:59:59,000 --> 99:59:59,000
+if you have a dataset and it fits in the
+main memory of your machine, again,
+
+277
+99:59:59,000 --> 99:59:59,000
+sorting is a for free subroutine. In
+particular, quicksort the quicksort
+
+278
+99:59:59,000 --> 99:59:59,000
+implementation is for free. So, this runs
+so blazingly fast. It doesn't matter what
+
+279
+99:59:59,000 --> 99:59:59,000
+the array is. Maybe you don't even know
+why you want to sort it but go on ahead.
+
+280
+99:59:59,000 --> 99:59:59,000
+Why not? Maybe it'll make your life easier
+like it did, for example, in the clo.
+
+281
+99:59:59,000 --> 99:59:59,000
+[inaudible] Payout rhythm for those of you
+that watched those two optional videos.
+
+282
+99:59:59,000 --> 99:59:59,000
+Now, the word average does appear in this
+theorem. And, you know, as I've been
+
+283
+99:59:59,000 --> 99:59:59,000
+harping on this, average is not over any
+assumptions on the data. We're certainly
+
+284
+99:59:59,000 --> 99:59:59,000
+not assuming that the input array is
+random in any sense. The input array can
+
+285
+99:59:59,000 --> 99:59:59,000
+be anything. So where is the averaging
+coming from? The averaging is coming only
+
+286
+99:59:59,000 --> 99:59:59,000
+from randomness, which is internal to our
+algorithm. Randomness that we put in the
+
+287
+99:59:59,000 --> 99:59:59,000
+code ourselves, that we're responsible
+for. So remember, randomized algorithms
+
+288
+99:59:59,000 --> 99:59:59,000
+have the interesting property that, even
+if you run it on the same input over and
+
+289
+99:59:59,000 --> 99:59:59,000
+over again, you're gonna get different
+executions. So the running time of a
+
+290
+99:59:59,000 --> 99:59:59,000
+randomized algorithm depend-, you know,
+can vary as you run it on the same input
+
+291
+99:59:59,000 --> 99:59:59,000
+over and over again. The quizzes have
+taught us that the running time of Quick
+
+292
+99:59:59,000 --> 99:59:59,000
+Sort on a given input fluctuates from,
+anywhere between the best case of N log N
+
+293
+99:59:59,000 --> 99:59:59,000
+to the worst case of N squared. So what
+this theorem is telling us is that, for
+
+294
+99:59:59,000 --> 99:59:59,000
+every possible input array. While the
+running time does indeed fluctuate between
+
+295
+99:59:59,000 --> 99:59:59,000
+an upper bound of N squared, and the lower
+bound of N log N. The best case is
+
+296
+99:59:59,000 --> 99:59:59,000
+dominating. On average, it's N log N. On
+average, it's almost as good as the best
+
+297
+99:59:59,000 --> 99:59:59,000
+case. That's what's so amazing about Quick
+Sort. [inaudible] N squared that can pop
+
+298
+99:59:59,000 --> 99:59:59,000
+up once in a while, has, it doesn't
+matter. You're never gonna see it. You're
+
+299
+99:59:59,000 --> 99:59:59,000
+always gonna see this N log N like
+behavior in randomized quick sort. So, for
+
+300
+99:59:59,000 --> 99:59:59,000
+some of you, I'll see you next in a video
+on probability review, that's optional.
+
+301
+99:59:59,000 --> 99:59:59,000
+For the rest of you, I'll see you in the
+analysis of this theorem.

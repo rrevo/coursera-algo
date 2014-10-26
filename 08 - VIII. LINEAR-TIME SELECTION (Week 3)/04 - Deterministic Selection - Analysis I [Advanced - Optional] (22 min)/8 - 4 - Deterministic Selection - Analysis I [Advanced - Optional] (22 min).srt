@@ -1,0 +1,1404 @@
+1
+00:00:00,000 --> 00:00:04,317
+Now let's turn to the analysis of the
+deterministic selection algorithm that we
+
+2
+00:00:04,317 --> 00:00:08,041
+discussed in the last slide by Blum,
+Floyd, Pratt, Rivest, and Tarjan. In
+
+3
+00:00:08,041 --> 00:00:12,088
+particular, let's prove that it runs in
+linear time on every possible input.
+
+4
+00:00:12,088 --> 00:00:16,568
+Let's, remind you what the algorithm is.
+So the idea is, we just take the R select
+
+5
+00:00:16,568 --> 00:00:21,047
+algorithm. But instead of choosing a pivot
+at random, we do quite a bit more work to
+
+6
+00:00:21,047 --> 00:00:25,095
+choose what we hope is going to be a
+guaranteed pretty good pivot. So again,
+
+7
+00:00:25,095 --> 00:00:29,466
+lines one through three are the new choose
+pivot subroutine. And it's essentially
+
+8
+00:00:29,466 --> 00:00:33,244
+implementing a two round knockout
+tournament. So first, we do the first
+
+9
+00:00:33,244 --> 00:00:37,015
+round matches. So what does that mean?
+That means we take A we think of it as
+
+10
+00:00:37,015 --> 00:00:40,907
+comprising these groups of five elements.
+So the first five elements one through
+
+11
+00:00:40,907 --> 00:00:44,895
+five and the elements six through ten and
+points eleven through fifteen and there
+
+12
+00:00:44,895 --> 00:00:48,835
+again and so on. If we sort each of those
+five using, let's say, merge sort although
+
+13
+00:00:48,835 --> 00:00:52,921
+it doesn't matter much, then the winner in
+each of these five first round matches is
+
+14
+00:00:52,921 --> 00:00:56,472
+the median of those five. That is the
+third highest element, third largest
+
+15
+00:00:56,472 --> 00:01:00,266
+element out of the five. So we take those
+in over five first round winners the
+
+16
+00:01:00,266 --> 00:01:04,303
+middle element of each of the five and the
+sorted groups, we copy those over into a
+
+17
+00:01:04,303 --> 00:01:08,000
+new array of capital [inaudible] and
+[inaudible] in it for five. And then we.
+
+18
+00:01:08,000 --> 00:01:11,981
+Second round of our tournament at which we
+elect the medium of these N over five,
+
+19
+00:01:11,981 --> 00:01:15,716
+first round winners as our final pivot, as
+our final winner. So, we do that by
+
+20
+00:01:15,716 --> 00:01:19,747
+recursively calling deselect on C. It has
+a length N over five [inaudible] for the
+
+21
+00:01:19,747 --> 00:01:23,335
+medium. So that's the N over tenth
+[inaudible] statistic in that array. So,
+
+22
+00:01:23,335 --> 00:01:27,050
+we call the pivot P and then we just
+proceed exactly like we did. And in the
+
+23
+00:01:27,050 --> 00:01:30,742
+randomized case. That is, we partition A
+around the pivot, we get a first part, a
+
+24
+00:01:30,742 --> 00:01:34,386
+second part, and we recurs on the left
+side or the right side as appropriate,
+
+25
+00:01:34,386 --> 00:01:38,552
+depending on whether the pivot is less
+than or bigger than the element that we're
+
+26
+00:01:38,552 --> 00:01:44,437
+looking for. So the claim is, believe it
+or not, that this algorithm runs in linear
+
+27
+00:01:44,437 --> 00:01:48,920
+time. Now, you'd be right to be a little
+skeptical of that claim. Certainly, you
+
+28
+00:01:48,920 --> 00:01:53,636
+should be demanding from me some kind of
+mathematical argument about this linear
+
+29
+00:01:53,636 --> 00:01:58,235
+time claim. It's not at all clear that
+that's true. One reason for skepticism is
+
+30
+00:01:58,235 --> 00:02:02,564
+that this is an unusually extravagant
+algorithm. In two senses for something
+
+31
+00:02:02,564 --> 00:02:06,621
+that's gotta run in linear time. First is,
+first is it's extravagant use of
+
+32
+00:02:06,621 --> 00:02:10,458
+recursion. There are two different
+recursive calls, as discussed in the
+
+33
+00:02:10,458 --> 00:02:14,899
+previous video. We have not yet seen any
+algorithm that makes two recursive calls
+
+34
+00:02:14,899 --> 00:02:19,174
+and runs in linear time. The best case
+scenario was always [inaudible] for our
+
+35
+00:02:19,174 --> 00:02:23,505
+two recursive call algorithms like merge
+sort or quick sort. The second reason is
+
+36
+00:02:23,505 --> 00:02:27,507
+that, outside the recursive calls, it
+seems like it?s just kind of a lot of
+
+37
+00:02:27,507 --> 00:02:32,378
+work, as well. So, to drill down on that
+point, and get a better understanding for
+
+38
+00:02:32,378 --> 00:02:37,607
+how much work this algorithm is doing, the
+next quiz asks you to focus just on line
+
+39
+00:02:37,607 --> 00:02:46,725
+one. So when we sort groups of five in the
+input array how long does that take. So
+
+40
+00:02:46,725 --> 00:02:50,654
+the correct answer to this quiz is the
+third answer. Maybe you would have guessed
+
+41
+00:02:50,654 --> 00:02:54,341
+that given that I'm claiming that the
+whole algorithm takes linear time, you
+
+42
+00:02:54,341 --> 00:02:58,367
+could have guessed that this sub-routine
+is going to be worse than linear time. But
+
+43
+00:02:58,367 --> 00:03:02,248
+you should also be wondering you know,
+isn't sorting always N log N so, aren't we
+
+44
+00:03:02,248 --> 00:03:06,748
+doing sorting here. Why isn't the N log N
+thing kicking in? The reason is we're
+
+45
+00:03:06,748 --> 00:03:11,600
+doing something much, much more modest
+than sorting the linked N input array, all
+
+46
+00:03:11,600 --> 00:03:16,209
+we're sorting are these puny little
+sub-arrays that have only five elements
+
+47
+00:03:16,209 --> 00:03:21,001
+and that's just not that hard, that can be
+done in constant time so let me be a
+
+48
+00:03:21,001 --> 00:03:30,598
+little more precise about it. The claim is
+that sorting an element, an array with
+
+49
+00:03:30,598 --> 00:03:37,610
+five elements takes only some constant
+number of operations. Let's say 120. Where
+
+50
+00:03:37,610 --> 00:03:42,167
+did this number, 120 come from? Well, you
+know, for example, suppose we used merge
+
+51
+00:03:42,167 --> 00:03:47,241
+sort. If you go back to those very early
+lectures, we actually counted up the
+
+52
+00:03:47,241 --> 00:03:52,262
+number of operations that merge sort needs
+to sort an array length of M. For some
+
+53
+00:03:52,262 --> 00:03:57,284
+generic M, here M is five, so we can just
+plug five into our previous formula that
+
+54
+00:03:57,284 --> 00:04:03,146
+we computed from merge sort. Right if we
+plug amicle five into this formula, what
+
+55
+00:04:03,146 --> 00:04:08,808
+do we get, we get six times five times log
+base 205+1. Who knows what log base 205
+
+56
+00:04:08,808 --> 00:04:14,470
+is, that's some weird member but it's
+gonna be a most three right. So that's the
+
+57
+00:04:14,470 --> 00:04:20,060
+most three of three+1 is four multiply
+that by five and again time six and will
+
+58
+00:04:20,060 --> 00:04:24,314
+get you 120. So it's constant time to sort
+just one of these groups of five. Now of
+
+59
+00:04:24,314 --> 00:04:28,004
+course, we have to do a bunch of groups of
+five because there's only a linear number
+
+60
+00:04:28,004 --> 00:04:32,192
+of groups. Constant for each, so it's
+gonna be linear time overall. So to be
+
+61
+00:04:32,192 --> 00:04:36,295
+really pedantic. We do 120 operations at
+most per group. There's N over five
+
+62
+00:04:36,295 --> 00:04:40,673
+different groups. We multiply those, we
+get 24 N operations. So do all the sorting
+
+63
+00:04:40,673 --> 00:04:45,511
+and that's obviously a big O event. So
+linear time for step one. So having warmed
+
+64
+00:04:45,511 --> 00:04:50,523
+up with step one. Let's look now at the
+whole seven line algorithm, and see what's
+
+65
+00:04:50,523 --> 00:04:55,365
+going on. Now I hope you haven't forgotten
+the paradigm that we discussed for
+
+66
+00:04:55,365 --> 00:04:58,465
+analyzing the running time of
+deterministic divide and conquer
+
+67
+00:04:58,465 --> 00:05:02,548
+algorithms like this one. So namely we're
+gonna develop a recurrence and remember a
+
+68
+00:05:02,548 --> 00:05:06,484
+recurrence expresses the running time, the
+number of operations performed, in two
+
+69
+00:05:06,484 --> 00:05:10,211
+parts. First of all, there's the work done
+by the recursive calls on smaller
+
+70
+00:05:10,211 --> 00:05:13,991
+sub-problems. And secondly, there's the
+work done locally, not in the recursive
+
+71
+00:05:13,991 --> 00:05:17,920
+calls. So let's just go through these
+lines one at a time, and just do a running
+
+72
+00:05:17,920 --> 00:05:21,550
+tally of how much work is done by this
+algorithm, both locally and by the
+
+73
+00:05:21,550 --> 00:05:25,330
+recursive calls. So the quiz was about,
+step number one. We just argued that since
+
+74
+00:05:25,330 --> 00:05:29,408
+it's constant time to sort each group, and
+there's a linear number of groups, we're
+
+75
+00:05:29,408 --> 00:05:34,901
+gonna do linear work, theta of N. For step
+one. So copying these first round winners
+
+76
+00:05:34,901 --> 00:05:40,943
+over in to their special array C is
+obviously linear time. Now, when we get to
+
+77
+00:05:40,943 --> 00:05:45,339
+the third line, we have a recursive call,
+but it's a quite easy recursive call to
+
+78
+00:05:45,339 --> 00:05:49,459
+understand. It's just, recursing on a, a
+ray that has size twenty percent as large
+
+79
+00:05:49,459 --> 00:05:53,635
+as the one we started with, on the N over
+five elements. So this, remember the
+
+80
+00:05:53,635 --> 00:05:57,645
+notation we used for recurrences.
+Generally, we denote by capital T the
+
+81
+00:05:57,645 --> 00:06:01,656
+running time of an algorithm on
+[inaudible] of a given length. So this is
+
+82
+00:06:01,656 --> 00:06:06,216
+going to be the running time that our
+algorithm has in the worst case on inputs
+
+83
+00:06:06,216 --> 00:06:10,831
+of length N over five. Cuz N over five is
+the length of the array that we're passing
+
+84
+00:06:10,831 --> 00:06:15,798
+to this recursive call. Good. Step four,
+partition. Well we had. Videos about how
+
+85
+00:06:15,798 --> 00:06:19,699
+they were going to partition the Y to
+linear time. We knew that all the way back
+
+86
+00:06:19,699 --> 00:06:25,744
+from quick sort, so that's definitely
+Theta of N. Step five is constant time,
+
+87
+00:06:25,744 --> 00:06:29,406
+I'm not going to worry about it. And
+finally we get to lines six and seven so
+
+88
+00:06:29,406 --> 00:06:33,305
+at most one of these will execute so in
+either case there's one recursive call. So
+
+89
+00:06:33,305 --> 00:06:37,110
+that's fine, we know in recurrences when
+there's recursive call we'll just write
+
+90
+00:06:37,110 --> 00:06:40,962
+capital T of whatever the input length is.
+So we just have to figure out what the
+
+91
+00:06:40,962 --> 00:06:44,814
+input length here is. It was N over five
+in step, in line three so we just have to
+
+92
+00:06:44,814 --> 00:06:50,257
+figure out what it is in line six or
+seven. Oh yeah, now we're remembering why
+
+93
+00:06:50,257 --> 00:06:56,174
+we didn't use recurrences when we
+discussed randomized quick sort and. The
+
+94
+00:06:56,174 --> 00:07:00,733
+randomized selection algorithm. It's
+because we don't actually know how big the
+
+95
+00:07:00,733 --> 00:07:05,235
+recursive call is, how big the input
+passed to this recursive call in line six
+
+96
+00:07:05,235 --> 00:07:09,276
+or seven is. Line three, no problem. It's
+guaranteed to be twenty percent of the
+
+97
+00:07:09,276 --> 00:07:14,066
+input array cuz that's how we defined it.
+But for line six or seven, the size of the
+
+98
+00:07:14,066 --> 00:07:18,799
+input array that gets passed to the, to
+the recursive call depends on how good the
+
+99
+00:07:18,799 --> 00:07:23,475
+pivot is. It depends on the splitting of
+the array A into two parts, which depends
+
+100
+00:07:23,475 --> 00:07:28,931
+on the choice of the pivot P. So at the
+moment all we can write is T. Of question
+
+101
+00:07:28,931 --> 00:07:34,296
+mark. We don't know. We don't know how
+much work gets done in that recursion,
+
+102
+00:07:34,296 --> 00:07:40,935
+cause we don't know what the input size
+is. Let me summarize the results of this
+
+103
+00:07:40,935 --> 00:07:46,616
+discussion. So write down a recurrence for
+the D select algorithms. So with T of N
+
+104
+00:07:46,616 --> 00:07:52,437
+denote the maximum number of operations
+the D select ever requires to terminate an
+
+105
+00:07:52,437 --> 00:07:57,978
+array of input [inaudible]. It's just the
+usual definition of T of N when using
+
+106
+00:07:57,978 --> 00:08:04,247
+recurrences. What we established in our
+tally on the last slide is that deselects
+
+107
+00:08:04,247 --> 00:08:08,628
+does linear stuff outside the recursive
+calls. It does the sorting of groups of
+
+108
+00:08:08,628 --> 00:08:13,121
+five. It does the copying, and it does the
+partitioning. Each of those is linear, so
+
+109
+00:08:13,121 --> 00:08:17,392
+all of them together is also linear. And
+then it does two recursive calls. One
+
+110
+00:08:17,392 --> 00:08:22,271
+whose size we understand, one whose size
+we don't understand. So, for once I'm not
+
+111
+00:08:22,271 --> 00:08:26,006
+going to be sloppy and I'm going to write
+out an explicit constant about the work
+
+112
+00:08:26,006 --> 00:08:29,650
+done outside of the recursive cause. I'm
+going to write [inaudible], I'm going to
+
+113
+00:08:29,650 --> 00:08:34,867
+actually write C times N for some constant
+C. So of course no one ever cares about
+
+114
+00:08:34,867 --> 00:08:39,114
+base cases, but for completing this let me
+write it down anyways. When D select gets
+
+115
+00:08:39,114 --> 00:08:43,064
+an input of only one element it returns
+it, what's called that one operation for
+
+116
+00:08:43,064 --> 00:08:46,988
+simplicity. And then in the generals cases
+and this is what's interesting. When
+
+117
+00:08:46,988 --> 00:08:52,020
+you're not in the base case and you have
+to recurs, what happens? Well you do a
+
+118
+00:08:52,020 --> 00:08:57,370
+linear work outside of the recursive call.
+So that's C times N for some constant C. C
+
+119
+00:08:57,370 --> 00:09:02,784
+is just the [inaudible] constant on all of
+our big thetas on the previous slide. Plus
+
+120
+00:09:02,784 --> 00:09:07,752
+the recursive call in line three, and we
+know that happens on an array of size
+
+121
+00:09:07,752 --> 00:09:12,911
+[inaudible] five. As usual, I'm not gonna
+worry about rounding up or rounding down,
+
+122
+00:09:12,911 --> 00:09:17,561
+it doesn't matter. Plus our mystery
+recursive call on an array of unknown
+
+123
+00:09:17,561 --> 00:09:23,302
+size. So that's where we stand and we seem
+stuck because of this pesky question-mark.
+
+124
+00:09:23,302 --> 00:09:28,425
+So, let's prove lemma which is gonna
+replace this question-mark with something
+
+125
+00:09:28,425 --> 00:09:34,438
+we can reason with, with an actual number
+that we can then analyze. So the upshot of
+
+126
+00:09:34,438 --> 00:09:39,110
+this key lemma is that all of our hard
+work in our choose pivot subroutine in
+
+127
+00:09:39,110 --> 00:09:43,961
+lines one through three bears fruit in the
+sense that we're guaranteed to have a
+
+128
+00:09:43,961 --> 00:09:48,514
+pretty good pivot. It may not be the
+median, it may not give us a 50/50 split.
+
+129
+00:09:48,514 --> 00:09:53,545
+Then we could replace the question mark
+with, one-half times N. But it's gonna let
+
+130
+00:09:53,545 --> 00:09:58,062
+us replace the question mark by
+seven-tenths times N. Now, I don't wanna
+
+131
+00:09:58,062 --> 00:10:02,548
+lie to you, I'm gonna be honest, it's not
+quite 7/10N, it's more like 7/10N minus
+
+132
+00:10:02,548 --> 00:10:06,808
+five, there's a little bit of additive
+error, so, taking care of the additive
+
+133
+00:10:06,808 --> 00:10:11,351
+error adds nothing to your conceptual
+understanding of this algorithm or why it
+
+134
+00:10:11,351 --> 00:10:16,065
+works. For those of you who want a truly
+rigorous proof, there are some posted
+
+135
+00:10:16,065 --> 00:10:20,381
+lecture notes which go through all the
+gory details. But in lecture I'm just
+
+136
+00:10:20,381 --> 00:10:25,095
+gonna tell you what's sort of morally true
+and ignore the fact that we're gonna be
+
+137
+00:10:25,095 --> 00:10:29,300
+off by three here and four there. And then
+we'll be clear when I show you the proof
+
+138
+00:10:29,300 --> 00:10:32,934
+of this limit, where I'm being a little
+bit sloppy and why it really shouldn't
+
+139
+00:10:32,934 --> 00:10:39,245
+matter, and it doesn't. So to explain why
+this key limit is true why we get a 30 70
+
+140
+00:10:39,245 --> 00:10:45,918
+split or better guaranteed, let me set up
+a little notation. I'm getting sick of
+
+141
+00:10:45,918 --> 00:10:50,552
+writing N over five over and over again,
+so let's just give that a synonym, let's
+
+142
+00:10:50,552 --> 00:10:56,168
+say, K. So this is the number of different
+sort of first round matches that we have,
+
+143
+00:10:56,168 --> 00:11:01,531
+the number of groups. I also want some
+notation to talk about the first round
+
+144
+00:11:01,531 --> 00:11:06,198
+winners, that is the medians of these
+groups of five, the K first round winners.
+
+145
+00:11:06,198 --> 00:11:10,746
+So, were gonna call XI the [inaudible]
+smallest of those who win their first
+
+146
+00:11:10,746 --> 00:11:16,890
+round match and make it to the second
+round. So just to make sure the notation
+
+147
+00:11:16,890 --> 00:11:21,310
+is clear, we can express the pivot element
+in terms of these X?s. Remember, the pivot
+
+148
+00:11:21,310 --> 00:11:25,571
+is the final winner. It wins not only its
+first round tournament, but it also the
+
+149
+00:11:25,571 --> 00:11:30,044
+second round tournament. It's not only the
+middle element of the first group of five.
+
+150
+00:11:30,044 --> 00:11:34,198
+It's actually the median of the N over
+five middle element. It's the median of
+
+151
+00:11:34,198 --> 00:11:38,138
+the medians. That is, of the K middle
+elements, it's the K over two order
+
+152
+00:11:38,138 --> 00:11:42,079
+statistic, [inaudible] K over two
+smallest. I'm saying this, assuming that K
+
+153
+00:11:42,079 --> 00:11:47,500
+is even. If K was odd, it would be some
+slightly different formula as you know. So
+
+154
+00:11:47,500 --> 00:11:51,615
+let's remember what we're trying to prove.
+We're trying to prove that for our
+
+155
+00:11:51,615 --> 00:11:55,837
+proposed pivot, which is exactly this
+element X sub K over two, it's exactly the
+
+156
+00:11:55,837 --> 00:11:59,792
+winner of this 2-round knockout
+tournament. We're trying to argue that for
+
+157
+00:11:59,792 --> 00:12:04,121
+this proposed pivot, we definitely get a
+30-70 split or better. So what that means
+
+158
+00:12:04,121 --> 00:12:07,969
+is, there better be at least 30 percent of
+the elements that are bigger than the
+
+159
+00:12:07,969 --> 00:12:11,649
+pivot. That way if you recurs on the left
+side on the first part, we don't have to
+
+160
+00:12:11,649 --> 00:12:15,273
+deal with more that more than 70 percent
+of the original elements. Similarly, there
+
+161
+00:12:15,273 --> 00:12:18,721
+better be at least 30 percent of the
+elements that are smaller than the pivot.
+
+162
+00:12:18,721 --> 00:12:22,301
+That way if we recurs on the right hand
+side we know we don't have to deal with
+
+163
+00:12:22,301 --> 00:12:27,777
+more than 70 percent of the original input
+elements. So if we achieve this goal, we
+
+164
+00:12:27,777 --> 00:12:31,570
+prove that there's at least 30 percent on
+each side of XK over two, then we're done.
+
+165
+00:12:31,570 --> 00:12:35,768
+That proves the key lemma that would get a
+30/70 split or better. So I'm gonna show
+
+166
+00:12:35,768 --> 00:12:39,562
+you why this goal is true. I'm gonna
+introduce a thought experiment. And I'm
+
+167
+00:12:39,562 --> 00:12:43,659
+gonna lay out it abstractly. Then we'll
+sorta do an example to make it more clear.
+
+168
+00:12:43,659 --> 00:12:49,032
+And then we'll go back to the general
+discussion and finish the proof. So what
+
+169
+00:12:49,032 --> 00:12:53,192
+we're gonna do is a thought experiment,
+for the purposes of counting how many
+
+170
+00:12:53,192 --> 00:12:57,407
+elements of the input array are bigger
+than our pivot choice, and how many are
+
+171
+00:12:57,407 --> 00:13:04,891
+smaller. So in our minds we're going to
+imagine that we're taking elements in A
+
+172
+00:13:04,891 --> 00:13:11,430
+and rearrange them in a 2D grid. So here
+are the semantics of this grid. Each
+
+173
+00:13:11,430 --> 00:13:16,492
+column will have exactly five elements
+that will correspond to one of the groups
+
+174
+00:13:16,492 --> 00:13:21,805
+of five. So we'll have N over five columns
+corresponding to our N over five groups in
+
+175
+00:13:21,805 --> 00:13:26,424
+our first round of our tournament.
+[inaudible] is not a multiple of five then
+
+176
+00:13:26,424 --> 00:13:31,006
+one of these groups has size between one
+and four but I'm just not gonna worry
+
+177
+00:13:31,006 --> 00:13:35,936
+about it, that some of the additive loss,
+which I'm ignoring. Moreover were going to
+
+178
+00:13:35,936 --> 00:13:40,692
+arrange each column in a certain way so
+that going from bottom to top the entries
+
+179
+00:13:40,692 --> 00:13:46,256
+of that go from smallest to largest. So
+this means that in this grid we have five
+
+180
+00:13:46,256 --> 00:13:50,250
+rows. And the middle row, the third row,
+corresponds exactly to the middle
+
+181
+00:13:50,250 --> 00:13:54,969
+elements, to the winners of the first
+round matches. So because these middle
+
+182
+00:13:54,969 --> 00:13:58,464
+elements these first round winners are
+treated specially, I'm going to denote
+
+183
+00:13:58,464 --> 00:14:01,913
+them with big squares, the other four
+elements of the group two of which are
+
+184
+00:14:01,913 --> 00:14:06,194
+smaller two of which are bigger are just
+going to be little circles. Furthermore,
+
+185
+00:14:06,194 --> 00:14:11,425
+in this thought experiment, in our mind,
+we're going to arrange the columns from
+
+186
+00:14:11,425 --> 00:14:16,722
+left to right in order of increasing value
+of the middle element. Now remember, I
+
+187
+00:14:16,722 --> 00:14:21,953
+introduced this notation X of I is the
+[inaudible] smallest amongst the middle
+
+188
+00:14:21,953 --> 00:14:27,382
+elements. So a different way of what I'm
+trying to say is that the leftmost column
+
+189
+00:14:27,382 --> 00:14:32,613
+is the group that has X1 as its middle
+element. So among the N over five middle
+
+190
+00:14:32,613 --> 00:14:37,645
+elements, one of the groups has the
+smallest middle elements. We put that all
+
+191
+00:14:37,645 --> 00:14:42,960
+the way on the left. So this is gonna be
+X1 in the first column, the smallest of
+
+192
+00:14:42,960 --> 00:14:48,573
+the first round winners. X2 is the second
+smallest of the first round winners, X3 is
+
+193
+00:14:48,573 --> 00:14:53,781
+the third smallest and so on. At some
+point we get to the median of the first
+
+194
+00:14:53,781 --> 00:15:00,545
+round winners, XK over two. And then, way
+at the rights is the largest of the first
+
+195
+00:15:00,545 --> 00:15:05,914
+round winners. And I'm sure that you
+remember that the median of medians which
+
+196
+00:15:05,914 --> 00:15:11,946
+is XK over two is exactly our pivot. So
+this is our lucky winner. I know this is a
+
+197
+00:15:11,946 --> 00:15:15,650
+lot to absorb, so I'm gonna go ahead and
+go through an example. If what I've said
+
+198
+00:15:15,650 --> 00:15:19,260
+so far makes perfect sense, you should
+feel free to skip the following example.
+
+199
+00:15:19,260 --> 00:15:23,010
+But if there's still some details you're
+wondering about, and hoping this example
+
+200
+00:15:23,010 --> 00:15:26,574
+will make everything crystal clear. So
+let's suppose we have an input array. I
+
+201
+00:15:26,574 --> 00:15:30,185
+need a, a slightly big one to [inaudible]
+grid make sense. Let's say there's an
+
+202
+00:15:30,185 --> 00:15:35,540
+input array of twenty elements. So there's
+going to be the input array, which is in a
+
+203
+00:15:35,540 --> 00:15:43,365
+totally arbitrary order. There's gonna be
+the vertical [inaudible] after we sort
+
+204
+00:15:43,365 --> 00:15:51,291
+each group of five. And then I'm gonna
+show you the grid. So this is the input
+
+205
+00:15:51,291 --> 00:15:57,500
+we're all gonna use. Let's now go ahead
+and delineate the various groups of five.
+
+206
+00:15:58,460 --> 00:16:05,954
+So after sorting this group, you get the
+following. From each group there's a
+
+207
+00:16:05,954 --> 00:16:10,978
+single winner mainly the middle element so
+that would be the twelve, and the six, and
+
+208
+00:16:10,978 --> 00:16:15,942
+the nine, and the fourteen, those are the
+four survivors from the first round of the
+
+209
+00:16:15,942 --> 00:16:20,991
+tournament. And the median of these four
+elements which, at the end of the day is
+
+210
+00:16:20,991 --> 00:16:24,731
+gonna to be our pivot is the second
+smallest of the four, that's how we define
+
+211
+00:16:24,731 --> 00:16:29,502
+the median from an even number of
+elements, so that's gonna be the nine. So,
+
+212
+00:16:29,502 --> 00:16:34,011
+this first transformation from the input
+array, to this vaguely mini sorted version
+
+213
+00:16:34,011 --> 00:16:38,464
+of the input array with the groups of five
+sorted, this we actually do in the code.
+
+214
+00:16:38,464 --> 00:16:42,755
+This happens in the algorithm. Now, this
+grid we're just doing in our minds. Okay?
+
+215
+00:16:42,755 --> 00:16:46,989
+We're just in the middle of proving why
+the algorithm is fast. Why the fit bits
+
+216
+00:16:46,992 --> 00:16:51,283
+guaranteed to give us close to a, a 30 70
+split or better. So, let me show you an
+
+217
+00:16:51,283 --> 00:16:57,137
+example of this grid in our mind, what it
+looks like for this particular input. So
+
+218
+00:16:57,137 --> 00:17:01,243
+the grid always has five rows. The columns
+always have five elements cause the
+
+219
+00:17:01,243 --> 00:17:05,402
+columns correspond to the groups. Here
+because N equals twenty and over five is
+
+220
+00:17:05,402 --> 00:17:09,613
+four. So there's gonna be, four columns
+and five rows. And moreover we arrange the
+
+221
+00:17:09,613 --> 00:17:13,666
+columns from left to right so that these
+middle elements go from smallest, to
+
+222
+00:17:13,666 --> 00:17:17,878
+largest. So the middle elements are six
+nine twelve and fourteen and we're gonna
+
+223
+00:17:17,878 --> 00:17:22,733
+draw the columns in that order from left
+to right. So first we'll write down the
+
+224
+00:17:22,733 --> 00:17:27,922
+middle elements, the middle row from
+decreasing to increasing, six, nine,
+
+225
+00:17:27,922 --> 00:17:35,600
+twelve, fourteen. Again the median of this
+is our pivot, which is the nine. And then
+
+226
+00:17:35,600 --> 00:17:40,045
+each column is just the other four
+elements that goes along with this middle
+
+227
+00:17:40,045 --> 00:17:45,462
+element from decreasing to increasing as
+we go from bottom to top. So this is the
+
+228
+00:17:45,462 --> 00:17:50,117
+grid that we're been talking about on the
+other slide, in this particular example.
+
+229
+00:17:50,117 --> 00:17:54,772
+So I hope that makes what we're talking
+about clear, what these X?s mean, and what
+
+230
+00:17:54,772 --> 00:17:59,370
+worry we have amongst the rows, amongst
+the columns and so on. So let?s go back to
+
+231
+00:17:59,370 --> 00:18:03,852
+the general argument. Here is the key
+point, here is why were doing this entire
+
+232
+00:18:03,852 --> 00:18:08,450
+thought experiment, it?s going to let us
+prove our key limit. We're going to get a
+
+233
+00:18:08,450 --> 00:18:12,645
+30/70 split or better. 30 percent of the
+stuff at least is less than the pivot; 30
+
+234
+00:18:12,645 --> 00:18:18,914
+percent at least is bigger than the pivot.
+So why is there at least 30 percent of the
+
+235
+00:18:18,914 --> 00:18:23,867
+stuff below the pivot? Why is the pivot
+bigger then at least 30%? Well, it's
+
+236
+00:18:23,867 --> 00:18:29,160
+bigger then everything to the left and
+everything below the stuff to the left.
+
+237
+00:18:30,920 --> 00:18:35,888
+That is we know that XK over two is bigger
+than the K over two minus one elements.
+
+238
+00:18:35,888 --> 00:18:40,492
+That is to the left of it, those other
+middle elements that it's bigger then.
+
+239
+00:18:40,492 --> 00:18:44,968
+That's because it's the median of the
+medians. >> So, if we just go straight
+
+240
+00:18:44,968 --> 00:18:49,511
+west from the pivot we only see stuff
+which is less. Furthermore, these columns
+
+241
+00:18:49,511 --> 00:18:54,344
+are arranged from decreasing to increasing
+order as we go from south to north, from
+
+242
+00:18:54,344 --> 00:18:59,294
+bottom to top. So if you travel south from
+any of these smaller XMI we only see stuff
+
+243
+00:18:59,294 --> 00:19:04,127
+which is still smaller. So all we're using
+in here is transitivity of the less than
+
+244
+00:19:04,127 --> 00:19:08,844
+relation. If you go straight west you see
+stuff which is only smaller from any of
+
+245
+00:19:08,844 --> 00:19:13,620
+those points if you go southward you'll
+see stuff which is even smaller than that.
+
+246
+00:19:15,280 --> 00:19:20,968
+So this entire yellow region, everything
+southwest of the pivot element, is smaller
+
+247
+00:19:20,968 --> 00:19:26,379
+than it. And that's a good chunk of the
+grid. Right? So for all of these columns,
+
+248
+00:19:26,379 --> 00:19:31,374
+it's basically three out of the five, or
+60 percent of them are smaller than the
+
+249
+00:19:31,374 --> 00:19:36,300
+pivot, and half of the columns,
+essentially, are in this part of the grid.
+
+250
+00:19:37,940 --> 00:19:43,283
+So if the pivots bigger than 60 percent of
+the stuff in 50 percent of the groups that
+
+251
+00:19:43,283 --> 00:19:49,734
+means it's bigger than 30 percent of the
+elements overall. And if we reason in an
+
+252
+00:19:49,734 --> 00:19:54,259
+exactly symmetric way, we find that the
+pivot is also smaller than at least 30
+
+253
+00:19:54,259 --> 00:19:58,146
+percent of the array. So to find things
+bigger than the pivot, what do we do?
+
+254
+00:19:58,146 --> 00:20:02,845
+First we travel eastward. That gives us
+middle elements that are only bigger than
+
+255
+00:20:02,845 --> 00:20:07,486
+it and then we stop wherever you want on
+our eastward journey and we head north,
+
+256
+00:20:07,486 --> 00:20:11,953
+and we're gonna see stuff which is still
+bigger. So this entire north eastern
+
+257
+00:20:11,953 --> 00:20:17,771
+corner. Is bigger than the pivot element,
+and again that's 50%, that's at 60 percent
+
+258
+00:20:17,771 --> 00:20:24,873
+of roughly 50 percent of the groups.
+Returning to our example, the southwest
+
+259
+00:20:24,873 --> 00:20:28,930
+region of the nine. Is this stuff, one,
+three, four, five, six. Certainly, all of
+
+260
+00:20:28,930 --> 00:20:32,534
+that is smaller than the nine. You'll
+notice there's other things smaller than
+
+261
+00:20:32,534 --> 00:20:35,999
+the nine as well. There's the eight,
+there's the two, there's the seven, which
+
+262
+00:20:35,999 --> 00:20:39,556
+we're not counting. But it depends on the
+exact array. Whether or not, in those
+
+263
+00:20:39,556 --> 00:20:43,437
+positions, you're gonna have stuff smaller
+than the pivot or not. So it's this yellow
+
+264
+00:20:43,437 --> 00:20:47,317
+region we're guaranteed to be smaller than
+the pivot. Similarly, everything northeast
+
+265
+00:20:47,317 --> 00:20:51,483
+of the pivot is bigger than it. Those are
+all double digit numbers and our pivot is
+
+266
+00:20:51,483 --> 00:20:55,635
+nine. Again there's some other stuff in
+other regions bigger than the pivot, the
+
+267
+00:20:55,635 --> 00:20:59,525
+twenty, the ten, the eleven, but again
+those are positions where we can't be
+
+268
+00:20:59,525 --> 00:21:03,993
+guaranteed that it will be bigger than the
+pivot. So it's the yellow regions that are
+
+269
+00:21:03,993 --> 00:21:07,831
+guaranteed to be bigger and smaller than
+the pivot, and that gives us the
+
+270
+00:21:07,831 --> 00:21:13,360
+guaranteed 30 70 split. Okay, so that
+proof was hard work, showing that this
+
+271
+00:21:13,360 --> 00:21:17,438
+deterministic choose pivot subroutine
+guarantees a 30-70 split or better. And
+
+272
+00:21:17,438 --> 00:21:21,727
+you probably feel a little exhausted and
+like we deserve a QED at this point. But
+
+273
+00:21:21,727 --> 00:21:26,453
+we haven't earned it. We have not at all
+proved that this deterministic selection
+
+274
+00:21:26,453 --> 00:21:31,270
+algorithm runs in linear time. Why doesn't
+a guaranteed 30-70 split guarantee us
+
+275
+00:21:31,270 --> 00:21:35,907
+linear time automatically? Well, we had to
+work pretty hard to figure out this
+
+276
+00:21:35,907 --> 00:21:40,544
+element guaranteeing this 30-70 split. In
+particular we had to invoke another
+
+277
+00:21:40,544 --> 00:21:45,061
+recursive call. So maybe this was a
+Pyrrhic victory. Maybe we had to work so
+
+278
+00:21:45,061 --> 00:21:49,577
+hard to compute the pivot that it
+outweighs the benefit we'd get from this
+
+279
+00:21:49,577 --> 00:21:53,858
+guarantee. 30 70 split. So, we still have
+to prove that's not the case even in
+
+280
+00:21:53,858 --> 00:21:58,372
+conjunction doing both of these things, we
+still have our linear time bound. We'll
+
+281
+00:21:58,372 --> 00:22:01,822
+finish the analysis in the next video.
+[sound].

@@ -1,0 +1,1754 @@
+1
+00:00:00,000 --> 00:00:03,922
+Welcome to part one of our probability
+review. The first time that we need these
+
+2
+00:00:03,922 --> 00:00:07,616
+concepts in this course is for those that
+wanna understand the analysis of Quick
+
+3
+00:00:07,616 --> 00:00:11,218
+Sort. Why it runs in big O of end log and
+time on average. And these topics will
+
+4
+00:00:11,218 --> 00:00:14,821
+also come up a couple of other times in
+the course. For example when we study a
+
+5
+00:00:14,821 --> 00:00:18,606
+randomized algorithm for the minimum cut
+problem in graphs. And also when we try to
+
+6
+00:00:18,606 --> 00:00:22,331
+understand the performance of hashing.
+Here are the topics we're going to cover.
+
+7
+00:00:22,477 --> 00:00:26,605
+We'll start at the beginning with sample
+spaces, and then we'll discuss, events and
+
+8
+00:00:26,605 --> 00:00:30,297
+their probabilities. We'll talk about
+random variables, which are real valued
+
+9
+00:00:30,297 --> 00:00:34,182
+functions on a sample space. We'll talk
+about expectation, which is basically the
+
+10
+00:00:34,182 --> 00:00:38,068
+average value of a random variable. We'll
+identity and prove a very important
+
+11
+00:00:38,068 --> 00:00:41,614
+property, called the linearity of
+expectation, which will come up over and
+
+12
+00:00:41,614 --> 00:00:45,548
+over again in our analyses of randomized
+processes. So that's gonna be the topics
+
+13
+00:00:45,548 --> 00:00:49,434
+for part one, that will conclude the video
+with one example tying these concepts
+
+14
+00:00:49,434 --> 00:00:53,320
+together in load balancing. And, this
+video is by no means the only source you
+
+15
+00:00:53,320 --> 00:00:56,709
+can turn to, to learn. About these
+concepts. A couple of other sources I
+
+16
+00:00:56,709 --> 00:01:00,310
+recommend are the online lecture notes by
+Eric [inaudible] and Tom [inaudible].
+
+17
+00:01:00,310 --> 00:01:03,865
+Also, there's a wiki book on discreet
+probability, which you could, check out.
+
+18
+00:01:03,865 --> 00:01:07,420
+And I wanna be clear, this is really not
+meant to be a course or a tutorial on
+
+19
+00:01:07,420 --> 00:01:10,975
+probability concepts. It's really only
+meant to be a refresher. So I'm gonna go
+
+20
+00:01:10,975 --> 00:01:14,803
+at a reasonably fast pace, and it's gonna
+be a pretty cursory presentation. And if
+
+21
+00:01:14,803 --> 00:01:18,313
+you want a more thorough review, I would,
+I would check out one of these other
+
+22
+00:01:18,313 --> 00:01:22,004
+sources, or your favorite book on discreet
+probability. And along those same lines,
+
+23
+00:01:22,004 --> 00:01:25,650
+I'm thinking that many of you have seen
+some of this material before. Don't feel
+
+24
+00:01:25,650 --> 00:01:29,183
+compelled, like, to, to watch this video
+straight [inaudible]. Beginning to the
+
+25
+00:01:29,183 --> 00:01:33,154
+end. Feel free to just sort of dip in, and
+review the concepts, that you need a
+
+26
+00:01:33,154 --> 00:01:41,488
+refresher on. So, let's start at the
+beginning with sample spaces. So, what is
+
+27
+00:01:41,488 --> 00:01:45,465
+a sample space? Well we're analyzing
+random processes, so any number of things
+
+28
+00:01:45,465 --> 00:01:49,649
+can happen. And the sample space is just a
+collection of all of those things that
+
+29
+00:01:49,649 --> 00:01:53,575
+could happen. So this is basically the
+universe in which we're gonna discuss
+
+30
+00:01:53,575 --> 00:02:01,455
+probabilities and average values. So I'll
+often use annotation bigo mega to describe
+
+31
+00:02:01,455 --> 00:02:06,439
+the sample space. So one thing that we've
+got going for us in the design of
+
+32
+00:02:06,439 --> 00:02:10,410
+algorithm is typically we can take omega
+to be a finite set. So that's why we're
+
+33
+00:02:10,410 --> 00:02:14,133
+only dealing only with discreet
+probability which is a very happy thing.
+
+34
+00:02:14,133 --> 00:02:19,620
+Cause that's much more elementary then
+more general probability. So I realize
+
+35
+00:02:19,620 --> 00:02:23,967
+this is sort of a super abstract concept,
+and the next few definitions will also be
+
+36
+00:02:23,967 --> 00:02:28,105
+abstract, so I'm going to use two very
+simple, very concrete running examples to
+
+37
+00:02:28,105 --> 00:02:32,400
+illustrate the next few concepts. So the
+first example is just going to be, we take
+
+38
+00:02:32,400 --> 00:02:36,485
+two six sided dice and we roll them. So
+then of course what's the sample space?
+
+39
+00:02:36,485 --> 00:02:42,263
+Well, it's just all of the possible
+outcomes of just two dice. In addition to
+
+40
+00:02:42,263 --> 00:02:46,651
+defining the outcomes; everything that
+could possibly happen, we need to define
+
+41
+00:02:46,651 --> 00:02:53,346
+what is the probability of each individual
+outcome. So, of course, the probability of
+
+42
+00:02:53,346 --> 00:02:57,261
+each outcome should be at least zero,
+should be non negative and there's also
+
+43
+00:02:57,261 --> 00:03:01,532
+the obvious constraint that the sum of the
+probability should be one. So, exactly one
+
+44
+00:03:01,532 --> 00:03:06,429
+thing's gonna happen. Now I realize this
+is a, a super abstract concept and the
+
+45
+00:03:06,429 --> 00:03:10,512
+next few definitions are also a little
+abstract, so throughout them I'm going to
+
+46
+00:03:10,512 --> 00:03:14,800
+use two really simple, really concrete
+examples to illustrate what these concepts
+
+47
+00:03:14,800 --> 00:03:18,832
+mean. So, the first example is just gonna
+be you take two six sided dice, and you
+
+48
+00:03:18,832 --> 00:03:22,915
+roll them, and then of course, the sample
+space is just the 36 different outcomes
+
+49
+00:03:22,915 --> 00:03:28,172
+you could have of these two dice. And
+assuming that each of these two dice is
+
+50
+00:03:28,172 --> 00:03:32,930
+well crafted, then we expect each of these
+36 outcomes to be equally likely to occur
+
+51
+00:03:32,930 --> 00:03:38,991
+with a probability of 1/36. The second
+running example I'm going to use is more
+
+52
+00:03:38,991 --> 00:03:42,878
+directly related to algorithms and it's
+motivated by the quick sort algorithm.
+
+53
+00:03:42,878 --> 00:03:46,516
+Recall that we're studying the
+implementation of quick sort that chooses
+
+54
+00:03:46,516 --> 00:03:50,453
+a pivot uniformly at random in every
+recursive call. So let's just focus on the
+
+55
+00:03:50,453 --> 00:03:54,489
+very first outermost call of quick sort
+and think about the random choice of the
+
+56
+00:03:54,489 --> 00:03:58,326
+pivot just in that call. So then the
+sample space, all of the different things
+
+57
+00:03:58,326 --> 00:04:02,213
+that could happen is just all of the N
+different choices for a pivot, assuming
+
+58
+00:04:02,213 --> 00:04:07,543
+the array has length N. So we can
+represent the sample space just as
+
+59
+00:04:07,543 --> 00:04:11,862
+integers one, two all the way up to N,
+corresponding to the array index, of the
+
+60
+00:04:11,862 --> 00:04:15,956
+randomly chosen pivot. And again, by
+definition, by the construction of our
+
+61
+00:04:15,956 --> 00:04:20,443
+code, each of these events, each of these
+things is equally likely, probability of
+
+62
+00:04:20,443 --> 00:04:27,119
+one over N. Now let's talk about events.
+An event is nothing more than a subsets of
+
+63
+00:04:27,119 --> 00:04:33,432
+all of the things that could happen. That
+is a subset of the sample space omega. The
+
+64
+00:04:33,432 --> 00:04:37,437
+probability of the event is exactly what
+you would think it would be. It's just the
+
+65
+00:04:37,437 --> 00:04:41,201
+sum of the probabilities of all of the
+outcomes contained in that event, right?
+
+66
+00:04:41,201 --> 00:04:45,157
+So an event is just a bunch of stuff that
+might happen, we know the probability of
+
+67
+00:04:45,157 --> 00:04:49,065
+each individual thing that could happen,
+we add them up to get the probability of
+
+68
+00:04:49,065 --> 00:04:54,981
+an event. So the next two quizzes are
+meant to give you some practice with these
+
+69
+00:04:54,981 --> 00:04:59,658
+concepts and in particular, the last few
+to compute the probability of events in
+
+70
+00:04:59,658 --> 00:05:04,167
+our two running examples. So in the first
+quiz, this is our first running example
+
+71
+00:05:04,167 --> 00:05:08,675
+where we think about two dice and we have
+our 36 possible outcomes. Consider the
+
+72
+00:05:08,675 --> 00:05:13,014
+subset of outcomes in which the sum of the
+two dice equals seven. What is the
+
+73
+00:05:13,014 --> 00:05:19,213
+probability of that event? Right, so the
+correct answer is the third one, the
+
+74
+00:05:19,213 --> 00:05:23,910
+probability is one over six. Why is that?
+Well, first, let's be more precise about
+
+75
+00:05:23,910 --> 00:05:32,170
+what this event is. What are the outcomes
+in which the sum of the dices equal to
+
+76
+00:05:32,170 --> 00:05:39,004
+seven. Well there's exactly six such
+outcomes. One six. Two five. Three four.
+
+77
+00:05:39,004 --> 00:05:45,881
+Four three. Five two and six one. Each of
+the 36 outcomes is equally likely has a
+
+78
+00:05:45,881 --> 00:05:51,065
+probability of one over 36. So we have six
+members of the set, usually [inaudible]
+
+79
+00:05:51,065 --> 00:05:56,413
+one over 36, so the probability is one
+sixth. Let's move on to the next quiz,
+
+80
+00:05:56,413 --> 00:06:00,514
+which considers our second running
+example, namely the randomly chosen pivot
+
+81
+00:06:00,514 --> 00:06:04,886
+in the outermost call to quick sort on an
+input array of length n. So, recall that
+
+82
+00:06:04,886 --> 00:06:09,095
+in quick sort, when you choose a pivot,
+you then partition the array around the
+
+83
+00:06:09,095 --> 00:06:13,305
+pivot, and this splits the input array
+into two sub arrays. A left one, elements
+
+84
+00:06:13,305 --> 00:06:17,460
+less that the pivot, and a right one,
+those bigger than the pivot. And the more
+
+85
+00:06:17,460 --> 00:06:21,454
+balanced the split into these two sub
+problems, the better. So, ideally, we'd
+
+86
+00:06:21,454 --> 00:06:25,717
+like a fifty, fifty split. So what this
+quiz asks you is what fraction of pivots,
+
+87
+00:06:25,717 --> 00:06:30,393
+that is what's probability that a randomly
+chosen pivot. [inaudible] will give you a
+
+88
+00:06:30,393 --> 00:06:35,236
+reasonably good split, meaning both of the
+sub-problems have size at least 25%. That
+
+89
+00:06:35,236 --> 00:06:39,902
+is you get a split 25/75 or better. That's
+what this quiz asks about, what's the
+
+90
+00:06:39,902 --> 00:06:46,930
+probability that the randomly chosen pivot
+satisfies that property? So the correct
+
+91
+00:06:46,930 --> 00:06:51,285
+answer to this quiz is again, the third
+option. It's a 50 percent probability you
+
+92
+00:06:51,285 --> 00:06:55,702
+get a 25/75 split or better. So to see
+why, let's, again, be precise about what
+
+93
+00:06:55,702 --> 00:07:00,119
+is the event that we're talking about?
+Then we'll compute its probability. So,
+
+94
+00:07:00,119 --> 00:07:04,827
+when does a pivot give you a 25/75 split
+or better? Well, for concreteness, suppose
+
+95
+00:07:04,827 --> 00:07:09,070
+the array contained just the integers
+between one and 100. Now, what's the
+
+96
+00:07:09,070 --> 00:07:13,399
+property we want? We want that both of the
+two sub arrays, have at least 25 percent
+
+97
+00:07:13,429 --> 00:07:17,613
+of the elements. Neither one has more than
+75 percent of the elements. Well, if we
+
+98
+00:07:17,613 --> 00:07:22,379
+choose an element that's 26 or bigger in
+value, then the left sub problem will have
+
+99
+00:07:22,379 --> 00:07:27,439
+at least 25 elements. It's the numbers one
+through 25, and if we choose an index
+
+100
+00:07:27,439 --> 00:07:32,801
+which is, choose an element that's at most
+75, then the right sub-array's going to
+
+101
+00:07:32,801 --> 00:07:38,164
+have at least 25 elements in the numbers
+76 to 100. So anything between 26 and 75,
+
+102
+00:07:38,164 --> 00:07:43,068
+inclusive is going to give us a 25-75
+split, more generally. Any pivot from the
+
+103
+00:07:43,068 --> 00:07:46,642
+middle 50 percent of the quan, of the
+quintiles is gonna give us the desired
+
+104
+00:07:46,642 --> 00:07:50,900
+split. So we do badly if we get something
+within the first quarter, we do badly if
+
+105
+00:07:50,900 --> 00:07:56,204
+we get something within the last quarter.
+Anything in the middle works. So more
+
+106
+00:07:56,204 --> 00:08:02,454
+formally we can say that the event s that
+we're analyzing is among the possible
+
+107
+00:08:02,454 --> 00:08:08,625
+pivot choices. We're interested in the
+ones that is not in the first quarter or
+
+108
+00:08:08,625 --> 00:08:15,016
+not in the last quarter. Now the
+coordinately of; the number of pivots in
+
+109
+00:08:15,016 --> 00:08:19,199
+this set is essentially one-half of the
+overall pivot choices. I'm ignoring,
+
+110
+00:08:19,366 --> 00:08:26,320
+fractions here for simplicity. So the
+probability of this event is the,
+
+111
+00:08:26,320 --> 00:08:31,107
+coordinality of this. Divided by or times
+the probability of each of the individual
+
+112
+00:08:31,107 --> 00:08:34,985
+outcomes. And since we choose the pivot
+unit from them at random each one has the
+
+113
+00:08:34,985 --> 00:08:42,148
+probability of one over n so you get n
+over two divided by n or one half. Okay,
+
+114
+00:08:42,148 --> 00:08:46,493
+now that we've explored the concept of
+events in our running two examples, we see
+
+115
+00:08:46,493 --> 00:08:51,053
+that the probability that the sum of two
+dice is equal to one-sixth. A useful fact
+
+116
+00:08:51,053 --> 00:08:55,506
+to know if you're every playing craps. And
+we know that a pivot gives us a 25, 75
+
+117
+00:08:55,506 --> 00:08:59,691
+split or better in randomized quick sort
+with fifteen percent probability, a useful
+
+118
+00:08:59,691 --> 00:09:04,197
+fact if you want to develop intuition for
+why quick sort is in fact quick. So that's
+
+119
+00:09:04,197 --> 00:09:08,489
+events. Let's move on to random variables.
+So random variables are basically some
+
+120
+00:09:08,489 --> 00:09:13,090
+statistic measuring what happens in the
+random outcome. So formally if we want to
+
+121
+00:09:13,090 --> 00:09:17,787
+define it, it's a real value function
+defined on the sample space omega. So
+
+122
+00:09:17,787 --> 00:09:22,675
+given an outcome, given a realization of
+the randomness this gives you back a
+
+123
+00:09:22,675 --> 00:09:30,982
+number. Now the random variable that we
+most often care about in algorithm design
+
+124
+00:09:30,982 --> 00:09:34,664
+is the running time of a randomized
+algorithm. That's the case for example
+
+125
+00:09:34,664 --> 00:09:38,645
+with the quick sort algorithm. So notice
+that is in fact a random variable. If we
+
+126
+00:09:38,645 --> 00:09:42,675
+know the state of the world, if we know
+the outcome of all of the coin flips that
+
+127
+00:09:42,675 --> 00:09:46,656
+our code is going to make, then there is
+just some running time of our algorithm.
+
+128
+00:09:46,656 --> 00:09:50,687
+So in that sense it's a random variable.
+Given the outcomes of the coin flips, out
+
+129
+00:09:50,687 --> 00:09:56,427
+pops a number, the running time, say in
+milliseconds of the algorithm. Here I'm
+
+130
+00:09:56,427 --> 00:10:00,540
+gonna give you a couple more modest
+examples of random variables in our two
+
+131
+00:10:00,540 --> 00:10:05,740
+running examples. If we're rolling two
+dice, one very simple random variable
+
+132
+00:10:05,740 --> 00:10:10,948
+takes as input the outcome, so that the
+result of the two dice, and spits out, the
+
+133
+00:10:10,948 --> 00:10:17,585
+sum. So that's certainly a reign of
+variable. In any given outcome it's gonna
+
+134
+00:10:17,585 --> 00:10:22,632
+take on some integer value between two at
+the minimum and twelve at the maximum. Our
+
+135
+00:10:22,632 --> 00:10:27,438
+second running example is the randomly
+chosen pivot made by the outermost
+
+136
+00:10:27,438 --> 00:10:32,065
+[inaudible] quick sort. So let's think
+about the random variable which is the
+
+137
+00:10:32,065 --> 00:10:36,871
+size, meaning the sub array length past to
+the first recursive call. Equivalently
+
+138
+00:10:36,871 --> 00:10:41,737
+this reign of variable is the number of
+elements of the input array smaller than
+
+139
+00:10:41,737 --> 00:10:46,616
+the randomly chosen pivot. So, this is the
+random variable that takes on some
+
+140
+00:10:46,616 --> 00:10:50,776
+integral value between zero at the
+smallest, that's if we happen to pick the
+
+141
+00:10:50,776 --> 00:10:55,210
+pivot equal to the minimum of the array
+and n minus one at the largest. That's if
+
+142
+00:10:55,210 --> 00:11:00,511
+we happen to pick the maximum element as
+the pivot element. Next let's talk about
+
+143
+00:11:00,511 --> 00:11:04,506
+the expectation of a random variable. This
+is really nothing more than the average,
+
+144
+00:11:04,506 --> 00:11:08,647
+and of course when you take the average of
+some statistic, you want to do it weighted
+
+145
+00:11:08,647 --> 00:11:12,447
+by the probability of its various values.
+So let's just make that precise real
+
+146
+00:11:12,447 --> 00:11:19,363
+quick. So consider some random variable,
+capital x, the expectation, this is also
+
+147
+00:11:19,363 --> 00:11:25,594
+called the expected value. And the
+notation is capital e square bracket, then
+
+148
+00:11:25,594 --> 00:11:31,366
+of the random variable. And again in
+English the expectation is just the
+
+149
+00:11:31,366 --> 00:11:35,813
+average value, naturally weighted by the
+probability of the various possible
+
+150
+00:11:35,813 --> 00:11:42,152
+outcomes. Or more mathematically we sum,
+over everything that could happen so that
+
+151
+00:11:42,152 --> 00:11:47,427
+little I denote one possible outcome. We
+look at the value of this random variable,
+
+152
+00:11:47,427 --> 00:11:52,381
+when that outcome occurs and then we
+weight it times the probability of that
+
+153
+00:11:52,381 --> 00:11:58,175
+outcome occurring. So the next two quizzes
+ask you to compute the expectation of the
+
+154
+00:11:58,175 --> 00:12:03,048
+two random variables that we identified on
+the previous slide. So the first quiz is
+
+155
+00:12:03,048 --> 00:12:07,687
+about two dice and the random variable,
+which is the sum of the values of those
+
+156
+00:12:07,687 --> 00:12:11,915
+two dice. What is the average value of
+that random variable? What is its
+
+157
+00:12:11,915 --> 00:12:20,739
+expectation? Okay, so the answer to this
+question is the second option. The average
+
+158
+00:12:20,739 --> 00:12:24,738
+value is seven. There's a bunch of
+different ways to see that. In my opinion,
+
+159
+00:12:24,738 --> 00:12:28,634
+the best way to compute this is using
+linearity of expectation, which is the
+
+160
+00:12:28,634 --> 00:12:32,582
+next concept we're gonna cover. If you
+wanted to, you can just compute this by
+
+161
+00:12:32,582 --> 00:12:36,479
+brute force by which I mean you could
+iterate over all 36 possible outcomes,
+
+162
+00:12:36,479 --> 00:12:40,734
+look at the value of the two dice in each
+and just evaluate that sum we had in the
+
+163
+00:12:40,734 --> 00:12:44,836
+definition on the last slide. A slightly
+sneakier way to do it if you don't know
+
+164
+00:12:44,836 --> 00:12:49,040
+linearity of expectation would be to pair
+up the various outcomes. So, it's equally
+
+165
+00:12:49,040 --> 00:12:54,260
+likely that sum of the two dice is two. Or
+twelve. It's equally likely to be three.
+
+166
+00:12:54,260 --> 00:12:59,360
+Or eleven. Four and ten and so on. Each
+way of paring up these values of the two
+
+167
+00:12:59,360 --> 00:13:03,622
+dice results in fourteen. And when you
+average you get seven. But again, this,
+
+168
+00:13:03,622 --> 00:13:07,910
+the right way to do this is linear of
+expectation which we'll cover next. So,
+
+169
+00:13:07,910 --> 00:13:11,760
+the second quiz covers the second random
+variable we identified. So now we're back
+
+170
+00:13:11,760 --> 00:13:15,797
+to Quicksort and the random pivot shows in
+the outermost [inaudible] and the question
+
+171
+00:13:15,797 --> 00:13:19,647
+is how big, on average, an expectation is
+the sub-array in the first recursive call?
+
+172
+00:13:19,647 --> 00:13:23,449
+Equivalently, on average how many elements
+are going to be less than the randomly
+
+173
+00:13:23,449 --> 00:13:29,966
+chosen pivot? So the correct answer to
+this quiz is the third option. In fact,
+
+174
+00:13:29,966 --> 00:13:34,084
+it's actually quantity N minus one over
+two, not N over two, but basically half of
+
+175
+00:13:34,084 --> 00:13:38,050
+the elements. Again, there's sort of a
+sneaky way to see this, if you want, which
+
+176
+00:13:38,050 --> 00:13:42,117
+is that clearly the two recursive calls
+are symmetric. The expected value of the
+
+177
+00:13:42,117 --> 00:13:46,133
+left recursive call is going to be the
+same as the size of the right recursive
+
+178
+00:13:46,133 --> 00:13:49,997
+call. The two recursive calls always
+comprise N minus one of the elements, so
+
+179
+00:13:49,997 --> 00:13:54,318
+because they're symmetric, you expect half
+in each, so N minus one over two in each.
+
+180
+00:13:54,318 --> 00:13:58,334
+Though for this problem, I think it's
+perfectly fine just to compute this using
+
+181
+00:13:58,334 --> 00:14:02,910
+the definition of expectation. So if we
+let X denote the random variable that we
+
+182
+00:14:02,910 --> 00:14:07,246
+care about; the sub array size. Then we
+can just compute directly by summing over
+
+183
+00:14:07,246 --> 00:14:11,251
+all of the possible outcomes, all of the
+possible choices of the pivot. So with
+
+184
+00:14:11,251 --> 00:14:15,101
+probability one over N we chose the
+minimum of the pivot resulting in zero
+
+185
+00:14:15,101 --> 00:14:19,002
+elements being passed to the first
+recursive call. With probability one over
+
+186
+00:14:19,002 --> 00:14:23,058
+N we pick the second smallest element
+resulting in one element being passed to
+
+187
+00:14:23,058 --> 00:14:27,062
+the first recursive call. If probability
+one over N we pick the third smallest
+
+188
+00:14:27,062 --> 00:14:32,102
+given us a summary size of two. And so on.
+And then, with probability one over N, we
+
+189
+00:14:32,102 --> 00:14:37,909
+picked the maximum element, giving us the
+sub array size of N-1. So if you just sort
+
+190
+00:14:37,909 --> 00:14:44,360
+of compute this sum out, you will get, as
+expected, N-1 over two. So expectation is
+
+191
+00:14:44,360 --> 00:14:49,340
+the last definition that I'm going to give
+you in this part one of the probability
+
+192
+00:14:49,340 --> 00:14:54,140
+review. Next if our fifth and final
+concept for this video, which is linearity
+
+193
+00:14:54,140 --> 00:14:58,400
+of expectation. And that's not a
+definition, that's more of a theorem. So
+
+194
+00:14:58,400 --> 00:15:03,140
+what is linearity of expectation? Well
+this is a very simple property of random
+
+195
+00:15:03,140 --> 00:15:08,060
+variables that's super, super important.
+This comes up all the time when we analyze
+
+196
+00:15:08,060 --> 00:15:12,980
+randomized algorithms and random processes
+more generally. So what is linearity of
+
+197
+00:15:12,980 --> 00:15:18,751
+expectation? Well it's the following very
+simple claim. Which I'll sometimes denote
+
+198
+00:15:18,751 --> 00:15:24,819
+just by line X for short. Suppose you've
+got a bunch of random of variables defined
+
+199
+00:15:24,819 --> 00:15:31,035
+on the same sample space. Then if you want
+to think of the expected value of the sum
+
+200
+00:15:31,035 --> 00:15:37,102
+of these random of variables. It doesn't
+matter if you take the sum first and then
+
+201
+00:15:37,102 --> 00:15:43,096
+take the expectation. Or if you take the
+expectations first and then the sum. That
+
+202
+00:15:43,096 --> 00:15:50,185
+is the expected value of a sum of random
+variables. Is equal to, the sum of the
+
+203
+00:15:50,185 --> 00:15:59,359
+expectations of the individual random
+variables. And one of the reasons lean,
+
+204
+00:15:59,359 --> 00:16:03,369
+linearity of expectation is so
+ubiquitously useful is because it always
+
+205
+00:16:03,369 --> 00:16:07,379
+works no matter what these random
+variables are, in particular, even when
+
+206
+00:16:07,379 --> 00:16:11,946
+the random variables are not independent.
+Now, I haven't defined independent random
+
+207
+00:16:11,946 --> 00:16:16,625
+variables yet. That will come in part two
+of the probability review, but hopefully
+
+208
+00:16:16,625 --> 00:16:20,468
+you have an intuitive sense of what
+independence means. So things are
+
+209
+00:16:20,468 --> 00:16:25,202
+independent if knowing something about one
+of the random variables doesn't influence
+
+210
+00:16:25,202 --> 00:16:30,411
+what you expect from the other random
+variable. Now I realize the first time you
+
+211
+00:16:30,411 --> 00:16:34,455
+see linearity of expectation, it's a
+little hard to appreciate. So first of all
+
+212
+00:16:34,455 --> 00:16:38,810
+as far as applications, we'll see plenty
+throughout this course. Pretty much every
+
+213
+00:16:38,810 --> 00:16:42,699
+single application of probability that
+we'll see, the analysis will involve
+
+214
+00:16:42,699 --> 00:16:46,639
+linearity of expectation. But it may be
+hard to appreciate why this is not a
+
+215
+00:16:46,639 --> 00:16:50,787
+tautology. Just symbolically it may look
+like it has to be true. But to point out
+
+216
+00:16:50,787 --> 00:16:55,091
+that there is content here. If I replace
+the sums by products, then this equation
+
+217
+00:16:55,091 --> 00:16:59,446
+would in general be false. If the reign of
+variables are not independent. So the same
+
+218
+00:16:59,446 --> 00:17:03,947
+thing is not true about products. It's
+really about sums. [sound] So let me just
+
+219
+00:17:03,947 --> 00:17:08,505
+give you a trivial illustration of
+linearity of expectation, point out how it
+
+220
+00:17:08,505 --> 00:17:13,276
+really easily allows us to evaluate the
+sum of two dice. Doing our first running
+
+221
+00:17:13,276 --> 00:17:18,312
+example let's introduce the first random
+variables X one and X two for the results
+
+222
+00:17:18,312 --> 00:17:23,105
+of the first and second die, respectively.
+Now computing the expected value of a
+
+223
+00:17:23,105 --> 00:17:27,656
+single die is easy. There's only six
+values to enumerate over. Contrast that
+
+224
+00:17:27,656 --> 00:17:32,712
+with the 36 outcomes to numerate over when
+we evaluated the sum of the two dies. So
+
+225
+00:17:32,712 --> 00:17:37,977
+the average value of a single die, you
+won't be surprised to hear, is 3.5, right?
+
+226
+00:17:37,977 --> 00:17:43,242
+So it ranges, integers between one and six
+uniformly, so 3.5 on average and now,
+
+227
+00:17:43,242 --> 00:17:48,575
+using [inaudible] expectation, the sum of
+two dice is simply double the average
+
+228
+00:17:48,575 --> 00:17:52,828
+value of a single one. So in the next
+slide, I'm going to prove this property,
+
+229
+00:17:52,828 --> 00:17:56,776
+prove linearity of expectation. But
+frankly, the proof is, is pretty trivial.
+
+230
+00:17:56,776 --> 00:18:00,775
+So if you don't care about the proof,
+that's fine. You can skip it without loss.
+
+231
+00:18:00,775 --> 00:18:04,826
+I'm including it just for completeness.
+And I gotta say, I don't know of another
+
+232
+00:18:04,826 --> 00:18:08,620
+mathematical statement which is
+simultaneously so trivial to prove, and so
+
+233
+00:18:08,620 --> 00:18:12,465
+unbelievably useful. There's really
+something remarkable about linearity of
+
+234
+00:18:12,465 --> 00:18:16,413
+expectation. So how does the proof go?
+Well, honestly, we just write out the sum,
+
+235
+00:18:16,413 --> 00:18:20,873
+the definition of an expectation. We
+reverse the sums, and we're done. So, let
+
+236
+00:18:20,873 --> 00:18:25,604
+me start with the right-hand side of the
+equation. So that's, that was the sum of
+
+237
+00:18:25,604 --> 00:18:30,512
+the expectations of the random variables.
+So now, let's just apply the definition of
+
+238
+00:18:30,512 --> 00:18:34,947
+expectation. So, it's just a weighted
+average over the possible outcomes. And
+
+239
+00:18:34,947 --> 00:18:39,678
+now, instead of summing first over the,
+the reign of variable j and then over the
+
+240
+00:18:39,678 --> 00:18:44,172
+realized outcome I, I am going to, to it
+in a reversed order. I'm going to sum
+
+241
+00:18:44,172 --> 00:18:49,393
+first over the outcome I and then over the
+random variable j. Now the probability of
+
+242
+00:18:49,393 --> 00:18:55,358
+outcome I is independent of j. So we can
+yank the p of I outside of that inter-sum.
+
+243
+00:18:55,358 --> 00:19:00,901
+But now what have we got? So inside the
+parentheses, we simply have the value of
+
+244
+00:19:00,901 --> 00:19:05,883
+the sum of the X-I's, X-X-J's on the
+outcome I. And over here, we're just
+
+245
+00:19:05,883 --> 00:19:11,145
+averaging the sum of the X-J's with
+respect to the probabilities, the P-I's.
+
+246
+00:19:11,145 --> 00:19:16,548
+So this is just the definition of the
+expectation of the sum of the reign of
+
+247
+00:19:16,548 --> 00:19:23,020
+variables. So that's it. So linearity of
+expectation is really just a reversal of
+
+248
+00:19:23,020 --> 00:19:28,071
+the double sums. Now for those of you who
+are rusty on these kind of manipulations,
+
+249
+00:19:28,071 --> 00:19:32,367
+I just want to point out, you know this
+reversal of the double sum itself, is
+
+250
+00:19:32,367 --> 00:19:36,947
+there's nothing complicated at all, about
+what's going on. So if you want a really
+
+251
+00:19:36,947 --> 00:19:41,413
+pedestrian way to think about what's
+happening, just imagine that we take these
+
+252
+00:19:41,413 --> 00:19:46,894
+sum adds, these [inaudible]. And we just
+write them out in a grid, where one, or
+
+253
+00:19:46,894 --> 00:19:52,653
+let's just say the columns are indexed by
+the random variable J and the rows are
+
+254
+00:19:52,653 --> 00:19:58,482
+indexed by the outcome I. And in a given
+cell of this grid, we'd just write the sum
+
+255
+00:19:58,482 --> 00:20:03,436
+in XJI times PI And the point is both of
+the double sums, both the first one and
+
+256
+00:20:03,436 --> 00:20:07,895
+the second one, are just the sum of all of
+the entries in this grid. In the first sum
+
+257
+00:20:07,895 --> 00:20:12,141
+we first group things according to the row
+and then sum each of them up and the
+
+258
+00:20:12,141 --> 00:20:16,493
+second sum, we group things according to
+the column. We do column sums and then sum
+
+259
+00:20:16,493 --> 00:20:20,686
+up the column sums. But either way it's
+just some of the entries in the grid, so
+
+260
+00:20:20,686 --> 00:20:24,826
+it doesn't matter which way you sum. Okay?
+So reversal of double sums is just a
+
+261
+00:20:24,826 --> 00:20:29,033
+trivial thing. So if you get lost in the
+notation with these double sums, the point
+
+262
+00:20:29,033 --> 00:20:33,210
+is, you can just interpret each of them in
+terms of this grid. Both of these double
+
+263
+00:20:33,210 --> 00:20:37,387
+sums are nothing more than the sum of the
+values in all of the cells of this grid.
+
+264
+00:20:37,387 --> 00:20:41,666
+One order of summation just says you group
+first according to row sums, and then sum
+
+265
+00:20:41,666 --> 00:20:45,690
+those up. That's the first summation. The
+second summation, you first take column
+
+266
+00:20:45,690 --> 00:20:49,561
+sums, and then sum those up. But of course
+it doesn't matter. You just get the
+
+267
+00:20:49,561 --> 00:20:53,534
+results of everything in the grid, okay?
+So there's no, [inaudible], no tricks up
+
+268
+00:20:53,534 --> 00:20:57,660
+my sleeve when I reverse these sums. It's
+a totally elementary trivial thing, okay?
+
+269
+00:20:57,660 --> 00:21:02,612
+So, again, linearity expectation. Trivial
+to prove. Incredibly useful, don't forget
+
+270
+00:21:02,612 --> 00:21:07,100
+it. So I want to conclude this video with
+one final example in order to tie together
+
+271
+00:21:07,100 --> 00:21:11,601
+all of the concepts that we just learned
+or just reviewed. And, it's going to be an
+
+272
+00:21:11,601 --> 00:21:15,680
+example of load balancing. A sign in
+process used to servers. But this in fact
+
+273
+00:21:15,680 --> 00:21:20,022
+is quite important for the analysis of
+hashing that we're going to see toward the
+
+274
+00:21:20,022 --> 00:21:24,599
+end of the course as well. But for now
+let's just think about the, the following
+
+275
+00:21:24,599 --> 00:21:29,163
+simple problem. For some integer n you
+have n computer processes would have to be
+
+276
+00:21:29,163 --> 00:21:33,129
+assigned to n servers in some way. Now
+you're feeling really lazy. Okay. So
+
+277
+00:21:33,129 --> 00:21:37,313
+you're just gonna take each of the
+processes and you're just gonna assign it
+
+278
+00:21:37,313 --> 00:21:41,605
+to a totally random server. Okay? With
+each server equally likely to get a given
+
+279
+00:21:41,605 --> 00:21:46,249
+process. And the question I want to study
+is, does this laziness cost you, at least
+
+280
+00:21:46,249 --> 00:21:50,815
+on average? So if you look at a server,
+what's the expected load? So let's proceed
+
+281
+00:21:50,815 --> 00:21:54,693
+to the solution, the answer to this
+question. So, before you start talking
+
+282
+00:21:54,693 --> 00:21:58,947
+about expectations, one has to be clear
+about the sample space and what are the
+
+283
+00:21:58,947 --> 00:22:03,148
+probabilities of the various outcomes? So
+remember the sample space omega just
+
+284
+00:22:03,148 --> 00:22:07,187
+denotes every possible thing that can
+happen. So what are we doing? For each
+
+285
+00:22:07,187 --> 00:22:11,280
+process, we're assigning it to a random
+server, so all of the things that can
+
+286
+00:22:11,280 --> 00:22:15,050
+happen are all of the different
+assignments of these end processes to
+
+287
+00:22:15,050 --> 00:22:19,413
+these end servers and if you think about
+it, there are N raised to the N possible
+
+288
+00:22:19,413 --> 00:22:24,452
+outcomes, because you have N choices for
+each of the N processes. Moreover, because
+
+289
+00:22:24,452 --> 00:22:28,703
+each process is assigned to one of the
+servers uniformly at random, each of these
+
+290
+00:22:28,703 --> 00:22:33,059
+[inaudible] assignments is equally likely.
+Probability one over N to the N. Now that
+
+291
+00:22:33,059 --> 00:22:36,996
+we have a sample space, we're in a
+position to define a random variable. And
+
+292
+00:22:36,996 --> 00:22:41,300
+we already know what random variable we
+care about. We care about the average load
+
+293
+00:22:41,300 --> 00:22:45,551
+of a server. Now, all of the servers are
+exactly the same, so we just have to focus
+
+294
+00:22:45,551 --> 00:22:49,592
+on one server, let's say the first server.
+And look at the number of processes
+
+295
+00:22:49,592 --> 00:22:53,750
+assigned to it. And if you go back to the
+problem statement what we're asked is to
+
+296
+00:22:53,750 --> 00:22:57,725
+compute the expected value of Y. The
+expected number of processes assigned to a
+
+297
+00:22:57,725 --> 00:23:02,467
+server. [sound] Now, of course, in
+principle we could go to the definition of
+
+298
+00:23:02,467 --> 00:23:07,718
+expectation and just compute by brute
+force the sum over all possible outcomes
+
+299
+00:23:07,718 --> 00:23:12,455
+of the value of y and take the average.
+Unfortunately there are end of the end
+
+300
+00:23:12,455 --> 00:23:16,965
+different outcomes. And that's a lot. So,
+what can we do other than this brute force
+
+301
+00:23:16,965 --> 00:23:21,365
+computation? Well, recall our example of
+linear of expectation and the sum of two
+
+302
+00:23:21,365 --> 00:23:25,486
+dice. We observed that instead of com.
+Computing the sum by enumerating all
+
+303
+00:23:25,486 --> 00:23:29,771
+thirty-six outcomes. It was much better to
+focus on a single dye, compute its
+
+304
+00:23:29,771 --> 00:23:34,056
+expectation and then conclude with
+linearity of expectation. So we'll do the
+
+305
+00:23:34,056 --> 00:23:38,341
+same thing here, instead of focusing on
+the sum Y, we'll focus on constituent
+
+306
+00:23:38,341 --> 00:23:42,851
+parts of Y. So whether or not a single
+process gets assigned to the first server
+
+307
+00:23:42,851 --> 00:23:47,375
+and then we'll get away with that with
+linearity of expectation. So, more
+
+308
+00:23:47,375 --> 00:23:53,680
+precisely, for a given process, J, let's
+define XJ to be whether to be one if and
+
+309
+00:23:53,680 --> 00:23:59,830
+only if the j process gets assigned to the
+first server, zero otherwise. 01 random
+
+310
+00:23:59,830 --> 00:24:05,151
+variables like XJ are often called
+indicator random variables. That's because
+
+311
+00:24:05,151 --> 00:24:10,333
+they, in effect, indicate whether or not a
+certain event occurs. In this case,
+
+312
+00:24:10,333 --> 00:24:15,930
+whether or not the [inaudible] process
+gets assigned to the first server. Why did
+
+313
+00:24:15,930 --> 00:24:21,527
+I make this definition? Well, observe that
+the total number of processes that gets
+
+314
+00:24:21,527 --> 00:24:27,285
+assigned to the first server is simply the
+sum from J equal one to N of XJ. Xj Says
+
+315
+00:24:27,285 --> 00:24:32,468
+whether or not a given process; the Jade
+process is on the first server. The total
+
+316
+00:24:32,468 --> 00:24:37,322
+number is the sum of these over all J. Now
+the benefit from this maneuver is we only
+
+317
+00:24:37,322 --> 00:24:41,693
+to compute the expectation of a extremely
+simple indicator random variable XJ. This
+
+318
+00:24:41,693 --> 00:24:45,906
+is like the win that we got when we're
+summing up two dice by instead of having
+
+319
+00:24:45,906 --> 00:24:49,961
+to compute the sum, the expected value of
+the sum, we just had to focus on the
+
+320
+00:24:49,961 --> 00:24:53,543
+expectation of a single die. That was
+really easy. Similarly here the
+
+321
+00:24:53,543 --> 00:24:57,703
+expectation of a single XJ is really easy.
+Specifically, let's write it out just
+
+322
+00:24:57,703 --> 00:25:02,064
+using the definition of the expectation.
+So the expected value of an X J is. Well.
+
+323
+00:25:02,064 --> 00:25:06,631
+Let's group together all the outcomes in
+which it takes on the value zero. So, the
+
+324
+00:25:06,631 --> 00:25:10,915
+contributions of the expectation is zero
+for all of those outcomes. And then
+
+325
+00:25:10,915 --> 00:25:15,863
+there's the rest of the outcome where X J
+takes on the value one. And in those cases
+
+326
+00:25:15,863 --> 00:25:20,281
+it contributes one to the expectation.
+Now, obviously, we get some happy
+
+327
+00:25:20,281 --> 00:25:24,969
+cancellation happening here, with the zero
+part, and all we have to worry about is
+
+328
+00:25:24,969 --> 00:25:29,656
+the probability that XJ takes on the value
+one. Okay, what was XJ again? How did we
+
+329
+00:25:29,656 --> 00:25:34,575
+define it? Remember it's the event that,
+it's one exactly when the Jth process gets
+
+330
+00:25:34,575 --> 00:25:38,741
+assigned to the first server. How are
+processes assigned. Or, remember the
+
+331
+00:25:38,741 --> 00:25:42,792
+proposed solution assigned to each
+process, to each of the end servers,
+
+332
+00:25:42,792 --> 00:25:47,422
+equally likely, with uniform probability.
+So, the probability that the Jth process
+
+333
+00:25:47,422 --> 00:25:53,078
+gets assigned to the first server, is one
+over N. So this leaves us with just the
+
+334
+00:25:53,078 --> 00:25:58,704
+sum, from j equal one to n, of one over n.
+That is, we just sum up one over n with
+
+335
+00:25:58,704 --> 00:26:04,473
+itself n times. This of course is equal to
+one. So summarizing, the expected number
+
+336
+00:26:04,473 --> 00:26:10,526
+of processes assigned to a given server is
+exactly one. So really on average we don't
+
+337
+00:26:10,526 --> 00:26:15,654
+lose much for our laziness of just
+randomly spraying the process to the
+
+338
+00:26:15,654 --> 00:26:22,045
+servers. On average for any given server
+we do fine. And that's a good illustration
+
+339
+00:26:22,045 --> 00:26:26,668
+of the role that randomness plays in a lot
+of algorithm designed in computer science
+
+340
+00:26:26,668 --> 00:26:31,073
+more generally. Often using random choices
+you can do surprisingly well with very
+
+341
+00:26:31,073 --> 00:26:35,587
+little work and that's indeed part of the
+crux of quick short, if you choose pivots
+
+342
+00:26:35,587 --> 00:26:40,133
+at random you get an average running time
+of N log N just as good as. So at the end
+
+343
+00:26:40,133 --> 00:26:44,612
+of the day what we find is that the
+expected number of processes assigned to a
+
+344
+00:26:44,612 --> 00:26:48,655
+given server; say the first server, is
+just one. So, at least if we only care
+
+345
+00:26:48,655 --> 00:26:53,013
+about averages, we lose very little from
+this trivial process of randomly spraying
+
+346
+00:26:53,013 --> 00:26:57,269
+the process through the server. On average
+any given server has just one process on
+
+347
+00:26:57,269 --> 00:27:01,166
+it. This is characteristic of the role
+that randomization plays in algorithm
+
+348
+00:27:01,166 --> 00:27:04,755
+design and computer science more
+generally. Often we can get away with
+
+349
+00:27:04,755 --> 00:27:08,755
+really simple heuristics just by making
+random choices. Of course, quicksort is
+
+350
+00:27:08,755 --> 00:27:12,498
+one example of that, where we get an
+extremely prevalently used practical
+
+351
+00:27:12,498 --> 00:27:16,754
+sorting algorithm just by making randomly
+chosen pivots in every recursive call.

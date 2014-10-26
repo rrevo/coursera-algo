@@ -1,0 +1,707 @@
+1
+00:00:00,000 --> 00:00:05,153
+This is the second video of three, in which we prove that the average running time
+
+2
+00:00:05,153 --> 00:00:08,301
+of randomized quicksort is O(N log N).
+
+3
+00:00:08,301 --> 00:00:10,453
+So to remind you of the formal statements,
+
+4
+00:00:10,453 --> 00:00:11,987
+so getting into thinking about quicksort
+
+5
+00:00:11,987 --> 00:00:13,309
+where we implemented the choose pivot subroutine
+
+6
+00:00:13,309 --> 00:00:15,842
+to always choose a pivot uniformly at random
+
+7
+00:00:15,842 --> 00:00:17,640
+from the subarray that it gets passed.
+
+8
+00:00:17,640 --> 00:00:20,533
+And we're proving that for a worst case input array
+
+9
+00:00:20,533 --> 00:00:22,616
+for an arbitrary input array of length N
+
+10
+00:00:22,616 --> 00:00:24,574
+the average running time of quicksort with
+
+11
+00:00:24,574 --> 00:00:26,331
+the average over the range of possible pivot choices
+
+12
+00:00:26,331 --> 00:00:28,927
+is O(N log N).
+
+13
+00:00:28,927 --> 00:00:35,423
+So let me remind you of the story so far, this is where we left things at the previous video
+
+14
+00:00:35,423 --> 00:00:38,591
+we defined a few random variables, the sample space, recall,
+
+15
+00:00:38,591 --> 00:00:41,355
+is just the - all the different things that can happen
+
+16
+00:00:41,355 --> 00:00:43,923
+that is, all of the random coinflip outcomes that
+
+17
+00:00:43,923 --> 00:00:49,601
+quicksort can produce, which is equivalent to all the pivot choices made by quicksort
+
+18
+00:00:49,601 --> 00:00:54,612
+Now the random variables we care about - so first of all there's capital C
+
+19
+00:00:55,089 --> 00:00:58,448
+which is the number of comparisons between pairs of elements
+
+20
+00:00:58,448 --> 00:01:03,895
+in the input array that quicksort makes for a given pivot sigma
+
+21
+00:01:03,895 --> 00:01:06,093
+and then there are the xijs
+
+22
+00:01:06,093 --> 00:01:08,354
+and so that is just meant to count the number of comparisons involving
+
+23
+00:01:08,354 --> 00:01:14,302
+the i-th smallest and the j-th smallest elements in the input array.
+
+24
+00:01:14,302 --> 00:01:21,898
+You'll recall that zi and zj denote the i-th smallest and the j-th smallest entries in the array.
+
+25
+00:01:21,898 --> 00:01:25,315
+Now because every comparison involves some zi and some zj,
+
+26
+00:01:25,315 --> 00:01:29,339
+we can express capital C as a sum over the xijs.
+
+27
+00:01:29,339 --> 00:01:32,443
+So we did that in the last video, we applied linearity of expectation
+
+28
+00:01:32,443 --> 00:01:36,707
+we used the fact that xij are 0 or 1, that is indicator random variables
+
+29
+00:01:36,707 --> 00:01:42,442
+to write the expectation of xij just as a probability that is equal to one
+
+30
+00:01:42,442 --> 00:01:47,022
+and that gave us the following expression.
+
+31
+00:01:47,022 --> 00:01:49,842
+So the key insight and really the heart of the quicksort analysis
+
+32
+00:01:49,842 --> 00:01:53,334
+is to derive an exact expression for this
+
+33
+00:01:53,334 --> 00:01:55,759
+probability as a function of i and j.
+
+34
+00:01:55,759 --> 00:01:59,727
+So for example the third smallest element in the array, the seventh smallest element in the array
+
+35
+00:01:59,727 --> 00:02:03,547
+wherever they may be scattered in the input array and you want to know exactly what is the probability
+
+36
+00:02:03,547 --> 00:02:07,128
+they get compared at some point of the execution of quicksort.
+
+37
+00:02:07,128 --> 00:02:12,418
+And we're going to get an extremely precise understanding of this probability in the form
+
+38
+00:02:12,418 --> 00:02:16,955
+of this key claim.
+
+39
+00:02:16,955 --> 00:02:21,824
+So for all pairs of elements, and again, ordered pairs, we're thinking of i being less than j,
+
+40
+00:02:21,824 --> 00:02:31,941
+the probability that zi and zj get compared at some point of the execution in the quicksort is exactly
+
+41
+00:02:31,941 --> 00:02:38,046
+two divided by j minus i plus one.
+
+42
+00:02:38,046 --> 00:02:42,721
+So for example, in this example of third smallest element and the seventh smallest element
+
+43
+00:02:42,721 --> 00:02:44,992
+it would be exactly 40% of the time.
+
+44
+00:02:44,992 --> 00:02:48,119
+Two over five is how often those two elements would get compared
+
+45
+00:02:48,119 --> 00:02:50,468
+if you ran quicksort with a random choice of pivots.
+
+46
+00:02:50,514 --> 00:02:53,108
+That going to be true for every j and i.
+
+47
+00:02:53,108 --> 00:02:57,998
+The proof of this key claim is the purpose of this video.
+
+48
+00:02:57,998 --> 00:02:59,785
+So how do we prove this key claim?
+
+49
+00:02:59,785 --> 00:03:04,716
+How do we prove that the probability that zi and zj get compared
+
+50
+00:03:04,716 --> 00:03:12,219
+is exactly two over the quantity of j minus i plus 1?
+
+51
+00:03:12,219 --> 00:03:15,240
+Well fix your favorite ordered pair.
+
+52
+00:03:15,240 --> 00:03:20,540
+So fix elements zi, zj
+
+53
+00:03:20,540 --> 00:03:25,248
+with i  less than j, for example the third smallest and the seventh smallest elements in the array
+
+54
+00:03:25,248 --> 00:03:28,562
+now, what we want to reason about is
+
+55
+00:03:28,562 --> 00:03:30,956
+the set of all elements in the input array
+
+56
+00:03:30,956 --> 00:03:33,207
+between zi and zj, inclusive.
+
+57
+00:03:33,207 --> 00:03:36,008
+I dont  mean between in term of positions in the array
+
+58
+00:03:36,008 --> 00:03:38,888
+I mean between in terms of their values.
+
+59
+00:03:38,888 --> 00:03:42,066
+So consider the set
+
+60
+00:03:42,066 --> 00:03:45,744
+between zi and zj plus one inclusive.
+
+61
+00:03:45,744 --> 00:03:51,416
+So zi, zi + 1 dot dot dot zj - 1 and zj
+
+62
+00:03:51,416 --> 00:03:58,507
+so for example the third, fourth, fifth, sixth and seventh smallest elements in the input array.
+
+63
+00:03:58,507 --> 00:04:01,255
+Wherever they may be, they are of course -
+
+64
+00:04:01,255 --> 00:04:08,025
+the initial array is not sorted, so there's no reason to believe that these j minus i plus one elements are contigous, okay?
+
+65
+00:04:08,025 --> 00:04:15,867
+They're scattered throughout the input array. We're going to think about them, okay? zi through zj inclusive.
+
+66
+00:04:15,867 --> 00:04:19,910
+Now, throughout the execution of quicksort, these j minus i plus one elements
+
+67
+00:04:19,910 --> 00:04:23,671
+lead parallel lives, at least for a while
+
+68
+00:04:23,671 --> 00:04:26,821
+in the following sense:
+
+69
+00:04:26,821 --> 00:04:29,022
+Begin with the outermost call to quicksort
+
+70
+00:04:29,022 --> 00:04:32,155
+and suppose that none of these j minus i plus one elements
+
+71
+00:04:32,155 --> 00:04:33,712
+is chosen as a pivot.
+
+72
+00:04:33,712 --> 00:04:35,542
+Where then could the pivot lie?
+
+73
+00:04:35,542 --> 00:04:38,904
+Well it could only be a pivot that is greater than all of these
+
+74
+00:04:38,904 --> 00:04:41,662
+or it could be less than all of these
+
+75
+00:04:41,662 --> 00:04:45,929
+For example this is third, fourth, fifth, sixth and seventh smallest elements in the array.
+
+76
+00:04:45,929 --> 00:04:48,889
+Well the pivot is then either the minimum or the second minimum
+
+77
+00:04:48,889 --> 00:04:51,065
+in which case it is smaller than all the five elements
+
+78
+00:04:51,065 --> 00:04:57,855
+or it is eigth or largest - or larger element - in the array, in which case, bigger than all of them. So there's no way
+
+79
+00:04:57,855 --> 00:05:00,449
+you're going to have a pivot that somehow is wedged in between this set
+
+80
+00:05:00,449 --> 00:05:05,427
+because this is a contiguous set of order statistics, okay?
+
+81
+00:05:05,427 --> 00:05:07,956
+Now what do I mean by these elements leading parallel lives?
+
+82
+00:05:07,956 --> 00:05:12,105
+Well in the case where the pivot is chose to be smaller than all of these elements
+
+83
+00:05:12,105 --> 00:05:15,076
+then all of these elements will wind up to right of the pivot
+
+84
+00:05:15,076 --> 00:05:19,414
+and they will all be passed to the  recursive call, the second recursive call.
+
+85
+00:05:19,414 --> 00:05:21,219
+If the pivot is chosen to be bigger,
+
+86
+00:05:21,219 --> 00:05:25,221
+than all of these elements, then they'll all show up on the left side of the partitioned array
+
+87
+00:05:25,221 --> 00:05:29,089
+and they'll all be passed to the first recursive call.
+
+88
+00:05:29,089 --> 00:05:32,294
+Iterating this or proceeding inductively, we see that
+
+89
+00:05:32,294 --> 00:05:37,423
+as long as the pivot is not drawn from the set of j minus i plus one elements,
+
+90
+00:05:37,423 --> 00:05:44,985
+this entire set will get passed on to same recursive call.
+
+91
+00:05:44,985 --> 00:05:50,118
+So this j minus i plus one elements are living blissfully together in harmony,
+
+92
+00:05:50,118 --> 00:05:52,208
+until the point in which one of them is chosen
+
+93
+00:05:52,208 --> 00:05:53,468
+as a pivot
+
+94
+00:05:53,468 --> 00:05:55,595
+and of course that has to happen at some point
+
+95
+00:05:55,595 --> 00:05:59,274
+the recursion only stops at some point when the array length is either equal to zero  or one
+
+96
+00:05:59,274 --> 00:06:05,359
+so if for no other reason, at some point, there will be no other elements in the recursive call, other than these j minus i plus one
+
+97
+00:06:05,359 --> 00:06:10,134
+Okay? So at some point the reverry is interrupted and one of them is chosen as a pivot.
+
+98
+00:06:10,134 --> 00:06:14,065
+So, let's pause the quicksort algorithm and think about
+
+99
+00:06:14,065 --> 00:06:17,454
+what things look like, at the time that one of those j minus i plus one elements
+
+100
+00:06:17,454 --> 00:06:21,778
+is first chosen as a pivot element.
+
+101
+00:06:21,778 --> 00:06:24,858
+There are two  cases worth distinguishing between
+
+102
+00:06:24,858 --> 00:06:31,117
+In the first case the pivot happens to be either zi or zj.
+
+103
+00:06:31,117 --> 00:06:33,347
+Now remember what is that we are trying to analyse.
+
+104
+00:06:33,347 --> 00:06:37,906
+We're trying to analyse the frequency, the probability that zi and zj gets compared
+
+105
+00:06:37,906 --> 00:06:41,129
+Well, if zi and zj are in the same recursive call,
+
+106
+00:06:41,129 --> 00:06:43,274
+and one of them gets chosen as the pivot
+
+107
+00:06:43,274 --> 00:06:45,331
+Then they're definitely are going to get compared
+
+108
+00:06:45,331 --> 00:06:47,909
+Remember, when you partition an array around its pivot element,
+
+109
+00:06:47,909 --> 00:06:50,623
+the pivot gets compared to everything else.
+
+110
+00:06:50,623 --> 00:06:53,725
+So, if zi is chosen as a pivot, it certainly gets compared to zj.
+
+111
+00:06:53,725 --> 00:06:56,839
+if zj gets chosen as a pivot, it gets compared to zi.
+
+112
+00:06:56,839 --> 00:06:59,155
+So either way, if either one of these is chosen,
+
+113
+00:06:59,155 --> 00:07:01,897
+they're definitely compared.
+
+114
+00:07:01,897 --> 00:07:06,956
+If on the other hand, the first of these j minus i plus one elements to be chosen as a pivot,
+
+115
+00:07:06,956 --> 00:07:15,939
+is not zi or zj. If instead it comes from the set zi + 1 up to zj - 1 and so on
+
+116
+00:07:15,939 --> 00:07:17,719
+then the opposite is true,
+
+117
+00:07:17,719 --> 00:07:24,922
+then  zi and zj are not compared now, nor will they ever be compared in the future.
+
+118
+00:07:24,922 --> 00:07:27,351
+So why is that? That requires two observations
+
+119
+00:07:27,351 --> 00:07:31,541
+first recall that when we choose an pivot and we partition an array
+
+120
+00:07:31,541 --> 00:07:33,873
+all of the comparisons involved will pivot.
+
+121
+00:07:33,873 --> 00:07:39,488
+So two elements of which neither of them is a pivot, do not get compared, in the partition subroutine.
+
+122
+00:07:39,488 --> 00:07:41,625
+So they don't get compared now.
+
+123
+00:07:41,625 --> 00:07:45,971
+Moreover, since zi is the smallest of these and zj is the biggest of these
+
+124
+00:07:45,971 --> 00:07:48,375
+and the pivot comes from somewhere between them
+
+125
+00:07:48,375 --> 00:07:53,440
+this choice of pivot is going to split zi and zj in diferent recursive calls
+
+126
+00:07:53,440 --> 00:07:55,933
+zi gets passed to the first recursive call
+
+127
+00:07:55,933 --> 00:07:58,713
+zj gets passed to the second recursive call
+
+128
+00:07:58,713 --> 00:08:01,788
+and they will never meet again.
+
+129
+00:08:01,788 --> 00:08:08,383
+So there's no comparisons in the future either.
+
+130
+00:08:08,383 --> 00:08:14,421
+So these two  right here, I would say is the key insight, in the quicksort analysis.
+
+131
+00:08:14,421 --> 00:08:18,399
+The fact that for a given pair of elements we can very simply characterize
+
+132
+00:08:18,399 --> 00:08:22,911
+exactly when they get compared, and when they do not get compared in the quicksort algorithm.
+
+133
+00:08:22,911 --> 00:08:26,341
+That is, they get compared exactly when one of them
+
+134
+00:08:26,341 --> 00:08:31,889
+is chosen as the pivot before any of the other elements with value in between those two
+
+135
+00:08:31,889 --> 00:08:34,255
+has had the oportunity to be a pivot.
+
+136
+00:08:34,255 --> 00:08:36,192
+That 's exactly when they get compared.
+
+137
+00:08:36,192 --> 00:08:40,082
+So this has allowed us to prove this key claim. This exact expression on the comparison probability,
+
+138
+00:08:40,082 --> 00:08:42,242
+that we'll plug into the formula that we had earlier
+
+139
+00:08:42,242 --> 00:08:45,797
+and will give us the deisred valued on the average number of comparisons.
+
+140
+00:08:45,797 --> 00:08:48,536
+So let's fill in those details.
+
+141
+00:08:48,536 --> 00:08:52,607
+So first let me just first rewrite the high order bit from the previous slide.
+
+142
+00:08:52,607 --> 00:08:57,022
+So now at last, we will use the fact, that our quicksort implementation
+
+143
+00:08:57,022 --> 00:09:00,008
+always chooses a pivot uniformly at ramdom.
+
+144
+00:09:00,008 --> 00:09:04,509
+That each element of a subarray is equally likely to serve as the pivot element
+
+145
+00:09:04,509 --> 00:09:08,590
+in the corresponding partitioning call
+
+146
+00:09:08,590 --> 00:09:11,934
+So what does this buys us? This just says all of the elements are symetric.
+
+147
+00:09:11,934 --> 00:09:23,666
+So each of the elements  zi, zi + 1 all the way up to zj is equally likely to be the first one asked to serve as a pivot element.
+
+148
+00:09:23,666 --> 00:09:31,097
+Now the probablity that zi and zj get compared is simply the probability that we're in case one as opposed to in case two
+
+149
+00:09:31,097 --> 00:09:34,633
+and since each element is equally likely to be the pivot
+
+150
+00:09:34,633 --> 00:09:38,695
+that just means there're just two bad cases, two cases in which one can occur
+
+151
+00:09:38,695 --> 00:09:45,023
+out of the j minus i plus one possible different choices of pivot.
+
+152
+00:09:45,023 --> 00:09:51,247
+Now we're talking about a set of set of j minus i plus one elements, each of which of whom is equally likely to be asked
+
+153
+00:09:51,247 --> 00:09:54,386
+to be served first as pivot element
+
+154
+00:09:54,386 --> 00:09:57,500
+and the bad case, the case that leads to a comparison,
+
+155
+00:09:57,500 --> 00:09:59,219
+there's two different possiblities for that.
+
+156
+00:09:59,219 --> 00:10:07,256
+If zi or zj is first and the other j minus i minus one outcomes lead to the good case, where zi and zj never get compared.
+
+157
+00:10:07,256 --> 00:10:14,007
+So overall because everyone is equally likely to be the first pivot
+
+158
+00:10:14,007 --> 00:10:21,718
+we have that the probability that zi and zj get compared
+
+159
+00:10:21,718 --> 00:10:31,404
+is exactly the number of pivot choices that we do comparison divided by the number of pivot choices overall.
+
+160
+00:10:31,404 --> 00:10:33,472
+And that is exactly the key claim.
+
+161
+00:10:33,472 --> 00:10:41,565
+That is exactly what we  was the probability that a given zi and zj get compared no matter i and j are.
+
+162
+00:10:41,565 --> 00:10:46,367
+So wrapping up this video, where does that leave us? We can now plug in this expression
+
+163
+00:10:46,367 --> 00:10:49,838
+for this comparison probability
+
+164
+00:10:49,838 --> 00:10:51,983
+into the double sum we had before.
+
+165
+00:10:51,983 --> 00:10:56,908
+So putting it all together what we have is that - what we really care about - the average number of comparisons
+
+166
+00:10:56,908 --> 00:11:02,717
+that quicksort makes on this particular input of array of length N
+
+167
+00:11:02,717 --> 00:11:08,488
+is just this double sum which iterates over all the possible
+
+168
+00:11:08,488 --> 00:11:12,567
+ordered pairs  i, j
+
+169
+00:11:12,567 --> 00:11:18,074
+and what we had here before was the probability of comparing zi and zj. We now know exactly what that is.
+
+170
+00:11:18,074 --> 00:11:21,947
+So we just substitute
+
+171
+00:11:21,947 --> 00:11:24,446
+and this is where we're gonna stop for this video.
+
+172
+00:11:24,446 --> 00:11:27,894
+So this is gonna be our key expression star
+
+173
+00:11:27,894 --> 00:11:31,161
+which we still neeed to evaluate, but that is going to be the third video.
+
+174
+00:11:31,161 --> 00:11:33,528
+So essentially we done all of the conceptual difficulty
+
+175
+00:11:33,528 --> 00:11:37,441
+in understanding where comparisons come from in the quicksort algorithm.
+
+176
+00:11:37,441 --> 00:11:39,995
+All that remains is a little bit of an algebraic manipulation
+
+177
+99:59:59,000 --> 99:59:59,000
+to show that this star expression really is O(N log N) and that's coming up next.
