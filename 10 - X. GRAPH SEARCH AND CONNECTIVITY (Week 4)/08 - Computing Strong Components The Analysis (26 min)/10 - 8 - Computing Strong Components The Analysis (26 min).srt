@@ -1,0 +1,1698 @@
+1
+00:00:00,707 --> 00:00:03,523
+So the goal of this video is to prove the
+correctness of Kasaraju two-pass,
+
+2
+00:00:03,523 --> 00:00:07,016
+depth-first-search based, linear time
+algorithm that computes the strongly
+
+3
+00:00:07,016 --> 00:00:10,904
+connected components of a directed graph.
+So I've given you the full specification
+
+4
+00:00:10,904 --> 00:00:14,614
+of the algorithm. I've also given you a
+plausibility argument of why it might
+
+5
+00:00:14,614 --> 00:00:18,630
+work, in that at least it does something
+sensible on an example. Namely, it first
+
+6
+00:00:18,630 --> 00:00:22,151
+does a pass of depth first search on the
+reverse graph. It computes this magical
+
+7
+00:00:22,151 --> 00:00:25,539
+ordering. And what's so special about this
+ordering is then when we do a depth first
+
+8
+00:00:25,539 --> 00:00:29,571
+search using this ordering on the forward
+graph; it seems to do exactly what we
+
+9
+00:00:29,571 --> 00:00:33,601
+want. Every indication of depth first
+search to some new node discovers exactly
+
+10
+00:00:33,601 --> 00:00:37,528
+the nodes of the strong component and no
+extra stuff. Remember that was our first
+
+11
+00:00:37,528 --> 00:00:41,514
+observation, but that was unclear whether
+depth for search would be useful or not
+
+12
+00:00:41,514 --> 00:00:45,411
+for computing strong components. If you
+call depth first search from just the
+
+13
+00:00:45,411 --> 00:00:49,148
+right place, you're gonna get exactly the
+nodes of an SCC and nothing more. If you
+
+14
+00:00:49,148 --> 00:00:52,803
+call it from the wrong place, you might
+get all of the nodes of the graph, and get
+
+15
+00:00:52,803 --> 00:00:56,948
+no information at all about the structure of the strong components and at least in
+
+16
+00:00:56,948 --> 00:01:00,524
+this example this first pass with the
+finishing time seems to be accomplishing
+
+17
+00:01:00,524 --> 00:01:04,392
+seems to be leading us to invoking
+DFS from exactly the right
+
+18
+00:01:04,392 --> 00:01:08,604
+places. So remember how this worked in the
+example so in the top graph, I have
+
+19
+00:01:08,604 --> 00:01:11,774
+shown you the graph with the arch
+reversed. This is where we first invoked
+
+20
+00:01:11,774 --> 00:01:16,686
+DFS loop with the loop over the nodes
+going from the highest node name nine all
+
+21
+00:01:16,686 --> 00:01:20,642
+the way down to the node name one. And
+here we compute finishing time that's the
+
+22
+00:01:20,642 --> 00:01:23,788
+bookkeeping that we do in the first pass
+so we just keep the running count of how
+
+23
+00:01:23,788 --> 00:01:27,003
+many nodes we've finished processing. That
+is how many we've both explored that node
+
+24
+00:01:27,003 --> 00:01:30,900
+as well as explore all of the outgoing
+arches and so that gives us these numbers
+
+25
+00:01:30,900 --> 00:01:33,696
+in the red, these finishing times between
+one and nine for the various
+
+26
+00:01:33,696 --> 00:01:38,789
+nodes. Those became the new node names in
+the second graph and then we reverse the
+
+27
+00:01:38,789 --> 00:01:42,322
+arches again and get the original graphs
+back and then we saw that every time we
+
+28
+00:01:42,322 --> 00:01:47,229
+invoked DFS in our second pass we
+uncovered exactly the nodes of an SCC. So
+
+29
+00:01:47,229 --> 00:01:51,243
+when we invoked it from the node 9 we
+discovered that 9, 8 and 7 those
+
+30
+00:01:51,243 --> 00:01:55,741
+have a leader vortex 9. Then when we
+next invoked DFS from 6, we discovered
+
+31
+00:01:55,741 --> 00:01:59,942
+6, 5, and 1, and nothing else. And
+then finally we invoked it from 4, and
+
+32
+00:01:59,942 --> 00:02:02,582
+we discovered 2, 3, and 4, and
+nothing else. And those are exactly the
+
+33
+00:02:02,582 --> 00:02:08,599
+three, SCCs of this graph. So let's now
+understand why this works in any directed
+
+34
+00:02:08,599 --> 00:02:14,204
+graph, not just this, in this one example.
+So let's begin with a simple observation
+
+35
+00:02:14,204 --> 00:02:18,479
+about directed graphs, which is actually
+interesting in its own right. The claim is
+
+36
+00:02:18,479 --> 00:02:23,287
+that every directed graph has two levels
+of granularity. If you squint, if you sort
+
+37
+00:02:23,287 --> 00:02:27,116
+of zoom out, then what you see is a
+directed acyclic graph, of course
+
+38
+00:02:27,116 --> 00:02:30,156
+comprising its strongly connective
+components. And if you want, you can zoom
+
+39
+00:02:30,156 --> 00:02:34,736
+in and focus on the fine grain structure
+with one SCC. A little bit more precisely.
+
+40
+00:02:34,736 --> 00:02:43,872
+The claim is of the strongly connected
+components of a directed graph induce in
+
+41
+00:02:43,872 --> 00:02:51,398
+a natural way an acyclic metagraph. So
+what is this metagraph? What are the nodes
+
+42
+00:02:51,398 --> 00:02:57,345
+and what are the arcs, what are the edges?
+Well, the metanodes are just the SCCs, so
+
+43
+00:02:57,345 --> 00:02:59,957
+we think of every strong connected
+component as being a single node in this
+
+44
+00:02:59,957 --> 00:03:07,349
+metagraph. So call them say 'C1' up to 'Ck'. So what are the arcs in this metagraph?
+
+45
+00:03:07,349 --> 00:03:11,124
+Well, they're basically just the ones
+corresponding to the arcs between SCCs in
+
+46
+00:03:11,124 --> 00:03:19,311
+the original graph. That is, we include in
+the meta graph an arc from the strong
+
+47
+00:03:19,311 --> 00:03:24,643
+component 'C' to 'C-hat'
+if and only if there's an arc from a node
+
+48
+00:03:24,643 --> 00:03:31,037
+in 'C' to a node in 'C-hat' in the original
+graph 'G'. So for example if this is your 'C'
+
+49
+00:03:31,037 --> 00:03:38,689
+and so the triangle is your 'C-hat' and you
+have one or maybe multiple edges going
+
+50
+00:03:38,689 --> 00:03:44,533
+from 'C' to 'C-hat', then in the corresponding
+metagraph your just gonna have a node for
+
+51
+00:03:44,533 --> 00:03:55,322
+'C', a node for 'C-hat' and the directed
+arch from 'C' to 'C-hat'. So if we go back to
+
+52
+00:03:55,322 --> 00:03:58,471
+some of the directed graphs that we've
+used as running examples so we go back to
+
+53
+00:03:58,471 --> 00:04:02,499
+the beginning of the
+previous video and it's look maybe something
+
+54
+00:04:02,499 --> 00:04:11,372
+like this the corresponding directed acyclic
+graph has four nodes and four
+
+55
+00:04:11,372 --> 00:04:17,586
+arches. And for the running example we used
+to illustrate Kosaraju's algorithm with
+
+56
+00:04:17,586 --> 00:04:22,628
+the three triangles, the corresponding
+metagraph would just be a path with three
+
+57
+00:04:22,628 --> 00:04:29,988
+nodes. So why is this meta-graph
+guaranteed to be acyclic? Well, remember
+
+58
+00:04:29,988 --> 00:04:33,024
+metanodes correspond to strong
+components, and in a strong component you
+
+59
+00:04:33,024 --> 00:04:37,396
+can get from anywhere to anywhere else.
+So, if you had a cycle that involved two
+
+60
+00:04:37,396 --> 00:04:40,582
+different metanodes, that is two
+different strong connected components,
+
+61
+00:04:40,582 --> 00:04:44,183
+remember on a directed cycle you can also
+get from anywhere to anywhere else. So if
+
+62
+00:04:44,183 --> 00:04:48,284
+you had two supposedly distinct SCCs,
+that you could get from the one to the
+
+63
+00:04:48,284 --> 00:04:52,031
+other and vice versa, they would collapse
+into a single SCC. You can get from
+
+64
+00:04:52,031 --> 00:04:54,155
+anywhere to anywhere in one, anywhere from
+anywhere in the other one, and you can
+
+65
+00:04:54,155 --> 00:04:57,422
+also go between them at will, so you can get from
+
+66
+00:04:57,453 --> 00:05:02,811
+anywhere in this union to anywhere in the
+union. So not just in this context of
+
+67
+00:05:02,811 --> 00:05:05,742
+competing strong components but also just
+more generally, this is a useful fact to
+
+68
+00:05:05,742 --> 00:05:09,601
+know about directed graphs. On the one
+hand, they can have very complex structure
+
+69
+00:05:09,601 --> 00:05:13,226
+within a strong components. You have paths
+going from everywhere to everywhere else,
+
+70
+00:05:13,226 --> 00:05:16,807
+and it may be sort of complicated looking.
+But at a higher level, if you abstract out
+
+71
+00:05:16,807 --> 00:05:20,805
+to the level of SCCs, you are guaranteed
+to have this simple DAG, this simple
+
+72
+00:05:20,805 --> 00:05:25,799
+directed acyclic graph structure. So, to
+reinforce these concepts, and also segue
+
+73
+00:05:25,799 --> 00:05:30,828
+into thinking about Kosaraju's algorithm
+in particular, let me ask you a question
+
+74
+00:05:30,828 --> 00:05:37,067
+about how reversing arcs affects the
+strong components of a directed graph. So
+
+75
+00:05:37,067 --> 00:05:40,924
+the correct answer to this quiz is the
+fourth one. The strong components are
+
+76
+00:05:40,924 --> 00:05:45,084
+exactly the same as they were before, in
+fact the relation that we described is
+
+77
+00:05:45,084 --> 00:05:48,068
+exactly the same as it was before so
+therefore the equivalence classes of the
+
+78
+00:05:48,068 --> 00:05:51,930
+strong components is exactly the same. So
+if two nodes were related in
+
+79
+00:05:51,930 --> 00:05:55,839
+the original graph, that is a path from U
+to V and a path from V to U, that's still
+
+80
+00:05:55,839 --> 00:05:58,281
+true after you reverse all the arcs, you
+just use the reversal of the two paths
+
+81
+00:05:58,281 --> 00:06:02,676
+that you had before. Similarly if the two
+nodes weren't related before, for example
+
+82
+00:06:02,676 --> 00:06:06,134
+because you could not get from U to V,
+well that after you reverse everything,
+
+83
+00:06:06,134 --> 00:06:10,936
+then you can't get from V to U, so again you don't have this relation holding, so
+
+84
+00:06:10,936 --> 00:06:14,922
+the SCCs are exactly the same in the
+forward or the backward graph. So in
+
+85
+00:06:14,922 --> 00:06:18,005
+particular in Kazarogi's algorithm, the
+strong component structure is exactly the
+
+86
+00:06:18,005 --> 00:06:23,648
+same in the first pass of DFS and in the
+second pass of DFS. So now that we understand
+
+87
+00:06:23,648 --> 00:06:27,279
+how every directed graph has a meta graph with the nodes correspond to a strong
+
+88
+00:06:27,279 --> 00:06:31,029
+connected components, and you have an arch
+from one SCC to another if there's any
+
+89
+00:06:31,029 --> 00:06:35,482
+arch from any node in that SCC to the
+other SCC in the original graph, I'm in a
+
+90
+00:06:35,482 --> 00:06:39,952
+position to state what's the key lemma.
+That drives the correctness of Kosaraju's
+
+91
+00:06:39,952 --> 00:06:43,303
+two pass algorithm for computing the
+strong connected component of a directed graph.
+
+92
+00:06:43,303 --> 00:06:47,691
+So here's the lemma statement. It
+considers two strongly connecting
+
+93
+00:06:47,691 --> 00:06:50,724
+components that are adjacent, in the sense
+that there's an arc from one node in one
+
+94
+00:06:50,724 --> 00:06:57,361
+of them to one node in the other one. So
+let's say we have one SCC - 'C1', with a
+
+95
+00:06:57,361 --> 00:07:04,419
+node I, and another, SCC 'C2' with a node
+J, and that in G, in the graph, there's an
+
+96
+00:07:04,419 --> 00:07:10,100
+arc directly from I to J. So in this sense
+we say that these SCCs are adjacent, with
+
+97
+00:07:10,100 --> 00:07:16,235
+the second one being in some sense after
+the first one. Now let's suppose we've
+
+98
+00:07:16,235 --> 00:07:21,097
+already run the first pass of the DFS loop
+subroutine. And remember that works on the
+
+99
+00:07:21,097 --> 00:07:23,309
+reverse graph. So we've invoked it on the
+reverse graph. We've computed these
+
+100
+00:07:23,309 --> 00:07:28,521
+finishing times. As usual we'll let f(v)
+denote the finishing times computed in
+
+101
+00:07:28,521 --> 00:07:33,511
+that depth first search subroutine on the
+reverse graph. The lemma then asserts the
+
+102
+00:07:33,511 --> 00:07:37,713
+following. It says first, amongst all the
+nodes in 'C1' look at the one with the
+
+103
+00:07:37,713 --> 00:07:42,036
+largest finishing time. Similarly amongst
+all nodes in 'C2' look at the one with the
+
+104
+00:07:42,036 --> 00:07:45,810
+biggest finishing time. Amongst all of
+these the claim is that the biggest
+
+105
+00:07:45,810 --> 00:07:51,886
+finishing time will be in 'C2' not in 'C1'. So
+what I wanna do next is I wanna assume that
+
+106
+00:07:51,886 --> 00:07:56,516
+this lemma is true temporarily. I wanna
+explore the consequences of that
+
+107
+00:07:56,516 --> 00:08:01,210
+assumption and in particular what I wanna
+show you is that if this lemma holds, then
+
+108
+00:08:01,210 --> 00:08:07,373
+we can complete the proof of correctness
+of Kosaraju's two-pass SCC computation
+
+109
+00:08:07,373 --> 00:08:11,212
+algorithm. Okay, so if the lemma is true
+then after... I'll give you the argument
+
+110
+00:08:11,212 --> 00:08:14,283
+about why we're done. About why we just
+peel off the SCC one at
+
+111
+00:08:14,283 --> 00:08:18,765
+a time with the second pass of depth first
+search. Now of course a proof with a hole
+
+112
+00:08:18,765 --> 00:08:22,312
+in it, isn't a proof. So at the end of the
+lecture I'm gonna fill in the hole. That
+
+113
+00:08:22,312 --> 00:08:25,251
+is, I'm gonna supply a proof of this key
+lemma. But for now, as a working
+
+114
+00:08:25,251 --> 00:08:30,323
+hypothesis, let's assume that it's true.
+Let's begin with a corollary, that is a
+
+115
+00:08:30,323 --> 00:08:35,542
+statement which follows essentially
+immediately, from the statement of a lema.
+
+116
+00:08:35,542 --> 00:08:39,553
+So for the corollary, let's forget about
+just trying to find the maximum
+
+117
+00:08:39,553 --> 00:08:43,441
+maximum finishing time in a single SCC.
+Let's think about the maximum finishing
+
+118
+00:08:43,441 --> 00:08:47,739
+time in the entire graph. Now, why do we
+care about the maximum finishing time in
+
+119
+00:08:47,739 --> 00:08:51,660
+the entire graph? Well, notice that's
+exactly where the second pass of DFS
+
+120
+00:08:51,660 --> 00:08:55,361
+is going to begin. Right, so
+it processes nodes in order from largest
+
+121
+00:08:55,361 --> 00:08:59,526
+finishing time to smallest finishing time.
+So equivalently, let's think about the
+
+122
+00:08:59,526 --> 00:09:05,155
+node at which the second pass of depth
+first search is going to begin, i.e., the
+
+123
+00:09:05,155 --> 00:09:09,431
+node with the maximum finishing time.
+Where could it be? Well, the corollary is
+
+124
+00:09:09,431 --> 00:09:13,652
+that it has to be in what I'm gonna call a
+sink, a strongly connected component, that
+
+125
+00:09:13,652 --> 00:09:19,445
+is a strongly connected component without
+any outgoing arcs. So for example
+
+126
+00:09:19,445 --> 00:09:23,923
+let's go back to the, meta graph of SCCs
+for the very first directed graph we
+
+127
+00:09:23,923 --> 00:09:28,126
+looked at. You recall in the very first
+direc ted graph we looked at in when we
+
+128
+00:09:28,126 --> 00:09:35,535
+started talking about this algorithm there
+were four SCCs. So there was a 'C1', a 'C2',
+
+129
+00:09:35,535 --> 00:09:44,371
+a 'C3', and a 'C4'. And of course within each
+of these components, there could be
+
+130
+00:09:44,371 --> 00:09:48,439
+multiple nodes but they are all strongly
+connected to each other. Now, let's use
+
+131
+00:09:48,439 --> 00:09:55,986
+F1, F2, F3 and F4 to denote the maximum
+finishing time in each of these SCCs. So
+
+132
+00:09:55,986 --> 00:10:03,048
+we have F1, F2, F3 and F4. So, now we
+have four different opportunities to apply
+
+133
+00:10:03,048 --> 00:10:07,506
+this lemma. Right? Those four different
+pairs of adjacent SCCs. And so, what do
+
+134
+00:10:07,506 --> 00:10:12,662
+we find? We find that well, comparing F1 and F2, because C2 comes after C1,
+
+135
+00:10:12,662 --> 00:10:17,276
+that is there's an arc from C1 to
+C2, the max finishing time in C2 has
+
+136
+00:10:17,276 --> 00:10:22,121
+to be bigger than that in C1. That is F2 is bigger than F1. For the same
+
+137
+00:10:22,121 --> 00:10:27,382
+reasoning F3 has to be bigger than F1.
+Symmetrically we can apply the limit to
+
+138
+00:10:27,382 --> 00:10:33,748
+the pair C2, C4 and C3, C4 and we get that
+F4 has to dominate both of them. Now
+
+139
+00:10:33,748 --> 00:10:37,986
+notice we actually have no idea whether F2
+or F3 is bigger. So that pair we can't
+
+140
+00:10:37,986 --> 00:10:41,874
+resolver. But we do know these
+relationships. Okay F1 is the smallest and
+
+141
+00:10:41,874 --> 00:10:48,374
+F4 is the smallest [biggest!!]. And you also notice
+that C4 is a sink SCC and the sink has no
+
+142
+00:10:48,374 --> 00:10:52,579
+outgoing arches and you think about it
+that's a totally general consequence of
+
+143
+00:10:52,579 --> 00:10:56,718
+this lema. So in a simple group of
+contradiction will go as follows. Consider
+
+144
+00:10:56,718 --> 00:11:00,880
+this SCC with
+the maximum F value. Suppose it was not a
+
+145
+00:11:00,880 --> 00:11:05,364
+sink SCC that it has an outgoing arch,
+follow that outgoing arch to get some
+
+146
+00:11:05,364 --> 00:11:11,078
+other SCC by the lema the SCC you've got
+into has even bigger maximum finishing
+
+147
+00:11:11,078 --> 00:11:14,536
+time. So that contradicts the fact that
+you started in the SCC with a maximum
+
+148
+00:11:14,536 --> 00:11:19,862
+finishing time. Okay. So just like in this
+cartoon, where the unique sink SCC has
+
+149
+00:11:19,862 --> 00:11:23,651
+to have the largest finishing time, that's
+totally general. As another sanity check,
+
+150
+00:11:23,651 --> 00:11:27,295
+we might return to the nine node graph,
+where we actually ran Kasaraja's
+
+151
+00:11:27,295 --> 00:11:31,648
+algorithm and looking at the ford
+version of the graph, which is the one on
+
+152
+00:11:31,648 --> 00:11:38,093
+the bottom, we see that the maximum
+finishing times in the three FCC are 4,6
+
+153
+00:11:38,093 --> 00:11:42,178
+and 9. And it turns out that the same
+as the leader nodes which is not an
+
+154
+00:11:42,178 --> 00:11:45,917
+accident if you think about it for a
+little while and again you'll observe the
+
+155
+00:11:45,917 --> 00:11:49,906
+maximum finishing time in this graph
+namely 9 is indeed in the left most SCC
+
+156
+00:11:49,906 --> 00:11:53,953
+which is the only SCC with no outgoing
+arks. Okay but it's totally general
+
+157
+00:11:53,953 --> 00:11:57,290
+basically you can keep following arks and
+you keep seeing bigger and bigger
+
+158
+00:11:57,290 --> 00:12:00,862
+finishing times so the biggest one of all
+it has to be somewhere where you get stuck
+
+159
+00:12:00,862 --> 00:12:04,327
+where you can't go forward but there's no
+outgoing arks and that's what I'm calling
+
+160
+00:12:04,327 --> 00:12:08,608
+a sink SCC. Okay. So assuming the lemma is true we know that the corollary
+
+161
+00:12:08,608 --> 00:12:12,544
+is true. Now using this corollary
+let's finish the proof of correctness, of
+
+162
+00:12:12,544 --> 00:12:17,795
+Kasaraja's algorithm, module over proof
+of the key lima. So I'm not going to do
+
+163
+00:12:17,795 --> 00:12:22,121
+this super rigorously, although everything
+I say is correct and can be made, made
+
+164
+00:12:22,121 --> 00:12:25,376
+rigorous. And if you want a more rigorous
+version I'll post some notes on the course
+
+165
+00:12:25,376 --> 00:12:31,278
+website which you can consult for more
+details. So what the previous corollary
+
+166
+00:12:31,278 --> 00:12:35,891
+accomplished, it allows us to locate, the
+node with maximum finishing time. We can
+
+167
+00:12:35,891 --> 00:12:40,856
+locate it in somewhere in some sink
+SCC. Let me remind you about the
+
+168
+00:12:40,856 --> 00:12:44,120
+discussion we had at the very beginning of
+talking about computing strong components.
+
+169
+00:12:44,120 --> 00:12:48,593
+We're tryna understand depth-first search
+would be a useful workhorse for finding
+
+170
+00:12:48,593 --> 00:12:53,815
+the strong components. And the key
+observation was that it depends, where you
+
+171
+00:12:53,815 --> 00:12:58,966
+begin that depth-first search. So for
+example in this, graph with four SCC's
+
+172
+00:12:58,966 --> 00:13:04,050
+shown in blue on the right. A really bad
+place to start. DFS called Depth For
+
+173
+00:13:04,050 --> 00:13:10,782
+Search would be somewhere in C1. Somewhere
+in this source SCC, so this is a bad DFS.
+
+174
+00:13:10,782 --> 00:13:15,316
+Why is it bad? Well remember what Depth
+For Search does; it finds everything
+
+175
+00:13:15,316 --> 00:13:20,248
+findable from its starting point. And from
+C1 you can get to the entire world, you
+
+176
+00:13:20,248 --> 00:13:25,227
+can get to all the nodes in the entire
+graph. So you can discover everything. And
+
+177
+00:13:25,227 --> 00:13:28,347
+this is totally useless because we wanted
+to discover much more fine-grain
+
+178
+00:13:28,347 --> 00:13:32,917
+structure. We wanted to discover C1, C2,
+C3 and C4 individually. So that would be
+
+179
+00:13:32,917 --> 00:13:37,601
+an disaster if we invoked depth first
+search somewhere from C1. Fortunately
+
+180
+00:13:37,601 --> 00:13:40,256
+that's not what's going to happen, right?
+We computed this magical ordering in the
+
+181
+00:13:40,256 --> 00:13:46,335
+first pass to insure that we look at the
+node with the maximum finishing time and,
+
+182
+00:13:46,335 --> 00:13:50,944
+by the corollary, the maximum finishing
+time is going to be somewhere in C4.
+
+183
+00:13:50,944 --> 00:13:56,912
+That's gonna be a good DFS, in the sense
+that, when we start exploring from
+
+184
+00:13:56,912 --> 00:14:00,710
+anywhere in C4, there's no outgoing arcs.
+So, of course, we're gonna find everything
+
+185
+00:14:00,710 --> 00:14:03,068
+in C4. Everything in C4's strongly
+connected to each other. But we can't get
+
+186
+00:14:03,068 --> 00:14:06,629
+out. We will not have the option of
+trespassing on other strong components,
+
+187
+00:14:06,629 --> 00:14:13,431
+and we're not gonna find'em. So we're only
+gonna find C4, nothing more. Now, here's
+
+188
+00:14:13,431 --> 00:14:16,340
+where I'm gonna be a little informal.
+Although, again, everything I'm gonna say
+
+189
+00:14:16,340 --> 00:14:20,545
+is gonna be correct. So what happens now,
+once we've discovered everything in C4?
+
+190
+00:14:20,545 --> 00:14:24,479
+Well, all the nodes in C4 get marked as
+explored, as we're doing depth first
+
+191
+00:14:24,479 --> 00:14:27,945
+search. And then they're basically dead to
+us, right? The rest of our depth first
+
+192
+00:14:27,945 --> 00:14:31,586
+search loop will never explore them again.
+They're already marked as explored. If we
+
+193
+00:14:31,586 --> 00:14:35,297
+ever see'em, we don't even go there. So
+the way to think about that is when we
+
+194
+00:14:35,297 --> 00:14:39,337
+proceed with the rest of our for loop in
+DFS loop it's as if we're starting
+
+195
+00:14:39,337 --> 00:14:43,845
+afresh. We're doing depth first search
+from scratch on a smaller graph, on the
+
+196
+00:14:43,845 --> 00:14:48,437
+residual graph. The graph G with this
+newly discovered strong component 'C<i>'</i>
+
+197
+00:14:48,437 --> 00:14:54,543
+deleted. So in this example on the right,
+all of the nodes in C4 are dead to us and
+
+198
+00:14:54,543 --> 00:14:59,655
+it's as if we run DFS anew, just on the
+graph containing the strong components C1,
+
+199
+00:14:59,655 --> 00:15:04,810
+C2 and C3. So in particular, where is the
+next indication of depth first search
+
+200
+00:15:04,810 --> 00:15:10,078
+going to come from? It's going to come
+from some sink SCC in the residual graph,
+
+201
+00:15:10,078 --> 00:15:14,255
+right? It's going to start at the node
+that remains and that has the largest
+
+202
+00:15:14,255 --> 00:15:18,295
+finishing time left. So there's some
+ambiguity in this picture. Again recall we
+
+203
+00:15:18,295 --> 00:15:22,166
+don't know whether F2 is bigger or F3 is
+bigger. It could be either one. Maybe F2
+
+204
+00:15:22,166 --> 00:15:27,075
+is the largest remaining finishing time in
+which case the next DFS indication's gonna
+
+205
+00:15:27,075 --> 00:15:31,287
+begin somewhere more from C2. Again, the
+only things outgoing from C2 are these
+
+206
+00:15:31,287 --> 00:15:34,688
+already explored nodes. Their effectively
+deleted. We're not gonna go there again.
+
+207
+00:15:34,688 --> 00:15:40,695
+So this is essentially a sink FCC. We
+discover, we newly discover the nodes in
+
+208
+00:15:40,695 --> 00:15:43,595
+C2 and nothing else. Those are now
+effectively deleted. Now, the next
+
+209
+00:15:43,595 --> 00:15:49,122
+indication of DFS will come from somewhere
+in F3, somewhere in C3. That's the only
+
+210
+00:15:49,122 --> 00:15:53,803
+remaining sink SCC in the residual graph.
+So the third call, the DFS will discover
+
+211
+00:15:53,803 --> 00:15:57,076
+this stuff. And now, of course, we're left
+only with C1. And so the final indication
+
+212
+00:15:57,076 --> 00:16:04,317
+of DFS will emerge from and discover the
+nodes in C1. And in this sense because
+
+213
+00:16:04,317 --> 00:16:09,048
+we've ordered the nodes by finishing times
+when DFS was reverse graph, that ordering
+
+214
+00:16:09,048 --> 00:16:13,986
+has this incredible property that when you
+process the nodes in the second pass we'll
+
+215
+00:16:13,986 --> 00:16:17,933
+just peel off the strongly connected
+components one at a time. If you think
+
+216
+00:16:17,933 --> 00:16:22,304
+about it, it's in reverse topological
+order with respect to the directed asypric
+
+217
+00:16:22,304 --> 00:16:26,962
+graph of the strongly connected
+components. So we've constructed a proof
+
+218
+00:16:26,962 --> 00:16:30,972
+of correctness of Kosaraju's, algorithm
+for computing strongly connected
+
+219
+00:16:30,972 --> 00:16:34,608
+components. But again, there's a hole in
+it. So we completed the argument assuming
+
+220
+00:16:34,608 --> 00:16:38,961
+a statement that we haven't proved. So
+let's fill in that last gap in the proof,
+
+221
+00:16:38,976 --> 00:16:43,175
+and we'll we done. So what we need to do
+is prove the key lemma. Let me remind you
+
+222
+00:16:43,175 --> 00:16:50,649
+what it says. It says if you have two
+adjacent SCCs, C1 and C2 and is an arc from a
+
+223
+00:16:50,649 --> 00:16:58,151
+node in C1, call it 'I' to a node in C2, say
+J. Then the max finishing time in C2 is
+
+224
+00:16:58,151 --> 00:17:02,275
+bigger than the max finishing time in C1. Where, as always, these finishing
+
+225
+00:17:02,275 --> 00:17:06,335
+times are computed in that first pass of
+depth-first search loop in the reversed
+
+226
+00:17:06,335 --> 00:17:10,327
+graph. All right, now the finishing times
+are computed in the reversed graph, so
+
+227
+00:17:10,327 --> 00:17:14,289
+let's actually reverse all the arcs and
+reason about what's happening there. We
+
+228
+00:17:14,289 --> 00:17:19,454
+still have C1. It still contains the
+node I. We still have C2, which still
+
+229
+00:17:19,454 --> 00:17:25,732
+contains the node J. But now of course the
+orientation of the arc has reversed. So
+
+230
+00:17:25,732 --> 00:17:31,675
+the arc now points from J to I. Recall we
+had a quiz which said, asked you to
+
+231
+00:17:31,675 --> 00:17:36,105
+understand the effect of reversing all
+arcs on the SCC's and in particular there
+
+232
+00:17:36,105 --> 00:17:39,981
+is no effect. So the SCC's in the reverse
+graph are exactly the same as in the
+
+233
+00:17:39,981 --> 00:17:45,577
+forward graph. So now we're going to have
+two cases in this proof and the cases
+
+234
+00:17:45,577 --> 00:17:51,382
+correspond to where we first encounter a
+node of C1 and union C2. Now remember,
+
+235
+00:17:51,382 --> 00:17:55,327
+when we do this DFS loop, this second
+pass, because we have this outer four loop
+
+236
+00:17:55,327 --> 00:17:59,570
+that iterates over all of the nodes we're
+guaranteed to explore every single node of
+
+237
+00:17:59,570 --> 00:18:03,391
+the graph at some point. So in particular
+we're gonna have to explore at some point
+
+238
+00:18:03,391 --> 00:18:08,168
+every node in C1 and C2. What I want you
+to do is pause the algorithm. When it
+
+239
+00:18:08,168 --> 00:18:14,190
+first, for the first time, explores some
+node that's in either C1 or C2. There's
+
+240
+00:18:14,190 --> 00:18:18,332
+going to be two cases, of course, because
+that node might be in C1, you might see
+
+241
+00:18:18,332 --> 00:18:22,393
+that first. Or it might be in C2, you
+might see something from C2 first. So our
+
+242
+00:18:22,393 --> 00:18:26,815
+case one is going to be when the first
+node that we see from either one happens
+
+243
+00:18:26,815 --> 00:18:32,378
+to lie in C1. And the second case is where
+the first node V that we see happens to
+
+244
+00:18:32,378 --> 00:18:38,981
+lie in C2. So clearly exactly one of these
+will occur. So let's think about case one.
+
+245
+00:18:38,981 --> 00:18:47,826
+When we see a node of C1 before we see
+any nodes of C2. So in this case where we
+
+246
+00:18:47,826 --> 00:18:53,228
+encounter a node in C1 before we encounter
+any node in C2, the claim is that we're
+
+247
+00:18:53,228 --> 00:18:59,086
+going to explore everything in C1 before
+we ever see anything in C2. Why is that
+
+248
+00:18:59,086 --> 00:19:04,714
+true? The reason is there cannot be a path
+that starts somewhere in C1, for example,
+
+249
+00:19:04,714 --> 00:19:10,555
+like the vertex V, and reaches C2. This is
+where we are using the fact that the
+
+250
+00:19:10,555 --> 00:19:15,229
+meta-graph on SCC is a cyclic. Right C1 is strong
+
+251
+00:19:15,229 --> 00:19:19,385
+connected, C2 is strong connected, you can
+get from C2 to C1 and, if you can also get
+
+252
+00:19:19,385 --> 00:19:24,804
+from C1 back to C2 this all collapses into
+a single strongly connected component. But
+
+253
+00:19:24,804 --> 00:19:28,655
+that would be a contraction, we're
+assuming C1 and C2 are distinct strongly
+
+254
+00:19:28,655 --> 00:19:32,238
+connected components, therefore you can't
+have paths in both directions. We already
+
+255
+00:19:32,238 --> 00:19:36,392
+have a path from right to left, via JI, so
+there's no path from left to right. That's
+
+256
+00:19:36,392 --> 00:19:40,790
+why if you originate a depth first search
+from somewhere inside C1 like this vertex
+
+257
+00:19:40,790 --> 00:19:45,875
+V, you would finish exploring all of C1
+before you ever are going to see C2,
+
+258
+00:19:45,875 --> 00:19:51,058
+you're. Only gonna see C2 at some later
+point in the outer for loop. So, what's
+
+259
+00:19:51,058 --> 00:19:55,767
+the consequence that you completely finish
+with C1 before you ever see C2? Well it
+
+260
+00:19:55,767 --> 00:20:01,356
+means every single finishing time in C1 is
+going to be smaller than every single
+
+261
+00:20:01,356 --> 00:20:05,333
+finishing time in C2. So that's even
+stronger that what we're claiming, we're
+
+262
+00:20:05,333 --> 00:20:08,962
+just claiming that the biggest thing in C2
+is bigger than the biggest of C1. But
+
+263
+00:20:08,962 --> 00:20:12,682
+actually finishing times in C2 totally
+dominate those in C1, because you finish
+
+264
+00:20:12,682 --> 00:20:17,089
+C1 before you ever see C2. So let's now
+have a look at case one actually in
+
+265
+00:20:17,089 --> 00:20:20,727
+action. Let's return to the nine-node
+graph, the one that we actually ran
+
+266
+00:20:20,727 --> 00:20:25,921
+Kosaraju's algorithm to completion. So if
+we go back to this graph which has the
+
+267
+00:20:25,921 --> 00:20:29,844
+three connected components, then remember
+that the bottom version is the forward
+
+268
+00:20:29,844 --> 00:20:33,281
+version, the top version is the reversed
+version. So if, if you think about the
+
+269
+00:20:33,281 --> 00:20:39,470
+middle SCC as being c1, pulling the row of
+c1 and the left most. Scc playing the role
+
+270
+00:20:39,470 --> 00:20:44,608
+of C2, then what we have exactly is case
+one of the key lemma. So, which was
+
+271
+00:20:44,608 --> 00:20:50,641
+the first of these six vertices visited
+during the DFS loop in the reversed graph?
+
+272
+00:20:50,641 --> 00:20:54,785
+Well that would just be the node with the
+highest name, so the node nine. So this
+
+273
+00:20:54,785 --> 00:20:58,499
+was the first of these six vertices that
+depth first search looked at in the first
+
+274
+00:20:58,499 --> 00:21:04,327
+pass, that lies in what we're calling C1.
+And indeed everything in C1 was discovered
+
+275
+00:21:04,327 --> 00:21:09,278
+in that pass before anything in C2 and
+that's why all of the finishing times in
+
+276
+00:21:09,278 --> 00:21:14,477
+C2, the 7,8,9 are bigger than
+all of the finishing times in C1 -
+
+277
+00:21:14,477 --> 00:21:19,594
+the 1,5, and 6. So we're good to go in
+case two. We've proven sorry, in case one,
+
+278
+00:21:19,594 --> 00:21:24,051
+we've proven the lemma. When it's the case
+that, amongst the vertices in C1
+
+279
+00:21:24,051 --> 00:21:28,740
+and C2, depth first search in the first pass
+sees something from C1 first. So
+
+280
+00:21:28,740 --> 00:21:32,803
+now, let's look at this other case, this
+grey case, which could also happen,
+
+281
+00:21:32,803 --> 00:21:36,638
+totally possible. Well, the first thing we
+see when depth first searching in the
+
+282
+00:21:36,638 --> 00:21:42,873
+first pass, is something from C2. And here
+now is where we truly use the fact that
+
+283
+00:21:42,873 --> 00:21:47,384
+we're using a depth first search rather
+than some other graph search algorithm
+
+284
+00:21:47,384 --> 00:21:50,549
+like breadth first search. There's a lot
+of places in this algorithm you could swap
+
+285
+00:21:50,549 --> 00:21:55,049
+in breadth first search but in this case
+two, you'll see why it's important we're
+
+286
+00:21:55,049 --> 00:21:59,514
+using depth first search to compute the
+finishing times. And what's the key point?
+
+287
+00:21:59,514 --> 00:22:04,014
+The key point is that, when we invoke
+depth first search beginning from this
+
+288
+00:22:04,014 --> 00:22:08,505
+node V, which is now assuming the line C2.
+Remember depth first search will not
+
+289
+00:22:08,505 --> 00:22:12,649
+complete. We won't be done with V until
+we've found everything there is to find
+
+290
+00:22:12,649 --> 00:22:16,077
+from it, right? So we recursively explore
+all of the outgoing arcs. They recursively
+
+291
+00:22:16,077 --> 00:22:20,922
+explore all of the outgoing arcs, and so
+on. It's only when all paths going out of
+
+292
+00:22:20,922 --> 00:22:24,572
+V have been totally explored and
+exhausted, that we finally backtrack all
+
+293
+00:22:24,572 --> 00:22:29,926
+the way to V, and we consider ourselves
+done with it. That is, depth first search.
+
+294
+00:22:29,926 --> 00:22:36,562
+In the reverse graph initiated at v. Won't
+finish until everything findable has been
+
+295
+00:22:36,562 --> 00:22:41,473
+completely explored. Because there's an
+arc from C2 to C1, obviously everything to
+
+296
+00:22:41,473 --> 00:22:45,938
+C2 is findable from V, that's strongly
+connected. We can from C2 to C1 just using
+
+297
+00:22:45,938 --> 00:22:50,051
+this arc from J to I. C1 being strongly
+connected we can then find all of that.
+
+298
+00:22:50,051 --> 00:22:53,360
+Maybe we can find other strongly connected
+components, as well, but for sure
+
+299
+00:22:53,360 --> 00:22:57,129
+depth-first search starting from V will
+find everything in C1 to C2, maybe some
+
+300
+00:22:57,129 --> 00:23:01,778
+other things. And we won't finish with V
+until we finish with everything else,
+
+301
+00:23:01,778 --> 00:23:06,807
+that's the depth-first search property.
+For that reason the finishing time of this
+
+302
+00:23:06,807 --> 00:23:11,614
+vertex V will be the largest of anything
+reachable from it. So in particular it'll
+
+303
+00:23:11,614 --> 00:23:14,875
+be larger than everything in C two but
+more to the point, it'll be larger than
+
+304
+00:23:14,875 --> 00:23:18,962
+everything in C1 which is what we are
+trying to prove. Again let's just see
+
+305
+00:23:18,962 --> 00:23:22,064
+this quickly in action in the nine node
+network on which we traced through
+
+306
+00:23:22,064 --> 00:23:26,220
+Kosaraju's algorithm. So to show the rule
+that case two is playing in this concrete
+
+307
+00:23:26,220 --> 00:23:30,441
+example let's think of the right most
+strongly connected component as being C1.
+
+308
+00:23:30,441 --> 00:23:34,572
+And let's think of the middle SCC as being C.2. Now
+
+309
+00:23:34,572 --> 00:23:38,742
+the last time. We called the middle one C1
+and the leftmost one C2. Now we're calling
+
+310
+00:23:38,742 --> 00:23:42,066
+the rightmost one C1 and the middle one
+C2. So again, we have to ask the question,
+
+311
+00:23:42,066 --> 00:23:47,091
+you know, of the six nodes in C1 and in
+C2, what is the first one encountered in
+
+312
+00:23:47,091 --> 00:23:50,185
+the depth first search that we do in the
+first pass. And then again, is the node
+
+313
+00:23:50,185 --> 00:23:54,113
+nine? The, the node which is originally
+labeled not. So it's the same node that
+
+314
+00:23:54,113 --> 00:23:57,588
+was relevant in the previous case, but now
+with this relabeling of the components,
+
+315
+00:23:57,588 --> 00:24:02,821
+nine appears in the strongly connected
+component C-2, not in the one labeled C-1.
+
+316
+00:24:02,821 --> 00:24:07,351
+So that's the reason now we're in case
+two, not in case one. And what you'll see
+
+317
+00:24:07,351 --> 00:24:13,301
+is, what is the finishing time that this
+originally labeled nine node gets. It gets
+
+318
+00:24:13,301 --> 00:24:18,614
+the finishing time six. And you'll notice
+six is bigger than any of the other
+
+319
+00:24:18,614 --> 00:24:22,523
+finishing times of any of the other nodes
+in C1 or C2. All, the other five nodes
+
+320
+00:24:22,523 --> 00:24:26,518
+have the finishing times one through five.
+And that's exactly because when we ran
+
+321
+00:24:26,518 --> 00:24:30,515
+depth first search in the first pass, and
+we started it at the node originally
+
+322
+00:24:30,515 --> 00:24:35,352
+labeled nine, it discovered these other
+five nodes and finished exploring them
+
+323
+00:24:35,352 --> 00:24:40,897
+first before finally back tracking all the
+way back to nine, and deeming nine fully
+
+324
+00:24:40,897 --> 00:24:44,839
+explored. And it was only at that point
+that nine got its finishing time after
+
+325
+00:24:44,839 --> 00:24:50,371
+everything reachable from it had gotten
+there lower finishing times. So that
+
+326
+00:24:50,371 --> 00:24:54,851
+wraps it up. We had two cases depending on
+whether in these two adjacent SCC's, the
+
+327
+00:24:54,851 --> 00:25:00,349
+first vertex encountered was in the C1, or
+in C2. Either way it doesn't matter, the
+
+328
+00:25:00,349 --> 00:25:04,621
+largest finishing time has to be in C2.
+Sometimes it's bigger than everything,
+
+329
+00:25:04,621 --> 00:25:08,351
+sometimes it's just bigger than the
+biggest in C-1, but it's all the same to
+
+330
+00:25:08,351 --> 00:25:10,721
+us. And to re cap how the rest of the
+proof goes, we have a corollary based on
+
+331
+00:25:10,721 --> 00:25:16,079
+this lemma, which is maximum finishing
+time have to lie in sink SCC
+
+332
+00:25:16,079 --> 00:25:18,877
+And that's exactly
+where we want our depth first search to
+
+333
+00:25:18,877 --> 00:25:23,135
+initiate. If you're initiated in a strong
+component with no outgoing arcs, you do
+
+334
+00:25:23,135 --> 00:25:26,872
+DFS. The stuff you find is just the stuff
+and that strongly connected component. You
+
+335
+00:25:26,872 --> 00:25:31,061
+do not have any avenues by which to
+trespass on other strong components. So
+
+336
+00:25:31,061 --> 00:25:35,067
+you find exactly one SCC. In effect, you
+can peel that off and recurse on the rest
+
+337
+00:25:35,067 --> 00:25:39,197
+of the graph. And our slick way of
+implementing this recursion is to just do
+
+338
+00:25:39,197 --> 00:25:43,854
+the single second, DFS pass, where you
+just treat the nodes in decreasing order
+
+339
+00:25:43,854 --> 00:25:48,436
+of finishing times, that in effect,
+unveil, unveils all of the SCCs in
+
+340
+00:25:48,436 --> 00:25:53,397
+reverse topological ordering. So that's
+it, Kosaraju's algorithm, and the complete
+
+341
+00:25:53,397 --> 00:25:58,093
+proof of correctness. A blazingly fast
+graph primitive that, in any directed
+
+342
+00:25:58,093 --> 00:26:02,866
+graph, will tell you its strong
+components.

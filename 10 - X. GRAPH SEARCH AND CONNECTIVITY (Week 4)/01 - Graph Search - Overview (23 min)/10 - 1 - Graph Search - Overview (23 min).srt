@@ -1,0 +1,1632 @@
+1
+00:00:00,000 --> 00:00:04,004
+So let's talk about the absolutely
+fundamental problem of searching a graph,
+
+2
+00:00:04,004 --> 00:00:08,020
+and the very related problem of finding
+paths through graphs. So why would one be
+
+3
+00:00:08,020 --> 00:00:12,030
+interested in searching a graph, or
+figuring out if there's a path from point
+
+4
+00:00:12,030 --> 00:00:15,051
+A to point B? Well there's many, many
+reasons. I'm going to give you a highly
+
+5
+00:00:15,051 --> 00:00:20,055
+non-exhaustive list on this slide. >>So let
+me begin with a very sorta obvious and
+
+6
+00:00:20,055 --> 00:00:23,099
+literal example, which is if you have a
+physical network, then often you want to
+
+7
+00:00:23,099 --> 00:00:27,074
+make sure that the network is fully
+connected in the sense that you can get
+
+8
+00:00:27,074 --> 00:00:31,084
+from any starting point to any other
+point. So, for example, think back to the
+
+9
+00:00:31,084 --> 00:00:36,066
+phone network. It would've been a disaster
+if callers from California could only
+
+10
+00:00:36,066 --> 00:00:40,075
+reach callers in Nevada, but not their
+family members in Utah. So obviously a
+
+11
+00:00:40,075 --> 00:00:45,003
+minimal condition for functionality in
+something like a phone network is that you
+
+12
+00:00:45,003 --> 00:00:48,021
+can get from any one place to any other
+place, similarly for road networks within
+
+13
+00:00:48,021 --> 00:00:54,086
+a given country, and so on. It can also be
+fun to think about other non-physical
+
+14
+00:00:54,086 --> 00:00:59,073
+networks and ask if they're connected. So
+one network that's fun to play around with
+
+15
+00:00:59,073 --> 00:01:04,054
+is the movie network. So this is the graph
+where the nodes correspond to actors and
+
+16
+00:01:04,054 --> 00:01:09,023
+actresses, and you have an edge between two
+nodes, if they played a role in a common
+
+17
+00:01:09,023 --> 00:01:12,064
+movie. So this is going to be an
+undirected graph, where the edges
+
+18
+00:01:12,064 --> 00:01:16,008
+correspond to, not necessarily
+co-starring, but both the actors appearing
+
+19
+00:01:16,008 --> 00:01:21,075
+at least some point in the same movie. So
+versions of this movie network you should be able to
+
+20
+00:01:21,075 --> 00:01:25,056
+find publicly available on the web, and
+there's lots of fun questions you can ask about
+
+21
+00:01:25,056 --> 00:01:29,029
+the movie network. Like, for example,
+what's the minimum number of hops, where a
+
+22
+00:01:29,029 --> 00:01:33,091
+hop here again is the movie that two people both played
+a role in? The minimum number of hops or
+
+23
+00:01:33,091 --> 00:01:38,064
+edges from one actor to another actor, so
+perhaps the most famous statistic that's
+
+24
+00:01:38,064 --> 00:01:43,050
+been thought about with the movie is the
+Bacon Number. So this refers to the fairly
+
+25
+00:01:43,050 --> 00:01:47,068
+ubiquitous actor Kevin Bacon, and the
+question the Bacon Number of an actor is
+
+26
+00:01:47,068 --> 00:01:54,015
+defined as the minimum number of hops you need in
+this movie graph to get to Kevin Bacon.
+
+27
+00:01:54,015 --> 00:02:00,031
+So, for example, you could ask about Jon
+Hamm, also known as Don Draper from "Mad Men".
+
+28
+00:02:00,031 --> 00:02:05,080
+And you could ask how many edges do
+you need on a path through the movie graph
+
+29
+00:02:05,080 --> 00:02:10,096
+to get to Kevin Bacon? And it turns out
+that the answer is 1, excuse me, 2
+
+30
+00:02:10,096 --> 00:02:15,081
+edges. You need one intermediate point,
+namely Colin Firth. And that's became,
+
+31
+00:02:15,081 --> 00:02:20,052
+that's because Colin Firth and Kevin Bacon
+both starred in Atom Egoyan's movie, "Where
+
+32
+00:02:20,052 --> 00:02:27,054
+"the Truth Lies", and Jon Hamm and Colin
+Firth were both in the movie "A Single Man".
+
+33
+00:02:27,054 --> 00:02:30,016
+So that would give Jon Hamm a Bacon
+Number of 2. So, these are the kind of
+
+34
+00:02:30,016 --> 00:02:34,005
+questions you're gonna ask about
+connectivity. Not just physical networks,
+
+35
+00:02:34,005 --> 00:02:38,036
+like telephone and telecommunication
+networks, but also logical networks about
+
+36
+00:02:38,036 --> 00:02:42,080
+parallel relationships between objects
+in general. So the Bacon Number is
+
+37
+00:02:42,080 --> 00:02:46,071
+fundamentally not just about any path, but
+actually shortest paths, the minimum
+
+38
+00:02:46,071 --> 00:02:51,010
+number of edges you need to traverse to
+get from one actor to Kevin Bacon. And
+
+39
+00:02:51,010 --> 00:02:54,048
+shortest paths are also have a very
+practical use, that you might use
+
+40
+00:02:54,048 --> 00:02:58,092
+yourself in the driving directions. So
+when you use a website or a phone app and
+
+41
+00:02:58,092 --> 00:03:02,078
+you ask for the best way to get from where
+you are now to say some restaurant where
+
+42
+00:03:02,078 --> 00:03:05,091
+you're gonna have dinner, obviously you're
+trying to find some kind of path through a
+
+43
+00:03:05,091 --> 00:03:09,079
+network through a graph, and indeed often
+you want the, the shortest path, perhaps
+
+44
+00:03:09,079 --> 00:03:14,034
+in mileage or perhaps in anticipated
+travel time. Now I realize that when you
+
+45
+00:03:14,034 --> 00:03:17,052
+are thinking about paths and graphs, it's
+natural to focus on sort of very literal
+
+46
+00:03:17,052 --> 00:03:22,045
+paths and quite literal physical networks.
+Things like routes through a road network or
+
+47
+00:03:22,045 --> 00:03:27,024
+paths through the internet and so on. You
+should really think more abstractly as a
+
+48
+00:03:27,024 --> 00:03:33,070
+path as just a sequence of decisions,
+taking you from some initial state to some
+
+49
+00:03:33,070 --> 00:03:38,060
+final state. And it's this abstract
+mentality which is what makes graph search
+
+50
+00:03:38,060 --> 00:03:42,070
+so ubiquitous, it feels like artificial
+intelligence, where you want to formulate
+
+51
+00:03:42,070 --> 00:03:47,042
+a plan of how to get from an initial state
+to some goal state. So, to give a simple
+
+52
+00:03:47,042 --> 00:03:51,057
+recreational example, you can imagine just
+trying to understand how to compute
+
+53
+00:03:51,057 --> 00:03:55,093
+automatically a way to fill in a Sudoku
+puzzle so that you get to, so that you
+
+54
+00:03:55,093 --> 00:04:00,096
+solve the puzzle correctly. So you might
+ask, you know, what is the graph that
+
+55
+00:04:00,096 --> 00:04:05,001
+we're talking about, when we wanna solve a
+Sudoku puzzle. Well this is gonna be a
+
+56
+00:04:05,001 --> 00:04:09,086
+directed graph, where here the nodes
+correspond to partially completed puzzles.
+
+57
+00:04:09,086 --> 00:04:15,012
+So, for example, at one node of this
+extremely large graph, perhaps 40 out of
+
+58
+00:04:15,012 --> 00:04:20,024
+the 81 cells are filled in with some kind
+of number, and now, again, remember a path
+
+59
+00:04:20,024 --> 00:04:24,012
+is supposed to correspond to a sequence of
+decisions. So, what are the actions that
+
+60
+00:04:24,012 --> 00:04:28,038
+you take in solving Sudoku? Well, you fill
+in a number into a square. So, an edge
+
+61
+00:04:28,038 --> 00:04:32,048
+which here is going to be directed, is
+going to move you from one partially
+
+62
+00:04:32,048 --> 00:04:36,004
+completed puzzle to another, where one
+previously empty square gets filled in
+
+63
+00:04:36,004 --> 00:04:40,073
+with one number. And of course then the
+path is that you're interested in computing,
+
+64
+00:04:40,073 --> 00:04:43,090
+or what your searching for when you search
+this graph. You begin with the initial
+
+65
+00:04:43,090 --> 00:04:49,033
+state of the Sudoku puzzle and you want to
+reach some goal state where the Sudoku
+
+66
+00:04:49,033 --> 00:04:53,063
+puzzle is completely filled in without any
+violations of the rules of Sudoku. And of
+
+67
+00:04:53,063 --> 00:04:57,043
+course it's easy to imagine millions of
+other situations where you wanna formulate
+
+68
+00:04:57,043 --> 00:05:01,030
+some kind of plan like this, for
+example if you have a robotic hand and you
+
+69
+00:05:01,030 --> 00:05:04,097
+wanna grasp some object, you need to think
+about exactly how to approach the object
+
+70
+00:05:04,097 --> 00:05:09,005
+with this robotic hand, so that you can
+grab it without, for example, first knocking
+
+71
+00:05:09,005 --> 00:05:12,057
+it over, and you can think of millions of
+other examples. Another thing which turns
+
+72
+00:05:12,057 --> 00:05:16,027
+out to be closely related to graph search,
+as we'll see, it has many applications in
+
+73
+00:05:16,027 --> 00:05:20,053
+its own right, is that of computing
+connectivity information about graphs, in
+
+74
+00:05:20,053 --> 00:05:23,092
+particular the connected components. So
+this, especially for undirected graphs,
+
+75
+00:05:23,092 --> 00:05:27,079
+corresponds to the pieces of the graph.
+We'll talk about these topics in their own
+
+76
+00:05:27,079 --> 00:05:31,098
+right, and I'll give you applications for
+them later. So for undirected graphs I'll
+
+77
+00:05:31,098 --> 00:05:36,020
+briefly mention an easy clustering
+heuristic you can derive out of computing
+
+78
+00:05:36,020 --> 00:05:40,047
+connected components. For directed graphs
+where the very definition of computing
+
+79
+00:05:40,047 --> 00:05:44,070
+components is a bit more subtle, I'll show
+you applications to understanding the
+
+80
+00:05:44,070 --> 00:05:49,005
+structure of the web. So these are a few
+of the reasons why it's important for you
+
+81
+00:05:49,005 --> 00:05:53,009
+understand how to efficiently search
+graphs. It's a, a fundamental and widely
+
+82
+00:05:53,009 --> 00:05:56,089
+applicable graph primitive. And I'm happy
+to report that in this section of the
+
+83
+00:05:56,089 --> 00:06:00,007
+course, pretty much anything, any
+questions we wanna answer about graph
+
+84
+00:06:00,007 --> 00:06:03,057
+search, computing connected components,
+and so on, there's gonna be really fast
+
+85
+00:06:03,057 --> 00:06:07,025
+algorithms to do it. So, this will be the
+part of the course where there's lots of
+
+86
+00:06:07,025 --> 00:06:10,075
+what I call for free primitives,
+processing steps, subroutines you can run
+
+87
+00:06:10,075 --> 00:06:14,030
+without even thinking about it. All of
+these algorithms we're gonna discuss in
+
+88
+00:06:14,030 --> 00:06:17,085
+the next several lectures, are gonna run
+in linear time, and they're gonna have
+
+89
+00:06:17,085 --> 00:06:21,030
+quite reasonable constants. So, they're
+really barely slower than reading the
+
+90
+00:06:21,030 --> 00:06:24,080
+input. So, if you have a graph and you're
+trying to reason about it and you're
+
+91
+00:06:24,080 --> 00:06:28,067
+trying to make sense about it, you should
+in some sense feel free to apply any of
+
+92
+00:06:28,067 --> 00:06:32,080
+these subroutines we're gonna discuss to
+try and glean some more information about
+
+93
+00:06:32,080 --> 00:06:36,074
+what they look like, how you might
+use the network data. There's a lot of
+
+94
+00:06:36,074 --> 00:06:40,013
+different approaches to systematically
+searching a graph. So, there's many
+
+95
+00:06:40,013 --> 00:06:43,095
+methods. In this class we're gonna focus
+on two very important ones, mainly breadth
+
+96
+00:06:43,095 --> 00:06:47,081
+first search and depth first search. But
+all of the graph search methods share some
+
+97
+00:06:47,081 --> 00:06:51,044
+things in common. So, in this slide let me
+just tell you the high order bits of
+
+98
+00:06:51,044 --> 00:06:55,000
+really any graph search algorithm. So
+graph search subroutines
+
+99
+00:06:55,000 --> 00:06:59,005
+generally are passed as input a starting
+search vertex from which the search
+
+100
+00:06:59,005 --> 00:07:03,021
+originates. So that's often called source
+vertex. And your goal then is to find
+
+101
+00:07:03,021 --> 00:07:07,043
+everything findable from the search vertex
+and obviously you're not gonna find
+
+102
+00:07:07,043 --> 00:07:11,075
+anything that you can't find that is not
+findable. What I mean by findable, I mean,
+
+103
+00:07:11,075 --> 00:07:16,023
+there's a path from the starting point to this
+other node. So any other node to which you
+
+104
+00:07:16,023 --> 00:07:20,024
+can get along on a path from the starting
+point you should discover. So, for
+
+105
+00:07:20,024 --> 00:07:25,016
+example, if you're given an undirected
+graph that has three different pieces,
+
+106
+00:07:25,016 --> 00:07:29,089
+like this one I'm drawing on the right,
+then perhaps S is this left most node
+
+107
+00:07:29,089 --> 00:07:34,074
+here, then the findable vertices starting
+from S, i.e. the ones which you can
+
+108
+00:07:34,074 --> 00:07:39,016
+reach from a path to S, is clearly
+precisely these four vertices. So, you
+
+109
+00:07:39,016 --> 00:07:44,020
+would want graph search to automatically
+discover and efficiently discover these
+
+110
+00:07:44,020 --> 00:07:49,049
+four vertices if you started at S. You can
+also think about a directed version of the
+
+111
+00:07:49,049 --> 00:07:53,090
+exact same graph, where I'm gonna direct
+the vertices like so. So now the
+
+112
+00:07:53,090 --> 00:07:58,037
+definition of the findable nodes is a
+little bit different. We're only expecting
+
+113
+00:07:58,037 --> 00:08:02,096
+to follow arcs forward, along the forward
+direction. So we should only expect at best
+
+114
+00:08:02,096 --> 00:08:07,005
+to find all of the nodes that you can
+reach, by following a succession of
+
+115
+00:08:07,005 --> 00:08:11,047
+forward arcs, that is, any node that
+there's a path to from S. So in this case,
+
+116
+00:08:11,047 --> 00:08:16,000
+these three nodes would be the ones we'd
+be hoping to find. This blue node to the
+
+117
+00:08:16,000 --> 00:08:20,053
+right, we would no longer expect to find,
+because the only way to get there from S,
+
+118
+00:08:20,053 --> 00:08:24,095
+is by going backward along arcs. And
+that's not what we're going to be thinking
+
+119
+00:08:24,095 --> 00:08:30,009
+about in our graph searches. So we want to
+find everything findable, i.e. that we can get
+
+120
+00:08:30,009 --> 00:08:34,043
+to along paths, and we want to do it
+efficiently. Efficiently means we don't
+
+121
+00:08:34,043 --> 00:08:38,099
+want to explore anything twice. Right, so
+the graph has m arcs, m edges and n nodes
+
+122
+00:08:38,099 --> 00:08:43,049
+or n vertices and really we wanna just
+look at either each piece of the graph only
+
+123
+00:08:43,049 --> 00:08:48,004
+once for a small cost number of times. So
+looking for running time which is linear
+
+124
+00:08:48,004 --> 00:08:52,042
+on the size of the graph that is big O of
+m plus n. Now when we were talking about
+
+125
+00:08:52,042 --> 00:08:56,022
+representing graphs, I said that in many
+applications, it's natural to focus on
+
+126
+00:08:56,022 --> 00:09:00,032
+connected graphs, in which case M is gonna
+dominate N, and you're gonna have at least
+
+127
+00:09:00,032 --> 00:09:04,031
+as many edges as nodes, essentially. But
+connectivity is the classic case where you
+
+128
+00:09:04,031 --> 00:09:08,011
+might have the number of edges of being
+much smaller than the number of nodes.
+
+129
+00:09:08,011 --> 00:09:11,086
+There might be many pieces of the whole
+point of what you're trying to do is
+
+130
+00:09:11,086 --> 00:09:15,076
+discover them. So, for this sequence of
+lectures where we talk about graph search
+
+131
+00:09:15,076 --> 00:09:19,095
+and connectivity, we will usually write M
+plus N. We'll think that either one can be
+
+132
+00:09:19,095 --> 00:09:23,081
+bigger or smaller than the other. So let
+me now give you a generic approach to
+
+133
+00:09:23,081 --> 00:09:26,083
+graph search. It's gonna be
+under-specified, there'll be many
+
+134
+00:09:26,083 --> 00:09:30,064
+different ways to instantiate it. Two
+particular instantiations will give us
+
+135
+00:09:30,064 --> 00:09:34,021
+breadth first search and depth first
+search but here is just a general
+
+136
+00:09:34,021 --> 00:09:38,028
+systematic method to finding everything
+findable without exploring anything more
+
+137
+00:09:38,028 --> 00:09:41,094
+than once. So motivated by the second
+goal, the fact that we don't want to
+
+138
+00:09:41,094 --> 00:09:45,076
+explore anything twice, with each node,
+with each vertex, we're gonna remember
+
+139
+00:09:45,076 --> 00:09:49,098
+whether or not we explored it before. So
+we just need one Boolean per node and we
+
+140
+00:09:49,098 --> 00:09:53,094
+will initialize it by having everything
+unexplored except S, our starting point
+
+141
+00:09:53,094 --> 00:09:58,059
+we'll have it start off as explored. And
+it's useful to think of the nodes thus far
+
+142
+00:09:58,059 --> 00:10:02,088
+as being in some sense territory conquered
+by the algorithm. And then there's going
+
+143
+00:10:02,088 --> 00:10:07,022
+to be a frontier in between the conquered
+and unconquered territory. And the goal of
+
+144
+00:10:07,022 --> 00:10:11,052
+the generic outcome is that each step we
+supplement the conquered territory by one
+
+145
+00:10:11,052 --> 00:10:15,050
+new node, assuming that there is one
+adjacent to the territory you've already
+
+146
+00:10:15,050 --> 00:10:19,027
+conquered. So for example in this top
+example with the undirected network,
+
+147
+00:10:19,027 --> 00:10:23,052
+initially the only thing we've explored is
+the starting point S. So that's sort of
+
+148
+00:10:23,052 --> 00:10:27,045
+our home base. That's all that we have
+conquered so far. And then in our main
+
+149
+00:10:27,045 --> 00:10:32,025
+while loop, which we iterate as many times
+as we can until we don't have any edges
+
+150
+00:10:32,025 --> 00:10:37,007
+meeting the following criterion, we look
+for an edge with one end point that we've
+
+151
+00:10:37,007 --> 00:10:41,082
+already explored. One end point inside the
+conquered territory and then the other end
+
+152
+00:10:41,082 --> 00:10:46,024
+point outside. So this is how we can
+in one hop supplement the number of nodes
+
+153
+00:10:46,024 --> 00:10:50,065
+we've seen by one new one. If we can't
+find such an edge then this is where the
+
+154
+00:10:50,065 --> 00:10:55,012
+search stops. If we can find such an edge,
+well then we suck V into the conquered
+
+155
+00:10:55,012 --> 00:10:59,042
+territory. We think of it being explored.
+And we return to the main while loop. So,
+
+156
+00:10:59,042 --> 00:11:03,076
+for example, in this example on the right,
+we start with the only explored node being
+
+157
+00:11:03,076 --> 00:11:07,073
+S. Now, there's actually two edges that
+cross the frontier, in the sense one of
+
+158
+00:11:07,073 --> 00:11:11,086
+the endpoints is explored, namely one of
+the endpoints is S, and the other one is
+
+159
+00:11:11,086 --> 00:11:16,000
+some other vertex. Right? There's this
+there's these two vert, two edges to the
+
+160
+00:11:16,000 --> 00:11:19,097
+left, two vertices adjacent to S. So, in
+this algorithm we pick either one. It's
+
+161
+00:11:19,097 --> 00:11:24,015
+un, under-specified which one we pick.
+Maybe we pick the top one. And then all of
+
+162
+00:11:24,015 --> 00:11:28,096
+the sudden, this second top vertex is also
+explored so the conquered territory is a
+
+163
+00:11:28,096 --> 00:11:33,042
+union of them, and so now we have a new
+frontier. So now again we have two edges
+
+164
+00:11:33,042 --> 00:11:38,029
+that cross from the explored nodes to the
+unexplored nodes. These are the edges that
+
+165
+00:11:38,029 --> 00:11:42,082
+are in some sense going from northwest to
+southeast. Again, we pick one of them.
+
+166
+00:11:42,082 --> 00:11:47,028
+It's not clear how. The algorithm doesn't
+tell us, we just pick any of them. So,
+
+167
+00:11:47,028 --> 00:11:52,015
+maybe for example we pick this right most
+edge crossing the frontier. Now the
+
+168
+00:11:52,015 --> 00:11:57,005
+right most edge of these-- right most vertex of these four is explored so our
+
+169
+00:11:57,005 --> 00:12:01,050
+conquered territory is the top three
+vertices. And now again we have two edges
+
+170
+00:12:01,050 --> 00:12:05,078
+crossing the frontier. The two edges that
+are incident to the bottom node, we pick
+
+171
+00:12:05,078 --> 00:12:09,095
+one of them, not clear which one, maybe
+this one. And now the bottom node is also
+
+172
+00:12:09,095 --> 00:12:13,086
+explored. And now there are no edges
+crossing the frontier. So there are no
+
+173
+00:12:13,086 --> 00:12:17,076
+edges who, on the one hand, have one
+end-point being explored, and the other
+
+174
+00:12:17,076 --> 00:12:21,098
+end-point being unexplored. So these will
+be the four vertices, as one would hope,
+
+175
+00:12:21,098 --> 00:12:26,045
+that the search will explore started from
+S. Well generally the claim is that this
+
+176
+00:12:26,045 --> 00:12:31,015
+generic graph search algorithm does what
+we wanted. It finds everything findable from
+
+177
+00:12:31,015 --> 00:12:35,055
+the starting point and moreover it doesn't
+explore anything twice. I think that's
+
+178
+00:12:35,055 --> 00:12:39,003
+fairly clear that it doesn't explore
+anything twice. Right? As soon as you look
+
+179
+00:12:39,003 --> 00:12:42,078
+at a node for the first time, you suck it
+into the conquered territory never to look
+
+180
+00:12:42,078 --> 00:12:46,057
+at it again. Similarly as soon as you look
+at an edge, you suck them in. But when we
+
+181
+00:12:46,057 --> 00:12:50,005
+explore breadth and depth first search,
+I'll be more precise about the running
+
+182
+00:12:50,005 --> 00:12:53,075
+time and exactly what I mean by you don't
+explore something twice. So, at this level
+
+183
+00:12:53,075 --> 00:12:57,037
+of generality, I just wanna focus on the
+first point, that any way you instantiate
+
+184
+00:12:57,037 --> 00:13:01,012
+this search algorithm, it's going to find
+everything findable. So, what do I really
+
+185
+00:13:01,012 --> 00:13:05,049
+mean by that? The formal claim is that at
+the termination of this algorithm, the
+
+186
+00:13:05,049 --> 00:13:10,014
+nodes that we've marked exp-, explored,
+are precisely the ones that can be reached
+
+187
+00:13:10,014 --> 00:13:14,062
+via a path from S. That's the sense in
+which the algorithm explores everything
+
+188
+00:13:14,062 --> 00:13:18,083
+that could potentially be findable from
+the starting point S. And one thing I
+
+189
+00:13:18,083 --> 00:13:22,025
+wanna mention is that this claim and the
+proof I'm going to give of it, it holds
+
+190
+00:13:22,025 --> 00:13:25,085
+whether or not G is an undirected graph
+or a directed graph. In fact, almost all
+
+191
+00:13:25,085 --> 00:13:29,010
+of the things that I'm gonna say about
+graph search, and I'm talking about
+
+192
+00:13:29,010 --> 00:13:32,048
+breadth first search and depth first
+search, work in essentially the same way,
+
+193
+00:13:32,048 --> 00:13:36,009
+either in undirected graphs or directed
+graphs. The obvious difference being in an
+
+194
+00:13:36,009 --> 00:13:39,069
+undirected graph you can traverse an edge
+in either direction. In a directed graph,
+
+195
+00:13:39,069 --> 00:13:43,015
+we're only supposed to traverse it in a
+forward direction from the tail to the
+
+196
+00:13:43,015 --> 00:13:46,070
+head. The one big difference between
+undirected and directed graphs is when
+
+197
+00:13:46,070 --> 00:13:50,018
+we connectivity computations and I'll
+remind you when we get to that point which
+
+198
+00:13:50,018 --> 00:13:53,084
+one we're talking about. Okay? But for the
+most part, when we just talk about basic
+
+199
+00:13:53,084 --> 00:13:57,063
+graph search it works essentially the same
+way whether it's undirected or directed.
+
+200
+00:13:57,063 --> 00:14:02,058
+So keep that in mind. Alright, so why is
+this true? Why are the nodes that get
+
+201
+00:14:02,058 --> 00:14:08,055
+explored precisely the nodes for which
+there's a path to them from S? Well, one
+
+202
+00:14:08,055 --> 00:14:13,035
+direction is easy. Which is, you can't
+find anything which is not findable, that
+
+203
+00:14:13,035 --> 00:14:17,088
+is, if you wind up exploring a node, the
+only reason that can happen is because you
+
+204
+00:14:17,088 --> 00:14:22,002
+traversed a sequence of edges that got you
+there. And that sequence of edges
+
+205
+00:14:22,002 --> 00:14:26,050
+obviously defines a path from S to V. If
+you really want to be pedantic about the
+
+206
+00:14:26,050 --> 00:14:31,021
+forward direction that explored nodes have to have paths from S. Then you can
+
+207
+00:14:31,021 --> 00:14:36,005
+just do an easy induction. And I'll leave
+this for you to check, if you want, in the
+
+208
+00:14:36,005 --> 00:14:40,083
+privacy of your own home. So the important
+direction of this claim is really the
+
+209
+00:14:40,083 --> 00:14:45,055
+opposite. Why is it that no matter how we
+instantiate this generic graph search
+
+210
+00:14:45,055 --> 00:14:50,021
+procedure, it's impossible for us to miss
+anything. That's the crucial point, we
+
+211
+00:14:50,021 --> 00:14:54,057
+don't miss anything that we could, in
+principle, find via a path. But we're
+
+212
+00:14:54,057 --> 00:14:59,009
+gonna proceed by contradiction. So, what
+does that mean, we're going to assume
+
+213
+00:14:59,009 --> 00:15:03,090
+that, the statement that we want to prove
+is true, is not true. Which means that,
+
+214
+00:15:03,090 --> 00:15:08,071
+it's possible that, G has a path from s to
+v and yet, somehow our algorithm misses
+
+215
+00:15:08,071 --> 00:15:13,023
+it, doesn't mark it as explored. Alright,
+that's the thing we're really hoping
+
+216
+00:15:13,023 --> 00:15:18,010
+doesn't happen. So let's suppose it does
+happen and then derive a contradiction. So
+
+217
+00:15:18,010 --> 00:15:22,093
+suppose G does have a path from s to some
+vertex v. Call the path P. I'm gonna draw
+
+218
+00:15:22,093 --> 00:15:27,066
+the picture for an undirected graph but
+the situation would be same in the, in the
+
+219
+00:15:27,066 --> 00:15:32,053
+directed case. So there's a bunch
+of hops, there's a bunch of edges and then
+
+220
+00:15:32,053 --> 00:15:37,023
+eventually this path ends at v. Now the
+bad situation, the situation from which we
+
+221
+00:15:37,023 --> 00:15:41,052
+want to derive a contradiction is that V
+is unexplored at the end of this
+
+222
+00:15:41,052 --> 00:15:46,098
+algorithm. So let's take stock of what we
+know. S for sure is explored, right. We
+
+223
+00:15:46,098 --> 00:15:52,087
+initialized this search procedure so that
+S is marked as explored. V by hypothesis
+
+224
+00:15:52,087 --> 00:15:57,067
+in this proof by contradiction is
+unexplored. So S is explored, V is
+
+225
+00:15:57,067 --> 00:16:03,020
+unexplored. So now imagine we, just in our
+heads as a thought experiment which
+
+226
+00:16:03,020 --> 00:16:09,003
+traverse this path P. We start at S and we
+know it's explored. We go the next vertex,
+
+227
+00:16:09,003 --> 00:16:13,017
+it may or may not have been explored,
+we're not sure. We go to the third vertex,
+
+228
+00:16:13,017 --> 00:16:17,037
+again who knows. Might be explored, might
+be unexplored and so on, but by time we
+
+229
+00:16:17,037 --> 00:16:21,062
+get to V, we know it's unexplored. So we
+start at S, it's been explored, we get to V
+
+230
+00:16:21,062 --> 00:16:26,010
+it's been unexplored. So at some point
+there's some hop, along this path P, from
+
+231
+00:16:26,010 --> 00:16:31,015
+which we move from an explored vertex, to
+an unexplored vertex. There has to be a
+
+232
+00:16:31,015 --> 00:16:36,013
+switch, at some point, cuz the end of the
+day at the end of the path we're at an
+
+233
+00:16:36,013 --> 00:16:41,006
+unexplored node. So consider the first
+edge, and there must be one that we switch
+
+234
+00:16:41,006 --> 00:16:45,058
+from being at an explore node to being at
+an unexplored node. So, I'm going to call
+
+235
+00:16:45,058 --> 00:16:50,021
+the end points of this purported edge U and
+W. Where U is the explored one and W is the
+
+236
+00:16:50,021 --> 00:16:54,035
+unexplored one. Now, for all we know U
+could be the same as S, that's a
+
+237
+00:16:54,035 --> 00:16:58,065
+possibility, or for all we know, W could
+be same as V. That's also a possibility.
+
+238
+00:16:58,065 --> 00:17:02,095
+In the picture, I'll draw it as if this
+edge UX was somewhere in the middle of
+
+239
+00:17:02,095 --> 00:17:07,049
+this path. But, again it may be at one of
+the ends. That's totally fine. But now in
+
+240
+00:17:07,049 --> 00:17:13,015
+this case, there's something I need you to
+explain to me. How is it possible that, on
+
+241
+00:17:13,015 --> 00:17:18,086
+the one hand, our algorithm terminated.
+And on the other hand, there's this edge U
+
+242
+00:17:18,086 --> 00:17:24,044
+comma X. Where U has been explored and X
+has not been explored. That, my friends,
+
+243
+00:17:24,044 --> 00:17:28,070
+is impossible. Our generic search
+algorithm does not give up. It does not
+
+244
+00:17:28,070 --> 00:17:33,020
+terminate, unless there are no edges where
+the one end point is explored and the
+
+245
+00:17:33,020 --> 00:17:37,059
+other end point is unexplored. As long as
+there's such an edge, it has, is gonna
+
+246
+00:17:37,059 --> 00:17:41,087
+suck in that unexplored vertex into the
+conquered territory, it's gonna keep
+
+247
+00:17:41,087 --> 00:17:46,025
+going. So the upshot is there's no way
+that our algorithm terminated with this
+
+248
+00:17:46,025 --> 00:17:50,048
+picture. With there being an edge U X, U
+explored, X unexplored. So, that's the
+
+249
+00:17:50,048 --> 00:17:55,053
+contradiction. This contradicts the fact
+that our algorithm terminated with V
+
+250
+00:17:55,053 --> 00:18:00,031
+unexplored. So that is a general
+approach to graph search. So that I hope
+
+251
+00:18:00,031 --> 00:18:04,056
+gives you the flavor of how this is going
+to work. But now there's two particular
+
+252
+00:18:04,056 --> 00:18:08,091
+instantiations of this generic method that
+are really important and have their own
+
+253
+00:18:08,091 --> 00:18:12,069
+suites of applications. So we're gonna
+focus on breadth-first search and
+
+254
+00:18:12,069 --> 00:18:16,083
+depth-first search. We'll cover them in
+detail in the next couple of videos. I
+
+255
+00:18:16,083 --> 00:18:21,000
+wanna give you the highlights to conclude
+this video. Now let me just make sure it's
+
+256
+00:18:21,000 --> 00:18:24,046
+clear where the ambiguity in our generic
+method is. Why we can have different
+
+257
+00:18:24,046 --> 00:18:27,095
+instantiations of it that potentially have
+different properties and different
+
+258
+00:18:27,095 --> 00:18:31,045
+applications. The question is at a given
+iteration of this while loop, what do you
+
+259
+00:18:31,045 --> 00:18:34,099
+got? You've got your nodes that you've
+already explored, so that includes S plus
+
+260
+00:18:34,099 --> 00:18:38,062
+probably some other stuff, and then you've
+got your nodes that are unexplored, and
+
+261
+00:18:38,062 --> 00:18:41,075
+then you have your crossing edges.
+Right? So, there are edges with one
+
+262
+00:18:41,075 --> 00:18:45,078
+point in each side. And for an undirected
+graph, there's no orientation to worry
+
+263
+00:18:45,078 --> 00:18:49,092
+about. These crossing edges just have one
+endpoint on the explored side, one
+
+264
+00:18:49,092 --> 00:18:54,005
+endpoint on the unexplored side. In the
+directed case, you focus on edges where
+
+265
+00:18:54,005 --> 00:18:58,008
+the tail of the edge is on the explored side
+and the head of the edge is on the
+
+266
+00:18:58,008 --> 00:19:02,016
+unexplored side. So, they go from the
+explored side to the unexplored side. And
+
+267
+00:19:02,016 --> 00:19:06,019
+the question is, in general, in an
+iteration of this while loop there's gonna
+
+268
+00:19:06,019 --> 00:19:10,037
+be many such crossing edges. There are
+many different unexplored nodes we could
+
+269
+00:19:10,037 --> 00:19:14,056
+go to next, and different strategies for
+picking the unexplored node to explore
+
+270
+00:19:14,056 --> 00:19:19,070
+next leads us to different graph search
+algorithms with different properties. So
+
+271
+00:19:19,070 --> 00:19:24,080
+the first specific search strategy we're
+gonna study is breadth first search,
+
+272
+00:19:24,080 --> 00:19:29,082
+colloquially known as BFS. So let me tell
+you sort of the high level idea and
+
+273
+00:19:29,082 --> 00:19:34,098
+applications of bread first search. So,
+the goal is going to be to explore the
+
+274
+00:19:34,098 --> 00:19:40,008
+nodes in what I call, layers. So, the
+starting point S will be in its own layer,
+
+275
+00:19:40,008 --> 00:19:44,091
+Layer-0. The neighbors of S will
+constitute Layer-1, and then Layer-2 will
+
+276
+00:19:44,091 --> 00:19:50,044
+be the nodes that are neighbors of Layer-1
+but that are not already in layer zero or
+
+277
+00:19:50,044 --> 00:19:55,008
+layer one, and so on. So layer i plus one,
+is the stuff next to layer i that you
+
+278
+00:19:55,008 --> 00:19:59,067
+haven't already seen yet. You can think of
+this as a fairly cautious and tentative
+
+279
+00:19:59,067 --> 00:20:03,038
+exploration of the graph. And it's gonna
+turn out that there's a close
+
+280
+00:20:03,038 --> 00:20:07,057
+correspondence between these layers and
+shortest path distances. So if you wanna
+
+281
+00:20:07,057 --> 00:20:11,076
+know the minimal number of hops, the
+minimal number of edges you need in a path
+
+282
+00:20:11,076 --> 00:20:15,095
+to get from point A to point B in a graph.
+The way we wanted to know the fewest
+
+283
+00:20:15,095 --> 00:20:20,008
+number of edges in the movie graph
+necessary to connect to John Hamm to Kevin
+
+284
+00:20:20,008 --> 00:20:24,033
+Bacon. That corresponds directly to these
+layers. So if a node is in layer i, then
+
+285
+00:20:24,033 --> 00:20:28,054
+you need i edges to get from S to i in the
+graph. Once we discuss breadth-first search,
+
+286
+00:20:28,054 --> 00:20:32,010
+we'll also discuss how to compute the
+connected components, or the different
+
+287
+00:20:32,010 --> 00:20:35,084
+pieces, of an undirected graph. Turns out
+this isn't that special to breadth-first
+
+288
+00:20:35,084 --> 00:20:38,093
+search, you can use any number of
+graph search strategies to compute
+
+289
+00:20:38,093 --> 00:20:42,067
+connected components in undirected graphs.
+But I'll show you how to do it using a
+
+290
+00:20:42,067 --> 00:20:46,054
+simple looped version of breadth-first
+search. And we'll be able to do this stuff
+
+291
+00:20:46,054 --> 00:20:50,084
+in the linear time that we want. The very
+ambitious goal of getting linear time. To
+
+292
+00:20:50,084 --> 00:20:55,004
+get the linear time implementation, you do
+wanna use the right data structure, but
+
+293
+00:20:55,004 --> 00:20:58,093
+it's a simple, simple data structure,
+something probably you've seen in the
+
+294
+00:20:58,093 --> 00:21:02,097
+past. Namely a queue. So, something's that
+first in and first out. So, the second
+
+295
+00:21:02,097 --> 00:21:07,032
+search strategy that's super important to
+know is depth first search, also known as
+
+296
+00:21:07,032 --> 00:21:11,052
+DFS to its friends. Depth first search
+has a rather different feel than breadth
+
+297
+00:21:11,052 --> 00:21:15,086
+first search. It's a much more aggressive
+search where you immediately try to plunge
+
+298
+00:21:15,086 --> 00:21:20,000
+as deep as you can. It's very much in the
+spirit of how you might explore a maze,
+
+299
+00:21:20,000 --> 00:21:24,003
+where you go as deeply as you can only
+backtracking when absolutely necessary.
+
+300
+00:21:24,003 --> 00:21:27,090
+Depth first search will also have its own
+set of applications. It's not, for
+
+301
+00:21:27,090 --> 00:21:31,077
+example, very useful for computing
+shortest path information, but especially
+
+302
+00:21:31,077 --> 00:21:36,012
+in directed graphs it's going to do some
+remarkable things for us. So, in directed
+
+303
+00:21:36,012 --> 00:21:40,030
+acyclic graphs, so a directed graph
+with no directed cycles it will give us
+
+304
+00:21:40,030 --> 00:21:44,042
+what's called the topological ordering. So
+it'll sequence the nodes in a linear
+
+305
+00:21:44,042 --> 00:21:48,028
+ordering from the first to the last, so
+that all of the arcs of the directed graph
+
+306
+00:21:48,028 --> 00:21:52,015
+go forward. So this is useful for example
+if you have a number of tasks that need to
+
+307
+00:21:52,015 --> 00:21:55,078
+get completed with certain precedence
+constraints. Like for example you have to
+
+308
+00:21:55,078 --> 00:21:59,018
+take all of the classes in your
+undergraduate major, and there was certain
+
+309
+00:21:59,018 --> 00:22:02,068
+prerequisites, topological ordering will
+give you a way in which to do it,
+
+310
+00:22:02,068 --> 00:22:06,086
+respecting all of the prerequisites. And
+finally where for undirected graphs it doesn't really
+
+311
+00:22:06,086 --> 00:22:11,025
+matter whether you use BFS or DFS to connect
+the components, in the directed graphs where
+
+312
+00:22:11,025 --> 00:22:15,053
+even defining connected components is a little
+tricky it turns out depth first
+
+313
+00:22:15,053 --> 00:22:19,098
+search is exactly what you want. That's
+what you're going to get a linear time
+
+314
+00:22:19,098 --> 00:22:25,024
+implementation for computing the right notion of connected
+components in the directed graph case. Time-wise,
+
+315
+00:22:25,024 --> 00:22:30,030
+both of these are superb strategies for
+exploring a graph. They're both linear
+
+316
+00:22:30,030 --> 00:22:35,003
+time with very good constants. So
+depth-first search again, we're gonna
+
+317
+00:22:35,003 --> 00:22:39,079
+get O of M plus N time in a graph with M
+edges and N vertices. You do wanna use a
+
+318
+00:22:39,079 --> 00:22:43,069
+different data structure reflecting the
+different search strategy. So, here
+
+319
+00:22:43,069 --> 00:22:48,007
+because you're exploring aggressively, as
+soon as you get to a node you'll meet and
+
+320
+00:22:48,007 --> 00:22:52,013
+you start exploring its neighbors, you
+wanna last-in first-out data structure,
+
+321
+00:22:52,013 --> 00:22:56,019
+also known as a stack. Depth first search
+also admits a very elegant recursive
+
+322
+00:22:56,019 --> 00:23:00,046
+formulation, and in that formulation, you
+don't even need to maintain a stack data
+
+323
+00:23:00,046 --> 00:23:04,073
+structure explicitly, the stack is
+implicitly taken care of in the recursion.
+
+324
+00:23:04,073 --> 00:23:08,096
+So that concludes this overview of graph
+search. Both what it is, what our goals
+
+325
+00:23:08,096 --> 00:23:13,035
+are, what kind of applications they have
+and two of the most common strategies. The
+
+326
+00:23:13,035 --> 00:23:17,048
+next couple videos are going to explore
+these search strategies, as well as a
+
+327
+00:23:17,048 --> 00:23:19,095
+couple of these applications in greater
+depth.

@@ -1,0 +1,952 @@
+1
+00:00:00,000 --> 00:00:04,036
+So in this lecture we're going to drill
+down into our first specific, search
+
+2
+00:00:04,036 --> 00:00:08,183
+strategy for graphs and also explore some applications. Namely, breadth first
+
+3
+00:00:08,183 --> 00:00:13,224
+search. So let me remind you the intuition
+and applications of breath first search.
+
+4
+00:00:13,224 --> 00:00:19,418
+The plan is to systematically
+explore the nodes of this graph beginning
+
+5
+00:00:19,418 --> 00:00:25,144
+with the given starting vertex in layers.
+So let's think about the following example
+
+6
+00:00:25,144 --> 00:00:31,557
+graph. Where S is the starting point for
+our breadth first search. So to start
+
+7
+00:00:31,557 --> 00:00:37,002
+vertex S will constitute the first layer.
+So we'll call that L zero. And then
+
+8
+00:00:37,002 --> 00:00:41,389
+the neighbors of S are going to be the
+first layer. And so those are the vertices
+
+9
+00:00:41,389 --> 00:00:48,623
+that we explore just after S. So those are
+L one. Now the second layer is going
+
+10
+00:00:48,623 --> 00:00:53,517
+to be the vertices that are neighboring
+vertices of L one but are not
+
+11
+00:00:53,517 --> 00:00:57,713
+themselves in L one or for that
+matter L zero. So that's going to be
+
+12
+00:00:57,713 --> 00:01:04,531
+C and D. That's going to be the second
+layer. Now you'll notice for example S is
+
+13
+00:01:04,531 --> 00:01:10,572
+itself a neighbor of these nodes in layer
+one, but we've already counted that in a
+
+14
+00:01:10,572 --> 00:01:13,283
+previous layer so we don't count S toward
+L two. And then finally the
+
+15
+00:01:13,283 --> 00:01:18,335
+neighbors of L two, which are not
+already put in some layer is E. That will
+
+16
+00:01:18,335 --> 00:01:24,016
+be layer three. Again notice C and D are
+neighbors of each other but, they've
+
+17
+00:01:24,016 --> 00:01:27,840
+already been classified in layer two. So,
+that's where they belong, not in layer
+
+18
+00:01:27,840 --> 00:01:31,362
+three. So that's the high level picture of
+breadth first search you should have. We'll
+
+19
+00:01:31,362 --> 00:01:34,264
+talk about how to actually
+precisely implement it on the next slide.
+
+20
+00:01:34,264 --> 00:01:38,378
+Again just a couple other things that you
+can do with breadth first search which we'll
+
+21
+00:01:38,378 --> 00:01:42,836
+explore in this video is computing shortest
+paths. So it turns out shortest path
+
+22
+00:01:42,836 --> 00:01:47,843
+distances correspond precisely to these
+layers. So, for example if you had that as
+
+23
+00:01:47,843 --> 00:01:52,152
+S, you had that as the Kevin Bacon node in
+the movie graph, then Jon Hamm would pop
+
+24
+00:01:52,152 --> 00:01:57,473
+up in the second layer from the breadth
+first search from Kevin Bacon. I'm also
+
+25
+00:01:57,473 --> 00:02:00,094
+going to show you how to compute the
+connected components of an undirected
+
+26
+00:02:00,094 --> 00:02:03,907
+graph. That is to compute its pieces.
+We'll do that in linear time. And for this
+
+27
+00:02:03,907 --> 00:02:07,148
+entire sequence of videos on graph
+primitives, we will be satisfied with
+
+28
+00:02:07,148 --> 00:02:12,480
+nothing less than the holy grail of linear
+time. And again, remember in a graph you
+
+29
+00:02:12,480 --> 00:02:16,299
+have two different size parameters, the
+number of edges M and the number of nodes
+
+30
+00:02:16,299 --> 00:02:20,314
+N. For these videos I'm not going to
+assume any relationship between M and N.
+
+31
+00:02:20,314 --> 00:02:25,384
+Either one could be bigger. So linear
+time's gonna mean O of M plus N. So let's
+
+32
+00:02:25,384 --> 00:02:29,490
+talk about how you'd actually implement
+breadth first search in linear time. So
+
+33
+00:02:29,490 --> 00:02:36,431
+the sub routine is given as input both the
+graph G. I'm gonna explain this as if
+
+34
+00:02:36,431 --> 00:02:39,558
+it's undirected, but this entire procedure
+will work in exactly the same way for a
+
+35
+00:02:39,558 --> 00:02:43,046
+directed graph. Again, obviously in an
+undirected graph you can traverse an edge
+
+36
+00:02:43,046 --> 00:02:46,320
+in either direction. For a directed graph,
+you have to be careful only to traverse
+
+37
+00:02:46,320 --> 00:02:50,583
+arcs in the intended direction from the
+tail to the head, that is traverse them
+
+38
+00:02:50,583 --> 00:02:54,037
+forward. So as we discussed when we talked
+about just generic strategies for graph
+
+39
+00:02:54,037 --> 00:02:57,333
+search, we don't want to explore anything
+twice, that would certainly be
+
+40
+00:02:57,333 --> 00:03:00,866
+inefficient. So we're going to keep a
+boolean at each node, marking whether
+
+41
+00:03:00,866 --> 00:03:04,792
+we've already explored it or not. And by
+default, I'm just, we're just going to
+
+42
+00:03:04,792 --> 00:03:07,773
+assume that nodes are unexplored. They're
+only explored if we explicitly mark them
+
+43
+00:03:07,773 --> 00:03:13,241
+as such. So we're going to initialize the
+search with the starting vertex S. So we
+
+44
+00:03:13,241 --> 00:03:16,739
+mark S as explored and then we're gonna
+put that in what I was previously calling
+
+45
+00:03:16,739 --> 00:03:20,531
+conquered territory the nodes we have
+already started to explore. So to get
+
+46
+00:03:20,531 --> 00:03:25,132
+linear time we are gonna have to manage
+those in a slightly non naive but, but
+
+47
+00:03:25,132 --> 00:03:29,452
+pretty straightforward way namely via a
+queue, which is a first in first out data
+
+48
+00:03:29,452 --> 00:03:33,130
+structure that I assume you have seen. If
+you have never seen a queue before, please
+
+49
+00:03:33,130 --> 00:03:37,540
+look it up in a programming textbook or on
+the web. Basically a queue is just
+
+50
+00:03:37,540 --> 00:03:41,512
+something where you can add stuff to the
+back in constant time and you can take
+
+51
+00:03:41,512 --> 00:03:45,404
+stuff from the front in constant time. You
+can implement these, for example, using a
+
+52
+00:03:45,404 --> 00:03:50,167
+doubly linked list. Now recall that
+in the general systematic approach to
+
+53
+00:03:50,167 --> 00:03:54,533
+graph search, the trick was to, in each
+iteration of some while loop, to add one
+
+54
+00:03:54,533 --> 00:03:59,741
+new vertex to the conquered territory. To
+identify one unexplored node that is now
+
+55
+00:03:59,741 --> 00:04:05,939
+going to be explored. So that while loop's gonna
+translate into one in which we just check
+
+56
+00:04:05,939 --> 00:04:10,586
+if the queue is non-empty. So we're
+assuming that the queue data structure
+
+57
+00:04:10,586 --> 00:04:15,806
+supports that query in constant time which
+is easy to implement. And if the queue is
+
+58
+00:04:15,806 --> 00:04:19,936
+not empty we remove a node from it. And
+because it's a queue, removing nodes from
+
+59
+00:04:19,936 --> 00:04:24,559
+the front is what you can do in constant
+time. So call the node that you get out of
+
+60
+00:04:24,559 --> 00:04:29,644
+the queue V. So, now we're going to look
+at V's neighbors, vertices with which it
+
+61
+00:04:29,644 --> 00:04:32,467
+shares edges, and we're gonna see if any
+of them have not already been explored.
+
+62
+00:04:32,467 --> 00:04:37,293
+So, if W's something we haven't seen
+before, that's unexplored, that means it's
+
+63
+00:04:37,293 --> 00:04:40,691
+in the unconquered territory, which is
+great. So, we have a new victim. We can
+
+64
+00:04:40,691 --> 00:04:44,831
+mark W as explored. We can put it in our
+queue and we've advanced the frontier and
+
+65
+00:04:44,831 --> 00:04:49,601
+now we have one more explored node than we
+did previously. And again, a queue by
+
+66
+00:04:49,601 --> 00:04:53,932
+construction, it supports adding constant
+time additions at the end of the queue, so
+
+67
+00:04:53,932 --> 00:04:58,139
+it's where we put W. So, let's see how this
+code actually executes in this same graph
+
+68
+00:04:58,139 --> 00:05:02,380
+that we were looking at in the previous
+slide. And what I'm gonna do is I'm gonna
+
+69
+00:05:02,380 --> 00:05:08,523
+number the nodes in the order in which
+they are explored. So, obviously
+
+70
+00:05:08,523 --> 00:05:14,182
+the first node to get explored is S.
+That's where the queue starts. So now, when we
+
+71
+00:05:14,182 --> 00:05:17,174
+follow the code, what happens? Well in the
+first iteration of the while loop we ask
+
+72
+00:05:17,174 --> 00:05:21,686
+is the queue empty? No it's not, because S is
+in it. So we remove in this case the only
+
+73
+00:05:21,686 --> 00:05:28,570
+node of the queue. It's S. And then we iterate over
+the edges incident to S. Now there are two
+
+74
+00:05:28,570 --> 00:05:32,688
+of them. There's the edge between S and A
+and there's the edge between S and B. And
+
+75
+00:05:32,688 --> 00:05:36,457
+again this is still a little under
+specified. In the sense that the algorithm
+
+76
+00:05:36,457 --> 00:05:39,618
+doesn't tell us which of those two edges
+we should look at. Turns out it doesn't
+
+77
+00:05:39,618 --> 00:05:43,015
+matter. Each of those is a valid
+execution of breadth first search. But
+
+78
+00:05:43,015 --> 00:05:47,234
+for concreteness, let's suppose that of
+the two possible edges, we look at the
+
+79
+00:05:47,234 --> 00:05:52,319
+edge S comma A. So, then we ask, has A
+already been explored? No, it hasn't. This
+
+80
+00:05:52,319 --> 00:05:55,322
+is the first time we've seen it, so we
+say, oh goody. This is sort of new grist
+
+81
+00:05:55,322 --> 00:06:01,510
+for the mill. So, we can add A to the
+queue at the end and we mark W as, sorry
+
+82
+00:06:01,510 --> 00:06:08,316
+mark A as explored. So, A is gonna be the
+second vertex that we mark. So, after
+
+83
+00:06:08,316 --> 00:06:11,883
+marking A as explored and adding it to the
+queue, so now we go back to the for loop,
+
+84
+00:06:11,883 --> 00:06:15,798
+and so now we move on to the second edge.
+It's into S, that's the edge between S and
+
+85
+00:06:15,798 --> 00:06:19,882
+B. So, we ask, have we already explored B?
+Nope, this is the first time we've seen
+
+86
+00:06:19,882 --> 00:06:23,177
+it. So, now we have the same thing with B.
+So, B gets marked as explored and gets
+
+87
+00:06:23,177 --> 00:06:29,368
+added to the queue at the end. So the
+queue at this juncture has first a record
+
+88
+00:06:29,368 --> 00:06:34,321
+for A, cause that was the first one we put
+in it after we took S out. And then B
+
+89
+00:06:34,321 --> 00:06:39,530
+follows A in the queue. Again, depending
+on the execution this could go either way. But
+
+90
+00:06:39,530 --> 00:06:43,659
+for concreteness, I've done it so that A
+got added before B. So at this point, this
+
+91
+00:06:43,659 --> 00:06:47,090
+is what the queue looks like. So now we go
+back up to the while loop, we say is
+
+92
+00:06:47,090 --> 00:06:50,510
+the queue empty? Certainly not. There's
+actually two elements. Now we remove the
+
+93
+00:06:50,510 --> 00:06:55,326
+first node from queue, in this case,
+that's the node A that was the one we put in
+
+94
+00:06:55,326 --> 00:06:59,195
+before the node B. And so now we say,
+well, let's look at all the edges incident
+
+95
+00:06:59,195 --> 00:07:02,581
+to A. And in this case A has two
+two incident edges. It has one that it
+
+96
+00:07:02,581 --> 00:07:06,699
+shares with S and it has one that it
+shares with C. And so, if we look at the
+
+97
+00:07:06,699 --> 00:07:11,399
+edge between A and S, then we'd be asking
+an if statement. Has S already been
+
+98
+00:07:11,399 --> 00:07:14,842
+explored? Yes it has, that's where we
+started. So, there's no reason to do
+
+99
+00:07:14,842 --> 00:07:18,644
+anything with S. That's already been
+taken out of the queue. So, in this for
+
+100
+00:07:18,644 --> 00:07:23,189
+loop for A, there's two iterations. One
+involves the edge with S, and that one we
+
+101
+00:07:23,189 --> 00:07:27,487
+completely ignore. But then there's the
+other edge that A shares with C, and C we
+
+102
+00:07:27,487 --> 00:07:32,077
+haven't seen yet. So, at that part of the
+for loop, we say ahah. C is a new thing,
+
+103
+00:07:32,077 --> 00:07:36,250
+new node we can mark as explored and put
+in the queue. So, that's gonna be our
+
+104
+00:07:36,250 --> 00:07:41,425
+number four. So now how has the
+queue changed. Well, we got rid of A. And
+
+105
+00:07:41,425 --> 00:07:47,478
+so now B is in the front and we added C at
+the end. And so now the same thing
+
+106
+00:07:47,478 --> 00:07:51,392
+happens. We go back to the while loop, the
+queue is not empty, we take off the first
+
+107
+00:07:51,392 --> 00:07:56,162
+vertex, in this case that's gonna be B. B
+has three incident edges, it has one
+
+108
+00:07:56,162 --> 00:08:00,831
+incident S but that's irrelevant, we've
+already seen S. It has one incident to C,
+
+109
+00:08:00,831 --> 00:08:03,441
+that's also irrelevant, that's also
+irrelevant, because we've already seen C.
+
+110
+00:08:03,441 --> 00:08:06,805
+True, we just saw it very recently, but
+we've already seen it. But the edge
+
+111
+00:08:06,805 --> 00:08:11,271
+between B and D is new, and so that means
+we can take the node D, mark it as explored
+
+112
+00:08:11,271 --> 00:08:17,459
+and add it to the queue. So D is going to
+be the fifth one that we see. And now the
+
+113
+00:08:17,459 --> 00:08:23,761
+queue has the element C followed by D. So now
+we go back to the while loop and we take C off
+
+114
+00:08:23,761 --> 00:08:30,421
+of the queue. It again has four now edges. The
+one with A is irrelevant, we've already
+
+115
+00:08:30,421 --> 00:08:33,312
+seen A. The one with B is irrelevant,
+we've already seen B. The one with D is
+
+116
+00:08:33,312 --> 00:08:36,834
+irrelevant, we've already seen D. But we
+haven't seen E yet. So, when we get to the
+
+117
+00:08:36,834 --> 00:08:42,200
+part of the for loop, or the edge between
+C and E, we say, aha, E is new. So E will
+
+118
+00:08:42,200 --> 00:08:47,206
+be the sixth and final vertex to be marked
+as explored. And that will get added at
+
+119
+00:08:47,206 --> 00:08:51,554
+the end of the queue. So then in the
+final two iterations of the while loop
+
+120
+00:08:51,554 --> 00:08:54,479
+the D is going to be removed, we'll iterate through its three edges, none of
+
+121
+00:08:54,479 --> 00:08:58,258
+those will be relevant because we've seen
+the three endpoints. And then we'll go
+
+122
+00:08:58,258 --> 00:09:01,330
+back to the while loop and we'll get rid of
+the E. E is irrelevant cause it has two
+
+123
+00:09:01,330 --> 00:09:04,131
+edges we've already seen the other
+endpoints. Now we go back to the while loop.
+
+124
+00:09:04,131 --> 00:09:09,700
+The queue is empty. And we stop. That is
+breadth-first search. And to see how this
+
+125
+00:09:09,700 --> 00:09:14,751
+simulates the notion of the layers that we
+were discussing in the previous slide
+
+126
+00:09:14,751 --> 00:09:22,559
+notice that the nodes are numbered
+according to the layer that they're in, so
+
+127
+00:09:22,559 --> 00:09:30,018
+S was layer zero. And then the two nodes
+that S caused to get added to the queue, the A
+
+128
+00:09:30,018 --> 00:09:37,071
+and the B, are number two and three, and
+the edges of layer three are precisely the
+
+129
+00:09:37,071 --> 00:09:40,604
+ones, sorry the edges of layer two are
+precisely the ones that got added to the
+
+130
+00:09:40,604 --> 00:09:45,858
+queue, while we were processing the nodes
+from layer one. That is, C and D are
+
+131
+00:09:45,858 --> 00:09:50,324
+precisely the nodes that got added to the
+queue while we were processing A and B.
+
+132
+00:09:50,324 --> 00:09:58,109
+So, this is level zero, level one, and
+level two. E is the only node that got
+
+133
+00:09:58,109 --> 00:10:01,777
+added to the queue while we were
+processing level, layer two. The vertices
+
+134
+00:10:01,777 --> 00:10:09,000
+C and D. So E will be the third layer. So,
+in that sense, by using a first in first
+
+135
+00:10:09,000 --> 00:10:14,827
+out data structure, this queue, we do wind
+up kinda processing the nodes according to
+
+136
+00:10:14,827 --> 00:10:19,079
+the layers that we discussed earlier. So,
+the claim that breadth first search is a
+
+137
+00:10:19,079 --> 00:10:22,949
+good way to explore a graph, in the sense
+that it meets the two high level goals
+
+138
+00:10:22,949 --> 00:10:27,305
+that we delineated in the previous video.
+First of all it finds everything findable,
+
+139
+00:10:27,305 --> 00:10:31,387
+and obviously nothing else, and second of
+all, it does it without redundancy. It
+
+140
+00:10:31,387 --> 00:10:34,739
+does it without exploring anything twice,
+which is the key to its linear time
+
+141
+00:10:34,739 --> 00:10:40,443
+implementation. So a little bit more
+formally, claim number one. At the end of
+
+142
+00:10:40,443 --> 00:10:46,157
+the algorithm, the vertices that we've
+explored are precisely the ones such that
+
+143
+00:10:46,157 --> 00:10:51,355
+there was a path from S to that vertex.
+Again this claim is equally valid, whether
+
+144
+00:10:51,355 --> 00:10:54,786
+you're running BFS in an undirected
+graph or a directed graph. Of course in an
+
+145
+00:10:54,786 --> 00:10:58,669
+undirected graph, meaning an undirected
+path from S to V, whereas a directed graph
+
+146
+00:10:58,669 --> 00:11:02,819
+in a directed path from S to V. That means
+a path where every arc in the path gets
+
+147
+00:11:02,819 --> 00:11:06,857
+traversed in the forward direction. So,
+why is this true? Well, this is true, we
+
+148
+00:11:06,857 --> 00:11:11,245
+basically proved this more generally for
+any graph search strategy of a certain
+
+149
+00:11:11,245 --> 00:11:17,702
+form of which breadth first search is one.
+If it's hard for you to see the right way
+
+150
+00:11:17,702 --> 00:11:20,279
+to interpret breadth-first search as a
+special case of our generic search
+
+151
+00:11:20,279 --> 00:11:23,507
+algorithm, you can also just look at our
+proof for the generic search algorithm and
+
+152
+00:11:23,507 --> 00:11:27,749
+copy it down for breadth-first search. So
+it's clear that you're only gonna,
+
+153
+00:11:27,749 --> 00:11:31,056
+again, the forward direction
+of this claim is clear. If you actually
+
+154
+00:11:31,056 --> 00:11:35,297
+find something, if something's marked as
+explored, it's only because you found a
+
+155
+00:11:35,297 --> 00:11:38,672
+sequence of edges that led you there. So
+the only way you mark something as
+
+156
+00:11:38,672 --> 00:11:42,812
+explored is if there's a path from S to V.
+Conversely, to prove that anything with an
+
+157
+00:11:42,812 --> 00:11:46,940
+S to V, for with a path from V will be
+found, you can proceed by contradiction:
+
+158
+00:11:46,940 --> 00:11:50,788
+you can look at the part of the path from
+S to V that, that BFS does successfully
+
+159
+00:11:50,788 --> 00:11:55,581
+explore, and then you gotta ask, why
+didn't it go one more hop? It never
+
+160
+00:11:55,581 --> 00:11:59,180
+would've terminated before reaching all
+the way to V. So, you can also just copy
+
+161
+00:11:59,180 --> 00:12:02,956
+that same proof that we had for the
+generic search strategy in the previous
+
+162
+00:12:02,956 --> 00:12:06,043
+video. Okay? So, again, the upshot.
+Breadth first search finds everything
+
+163
+00:12:06,043 --> 00:12:09,204
+you'd wanna find. Okay? So, it only
+traverses paths, so you're not gonna find
+
+164
+00:12:09,204 --> 00:12:12,388
+anything where there isn't a path to it.
+But it never misses out. Okay? Anything
+
+165
+00:12:12,388 --> 00:12:17,226
+where there's a path, BFS, guaranteed to
+find it. No problem. Claim number two is
+
+166
+00:12:17,226 --> 00:12:22,367
+that the running time is exactly what we
+want and I am gonna state it in a form
+
+167
+00:12:22,367 --> 00:12:26,079
+that will be useful later when we talk
+about connected components. So the running
+
+168
+00:12:26,079 --> 00:12:30,208
+time of the main while loop, ignoring any kind
+of pre processing or initialization is
+
+169
+00:12:30,208 --> 00:12:37,486
+proportional to what I am gonna call NS
+and MS which is the number of nodes that
+
+170
+00:12:37,486 --> 00:12:43,133
+can be reached from S and number of edges
+that can be reached from S. And the reason
+
+171
+00:12:43,133 --> 00:12:47,094
+for this claim it just becomes clear if
+you inspect the code which we'll do in a
+
+172
+00:12:47,094 --> 00:12:51,605
+second. So let's return to the code and
+just tally up all the work that gets done.
+
+173
+00:12:51,605 --> 00:12:55,869
+So I'm gonna ignore this initialization.
+I'm just gonna focus on the main while
+
+174
+00:12:55,869 --> 00:13:00,740
+loop. So we can summarize the total work
+done in this while loop as follows. First
+
+175
+00:13:00,740 --> 00:13:05,600
+we just think about the vertices so in
+this search we're only gonna deal, ever
+
+176
+00:13:05,600 --> 00:13:09,695
+deal with the vertices that are findable
+from S, so that's NS. And what do we do
+
+177
+00:13:09,695 --> 00:13:13,724
+for the given node, well we insert it
+into the queue and we delete it from the
+
+178
+00:13:13,724 --> 00:13:16,998
+queue. Alright? So we're never gonna deal
+with a single node more than once. So
+
+179
+00:13:16,998 --> 00:13:20,237
+that's constant time overhead per vertex
+that we ever see, so that's the proportion
+
+180
+00:13:20,237 --> 00:13:24,614
+of the NS part. Now, a given edge, we
+might look at it twice. So, for an edge V
+
+181
+00:13:24,614 --> 00:13:28,866
+W, we might consider it once when we first
+look at the vertex V, and we might
+
+182
+00:13:28,866 --> 00:13:32,602
+consider it again when we look at the
+vertex W. Each time we look at an edge we
+
+183
+00:13:32,602 --> 00:13:37,967
+do constant work. So that means we're only
+gonna do constant work per edge. Okay. So
+
+184
+00:13:37,967 --> 00:13:41,680
+we look at each vertex at most once. We
+look at each edge findable from S at most
+
+185
+00:13:41,680 --> 00:13:45,786
+twice. We do constant time, constant work
+when we look at something. So the overall
+
+186
+00:13:45,786 --> 00:13:50,657
+running time is going to be proportional
+to the number of vertices findable from S
+
+187
+00:13:50,657 --> 00:13:55,090
+plus the number of edges findable from S.
+So, that's really cool. We have a linear
+
+188
+00:13:55,090 --> 00:13:59,781
+time of implementation of a really nice graph
+search strategy. Moreover we just need
+
+189
+00:13:59,781 --> 00:14:03,921
+very basic data structures, a queue, to
+make it run fast with small constants. But
+
+190
+00:14:03,921 --> 00:14:08,511
+it gets even better. We can use breadth
+first search as a work horse for some
+
+191
+00:14:08,511 --> 00:14:17,083
+interesting applications. So, that's what
+we'll talk about in the rest of this video.

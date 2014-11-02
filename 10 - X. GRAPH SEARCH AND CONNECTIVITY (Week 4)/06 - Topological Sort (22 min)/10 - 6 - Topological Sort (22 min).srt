@@ -1,0 +1,1422 @@
+1
+00:00:01,017 --> 00:00:03,669
+So let me begin by telling you what
+a topological ordering of a directed
+
+2
+00:00:03,669 --> 00:00:09,418
+graph is. Essentially, it's an ordering of
+the vertices of the graph so that all of
+
+3
+00:00:09,418 --> 00:00:14,424
+the arcs, the directed edges of the graph,
+only go forward in the ordering. So, let
+
+4
+00:00:14,424 --> 00:00:19,633
+me encode an ordering by a labeling of the
+vertices with the numbers one through N.
+
+5
+00:00:19,633 --> 00:00:24,920
+This is just to encode the position of
+each vertex in this ordering. So formally
+
+6
+00:00:24,920 --> 00:00:28,703
+there's gonna be a function which takes
+vertices of G and maps things to integers
+
+7
+00:00:28,703 --> 00:00:32,674
+between one and N. Each of the numbers one
+through N should be taken on by exactly
+
+8
+00:00:32,674 --> 00:00:37,624
+one vertex. Here N is the number of
+vertices of G. So that's just the way to
+
+9
+00:00:37,624 --> 00:00:41,382
+encode an ordering and then here's really
+the important property that every directed
+
+10
+00:00:41,382 --> 00:00:47,929
+edge of G goes forward in the ordering.
+That is, if UV is a directed edge of the
+
+11
+00:00:47,929 --> 00:00:56,090
+directed graph G, then it should be that.
+The F value of the tail is less than the F
+
+12
+00:00:56,090 --> 00:01:01,742
+value of the head. That is, this directed
+edge has a higher F value as you, as you
+
+13
+00:01:01,742 --> 00:01:05,222
+traverse it in the correct direction. Let
+me give you an example just to make this
+
+14
+00:01:05,222 --> 00:01:09,732
+more clear. So suppose we have this very
+simple directed graph with four vertices.
+
+15
+00:01:09,732 --> 00:01:14,402
+Let me show you two different,
+totally legitimate topological
+
+16
+00:01:14,402 --> 00:01:19,677
+orderings of this graph. So the first
+thing you could do is you could label S1,
+
+17
+00:01:19,677 --> 00:01:26,148
+V2, W3 and T4. Another option would
+
+18
+00:01:26,148 --> 00:01:32,024
+be to label them the same way except you
+can swap the labels of, V and W. So if you
+
+19
+00:01:32,024 --> 00:01:38,448
+want you can label V three and W two. So
+again what these labeling meant to encode
+
+20
+00:01:38,448 --> 00:01:44,748
+is an ordering of the vertices. So the
+blue labeling you can think of as encoding
+
+21
+00:01:44,748 --> 00:01:52,960
+the ordering in which we put S first, then
+V, then W and then T. Whereas the green
+
+22
+00:01:52,960 --> 00:01:56,223
+labeling can be thought of as the same
+ordering of the nodes, except with W
+
+23
+00:01:56,223 --> 00:02:01,499
+coming before V. What's important is that
+the pattern of the edge is exactly the
+
+24
+00:02:01,499 --> 00:02:05,380
+same in both cases, and in particular, all
+of the edges go forward in this ordering.
+
+25
+00:02:05,380 --> 00:02:11,838
+So, in either case, we have S with edges
+from S to V and S to W. So that looks the
+
+26
+00:02:11,838 --> 00:02:16,202
+same way pictorially. Whichever order V
+and W are in. And then symmetrically,
+
+27
+00:02:16,202 --> 00:02:20,972
+there are edges from V and W to T. So
+you'll notice that no matter which order
+
+28
+00:02:20,972 --> 00:02:26,496
+we put V and W in, all four of these edges
+go forward in each of these orderings.
+
+29
+00:02:26,496 --> 00:02:32,136
+Now, if you're trying to put. V before S,
+it wouldn't work because the edge from S
+
+30
+00:02:32,136 --> 00:02:36,580
+to V would be going backward, if V
+preceded S. Similarly, if you put T
+
+31
+00:02:36,580 --> 00:02:40,157
+anywhere other than the final position,
+you would not have a topological ordering.
+
+32
+00:02:40,157 --> 00:02:43,780
+So in fact, these are the only two
+topological orderings of this directed
+
+33
+00:02:43,780 --> 00:02:48,089
+graph. I encourage you to convince
+yourself of that. Now who cares about
+
+34
+00:02:48,089 --> 00:02:52,859
+topological orderings? Well this is
+actually a, a very useful subroutine this
+
+35
+00:02:52,859 --> 00:02:56,628
+has been, come up in all kinds of
+applications. Really whenever you want a
+
+36
+00:02:56,628 --> 00:03:00,554
+sequence, a bunch of tasks, when there's
+precedents constraints amongst them. By
+
+37
+00:03:00,554 --> 00:03:04,705
+precedents constraints I mean one task has
+to finished before another. You can think,
+
+38
+00:03:04,705 --> 00:03:08,373
+for example, about the courses in some
+kind of undergraduate major, like
+
+39
+00:03:08,373 --> 00:03:11,657
+computer science major. Here the vertices
+are going to correspond to all of the
+
+40
+00:03:11,657 --> 00:03:16,169
+courses and there's a directed edge from
+course A to course B, if course A's a
+
+41
+00:03:16,169 --> 00:03:19,634
+prerequisite for course B, if you have to
+take it first. So then, of course, you'd
+
+42
+00:03:19,634 --> 00:03:23,436
+like to know a sequence in which you can
+take these courses so that you always take
+
+43
+00:03:23,436 --> 00:03:27,028
+a course after you've taken its
+prerequisites. And that's exactly what a
+
+44
+00:03:27,028 --> 00:03:31,671
+topological ordering will accomplish. So,
+it's reasonable to ask the question, when
+
+45
+00:03:31,671 --> 00:03:37,037
+does the directed graph have a topological
+ordering and when a graph does have such
+
+46
+00:03:37,037 --> 00:03:41,188
+an ordering, how do we get our grubby
+little hands on it? Well there's a very
+
+47
+00:03:41,188 --> 00:03:47,083
+clear, necessary condition for a graph to
+have a topological ordering, which is, it
+
+48
+00:03:47,083 --> 00:03:52,888
+had better be acyclic. Put differently,
+if a directed graph has a directed cycle
+
+49
+00:03:52,888 --> 00:03:57,804
+then there's certainly no way there's
+going to be a topological ordering. So, I
+
+50
+00:03:57,804 --> 00:04:02,294
+hope the reason for this is fairly clear.
+Consider any directed graph which does
+
+51
+00:04:02,294 --> 00:04:06,647
+have a directed cycle and consider any
+purported way of ordering the vertices.
+
+52
+00:04:06,647 --> 00:04:12,245
+Well now just traverse the edges of the
+cycle one by one. So you start somewhere
+
+53
+00:04:12,245 --> 00:04:16,581
+on the cycle. And if the first edge goes
+backwards, well you're already screwed.
+
+54
+00:04:16,581 --> 00:04:19,562
+You already know that this ordering is not
+topological; no way it just can go
+
+55
+00:04:19,562 --> 00:04:24,062
+backwards. So evidently the first edge of
+this cycle has to go forward, but now you
+
+56
+00:04:24,062 --> 00:04:27,875
+have to traverse the rest of the edges on
+this cycle, and eventually you come back
+
+57
+00:04:27,875 --> 00:04:30,947
+to where you started. So if you started
+out by going forward, at some point you
+
+58
+00:04:30,947 --> 00:04:34,468
+have to go backward. So that edge goes
+backward in the ordering, violating the
+
+59
+00:04:34,468 --> 00:04:37,494
+property of the topological ordering.
+That's true for every ordering, so
+
+60
+00:04:37,494 --> 00:04:42,816
+directed cycles exclude the possibility
+of topological orderings. Now the question
+
+61
+00:04:42,816 --> 00:04:47,124
+is, well what if you don't have a cycle?
+Is that a strong enough condition that
+
+62
+00:04:47,124 --> 00:04:51,456
+you're guaranteed to have a topological
+ordering. Is the only obstruction to
+
+63
+00:04:51,456 --> 00:04:56,903
+sequencing jobs without conflicts, the
+obvious one of having circular precedence
+
+64
+00:04:56,903 --> 00:05:01,685
+constraints? So it turns out that only is
+the answer yes as long as you don't have any
+
+65
+00:05:01,685 --> 00:05:05,037
+directed cycles, you're guaranteed a
+topological ordering, but we can even compute
+
+66
+00:05:05,037 --> 00:05:11,518
+one in linear time no less, via depth-first
+search. So before I show you this super
+
+67
+00:05:11,518 --> 00:05:16,647
+slick and super efficient reduction of
+computing topological orderings to depth
+
+68
+00:05:16,647 --> 00:05:21,654
+first search, let me first go over a pretty
+good but slightly less slick and slightly
+
+69
+00:05:21,654 --> 00:05:25,514
+less efficient solution to help build up
+your intuition about directed acyclic
+
+70
+00:05:25,514 --> 00:05:30,924
+graphs and their topological orderings. So
+for the straightforward solution we're
+
+71
+00:05:30,924 --> 00:05:36,303
+going to begin with a simple observation.
+Every directed acyclic graph has what I'm
+
+72
+00:05:36,303 --> 00:05:41,894
+gonna call a sink vertex. That is a vertex
+without any outgoing arcs. So in the four
+
+73
+00:05:41,894 --> 00:05:45,966
+node, directed acyclic graph we were
+exploring on the last slide, there is
+
+74
+00:05:45,966 --> 00:05:51,333
+exactly one source vertex and that's,
+excuse me, sink vertex, that's this right
+
+75
+00:05:51,333 --> 00:05:55,337
+most vertex here. Right? That has no
+outgoing arcs; the other three vertices
+
+76
+00:05:55,337 --> 00:06:00,603
+all have at least one outgoing arc. Now,
+why is it the case that a directed acyclic
+
+77
+00:06:00,603 --> 00:06:07,600
+graph has to have a sink vertex? Well
+suppose it didn't. Suppose it had no sink
+
+78
+00:06:07,600 --> 00:06:11,605
+vertex. That would mean every single
+vertex has at least one outgoing arc. So
+
+79
+00:06:11,605 --> 00:06:15,392
+what can we do if every vertex has one
+outgoing arc? Well we can start in an
+
+80
+00:06:15,392 --> 00:06:18,739
+arbitrary node. We know it's not a sink
+vertex cause we're assuming there aren't
+
+81
+00:06:18,739 --> 00:06:23,195
+any. So there's an outgoing arc so let's
+follow it. We get to some other node, by
+
+82
+00:06:23,195 --> 00:06:27,250
+assumption there's no sink vertex so this
+isn't a sink vertex. So there's an
+
+83
+00:06:27,250 --> 00:06:31,469
+outgoing arc. So let's follow it, we get
+to some other node. That also has an
+
+84
+00:06:31,469 --> 00:06:38,095
+outgoing arc, let's follow that, and so
+on. So we just keep following outgoing
+
+85
+00:06:38,095 --> 00:06:41,211
+arcs. And we do this as long as we want,
+because every vertex has at least one
+
+86
+00:06:41,211 --> 00:06:44,519
+outgoing arc. Well, there's a finite
+number of vertices. Right? This graph has,
+
+87
+00:06:44,519 --> 00:06:50,391
+say, N vertices. So, if we follow N arcs,
+we're gonna see N plus one vertices. So,
+
+88
+00:06:50,391 --> 00:06:54,553
+by the pigeon hold principle, we're gonna
+have to see a repeat. Right? So, if N plus
+
+89
+00:06:54,553 --> 00:07:00,269
+one vertices has only N distinct vertices,
+we're gonna see some vertex twice. So, for
+
+90
+00:07:00,269 --> 00:07:05,185
+example, maybe after I take the outgoing
+arc from this vertex. I get back to this
+
+91
+00:07:05,185 --> 00:07:10,551
+one that I saw previously. Well, what have
+we done? What happens when we get a
+
+92
+00:07:10,551 --> 00:07:14,986
+repeated vertex? By tracing these out
+going arcs and repeating a vertex we have
+
+93
+00:07:14,986 --> 00:07:20,904
+exhibited a directed cycle. And that's
+exactly what we're assuming doesn't exist.
+
+94
+00:07:20,904 --> 00:07:24,526
+We're talking about directed acyclic graphs.
+So, put differently, we just proved that a
+
+95
+00:07:24,526 --> 00:07:28,936
+vertex with no sink vertex has to have a
+directed cycle. So a directed acyclic
+
+96
+00:07:28,936 --> 00:07:34,820
+graph therefore has to have at least one
+sink vertex. So, here's how we use this
+
+97
+00:07:34,820 --> 00:07:39,792
+very simple observation now to compute a
+topological order of a directed acyclic graph.
+
+98
+00:07:39,792 --> 00:07:45,429
+Well let's do a little thought experiment.
+Suppose in fact this graph did have a
+
+99
+00:07:45,429 --> 00:07:51,469
+topological ordering. Let's think about the
+vertex that goes last in this topological
+
+100
+00:07:51,469 --> 00:07:56,948
+ordering. Remember, any arc which goes
+backward in the ordering is a violation.
+
+101
+00:07:56,948 --> 00:08:01,426
+So we have to avoid that. We have to make
+sure that every arc goes forward in the
+
+102
+00:08:01,426 --> 00:08:07,107
+ordering. Now, any vertex which has an
+outgoing arc, we better put somewhere
+
+103
+00:08:07,107 --> 00:08:11,555
+other than in the final position, all
+right? So the node that we put in the
+
+104
+00:08:11,555 --> 00:08:14,986
+final position, all of its arcs are gonna
+wind up to all of its outgoing arcs are
+
+105
+00:08:14,986 --> 00:08:18,169
+gonna wind up going backward in the
+topological ordering. There's nowhere else
+
+106
+00:08:18,169 --> 00:08:21,971
+they can go. This vertex is last. So in
+other words, if we're plan this to
+
+107
+00:08:21,971 --> 00:08:27,259
+successfully compute topological ordering,
+the only candidate vertices for that final
+
+108
+00:08:27,259 --> 00:08:31,826
+position in the ordering are the sink
+vertices, that's all that's gonna work. If
+
+109
+00:08:31,826 --> 00:08:34,875
+we put another non-sink vertex there
+we're toast, that's not gonna happen.
+
+110
+00:08:34,875 --> 00:08:41,423
+Fortunately, if it's directed acyclic we
+know there is a sink vertex, so at V, be a
+
+111
+00:08:41,423 --> 00:08:46,386
+sink vertex of G, if there's many sink
+vertices we pick one arbitrarily, we set
+
+112
+00:08:46,386 --> 00:08:52,037
+V's label to be the maximum possible.
+So there's N vertices, we're gonna put that
+
+113
+00:08:52,037 --> 00:08:57,834
+in the Nth position. And now we just
+recurse on the rest of the graph, which has
+
+114
+00:08:57,834 --> 00:09:02,403
+only N minus one vertices. So how would
+this work in the example on the right?
+
+115
+00:09:02,403 --> 00:09:07,858
+Well in the first iteration, or the first
+outermost recursive call, the only key, the only sink
+
+116
+00:09:07,858 --> 00:09:12,493
+vertex is this right's most circled in
+green. So there's four vertices, we're gonna
+
+117
+00:09:12,493 --> 00:09:18,297
+give that the label four. So then having
+labeled that four, we delete that vertex
+
+118
+00:09:18,297 --> 00:09:22,471
+and all the edges incident to it, and we
+recurse on what's left of the graph. So
+
+119
+00:09:22,471 --> 00:09:27,917
+that will be the left most three vertices
+plus the left most two edges. Now, this
+
+120
+00:09:27,917 --> 00:09:32,788
+graph has two sink vertices after we've
+deleted four and everything from it. So
+
+121
+00:09:32,788 --> 00:09:39,347
+both this top vertex and this bottom
+vertex are sinks in the residual graph. So
+
+122
+00:09:39,347 --> 00:09:43,981
+now in the next recursive call, we can
+choose either of those as our sink vertex.
+
+123
+00:09:43,981 --> 00:09:47,971
+Because we have two choices, that
+generates two topological orderings. Those
+
+124
+00:09:47,971 --> 00:09:53,396
+are exactly the ones we saw in the
+example. But if, for example, we choose
+
+125
+00:09:53,396 --> 00:09:58,863
+this one to be our sink vertex, then
+that gets the label three. Then we recurse
+
+126
+00:09:58,863 --> 00:10:04,139
+just on the northwestern most two edges.
+This vertex is the unique sink in that
+
+127
+00:10:04,139 --> 00:10:08,103
+graph. That gets the label two. And then
+we recurse on the one node graph and that
+
+128
+00:10:08,103 --> 00:10:11,639
+gets the, the label one. So
+why does this algorithm work? Well
+
+129
+00:10:11,639 --> 00:10:15,695
+there's, there's two quick observations we
+need. So first of all, we need to argue
+
+130
+00:10:15,695 --> 00:10:19,150
+that it makes sense, that in every
+iteration or in every recursive call, we
+
+131
+00:10:19,150 --> 00:10:23,547
+can indeed find a sink vertex that we
+can assign in the final position that's
+
+132
+00:10:23,547 --> 00:10:28,070
+still unfilled. And the reason for that,
+is just, if you take a directed acyclic
+
+133
+00:10:28,070 --> 00:10:31,354
+graph, and you delete one or more vertices
+from it, you're still gonna have a
+
+134
+00:10:31,354 --> 00:10:34,550
+directed acyclic graph. Alright, you can't
+create cycles by just getting rid of
+
+135
+00:10:34,550 --> 00:10:38,206
+stuff. You can only destroy cycles. And we
+started with no cycles. So through all the
+
+136
+00:10:38,206 --> 00:10:41,435
+intermediate recursive calls, we have no
+cycles. By our first observation, there's
+
+137
+00:10:41,435 --> 00:10:45,710
+always a sink. So the second thing we have
+to argue is that we really do produce a
+
+138
+00:10:45,710 --> 00:10:48,612
+topological ordering. So remember what
+that means. That means that for every edge
+
+139
+00:10:48,612 --> 00:10:51,953
+of the graph, it goes forward in the
+ordering. That is, the head of the arc is
+
+140
+00:10:51,953 --> 00:10:56,937
+given a position later than the tail of
+the arc. And this simply follows because
+
+141
+00:10:56,937 --> 00:11:02,135
+we always use sink vertices. So
+consider the vertex V, which is assigned
+
+142
+00:11:02,135 --> 00:11:06,432
+to the position I, this means then when
+we're down to a graph that has only I
+
+143
+00:11:06,432 --> 00:11:12,260
+vertices remaining, V is a sink vertex. So
+if I is, if V is a sink vertex for, when
+
+144
+00:11:12,260 --> 00:11:16,399
+only the first I vertices remain, what
+property does it have in the original
+
+145
+00:11:16,399 --> 00:11:20,584
+graph? Well it means all of the outgoing
+arcs that it has; have to go to vertices
+
+146
+00:11:20,584 --> 00:11:25,219
+that were already deleted and assigned
+higher positions. So for every vertex, by
+
+147
+00:11:25,219 --> 00:11:29,662
+the time it actually gets assigned a
+position, it's a sink. And it only has
+
+148
+00:11:29,662 --> 00:11:34,118
+incoming arcs from the as yet unassigned
+vertices. Its outgoing arcs all go
+
+149
+00:11:34,118 --> 00:11:39,113
+forward to vertices that were already
+assigned higher positions, and got deleted
+
+150
+00:11:39,113 --> 00:11:44,289
+previously from the graph. So now we have
+under our belt a pretty reasonable
+
+151
+00:11:44,289 --> 00:11:48,439
+solution for computing a topological ordering
+of a directed acyclic graph. In particular,
+
+152
+00:11:48,439 --> 00:11:52,005
+remember we observed that if a graph does
+have a directed cycle, then of course
+
+153
+00:11:52,005 --> 00:11:56,224
+there is no way there's a topological ordering.
+However you order the vertices, some edge of
+
+154
+00:11:56,224 --> 00:11:59,509
+the cycle is going to have to go backward.
+And the solution on the previous slide
+
+155
+00:11:59,509 --> 00:12:02,570
+shows that as long as you don't have a
+cycle, it guarantees a topological
+
+156
+00:12:02,570 --> 00:12:06,630
+ordering does indeed exist and in fact
+it's a constructive proof, a constructive
+
+157
+00:12:06,630 --> 00:12:10,320
+argument that gives an algorithm. What you
+do is you just keep plucking off sinks,
+
+158
+00:12:10,320 --> 00:12:14,955
+sink vertices one at a time and populating
+the ordering from right to left as you
+
+159
+00:12:14,955 --> 00:12:20,422
+keep peeling off these sinks. So that's a
+pretty good algorithm, it's not too slow.
+
+160
+00:12:20,422 --> 00:12:24,394
+And actually, if you implement it just so,
+you can even get it to run in linear time.
+
+161
+00:12:24,394 --> 00:12:27,903
+But I wanna conclude this video with an
+application of depth first search, which
+
+162
+00:12:27,903 --> 00:12:32,775
+is a very slick, very efficient
+computation of a topological ordering of a
+
+163
+00:12:32,775 --> 00:12:37,038
+directed acyclic graph. So we're just
+going to make two really quite minor
+
+164
+00:12:37,038 --> 00:12:41,865
+modifications to our previous depth first
+search subroutine. The first thing is we
+
+165
+00:12:41,865 --> 00:12:45,556
+have to embed it in a for loop just like
+we did with breadth first search when we
+
+166
+00:12:45,556 --> 00:12:48,277
+were computing the connected components of
+an undirected graph. That's because in
+
+167
+00:12:48,277 --> 00:12:51,270
+computing a topological ordering, we'd
+better give every single vertex a label,
+
+168
+00:12:51,270 --> 00:12:54,971
+we better look at every vertex at least
+once. So to do that, we'll just make sure
+
+169
+00:12:54,971 --> 00:12:58,773
+there's an outer for loop and then if we
+have multiple components, we'll just make
+
+170
+00:12:58,773 --> 00:13:03,273
+sure to invoke DFS as often as we need to.
+The second thing we'll do is we'll add a
+
+171
+00:13:03,273 --> 00:13:06,659
+little bit of bookkeeping and this will
+make sure that every node gets a label. And in
+
+172
+00:13:06,659 --> 00:13:11,418
+fact, these labels will define the
+topological order. So let's not forget the
+
+173
+00:13:11,418 --> 00:13:16,143
+code for depth first search. This is where
+you're given a graph G; in this case we're assuming
+
+174
+00:13:16,143 --> 00:13:21,701
+a directed acyclic graph and you're given a
+start vertex S. And what you do is you, as soon as
+
+175
+00:13:21,701 --> 00:13:24,614
+you get to S, you very aggressively start
+trying to explore its neighbors. Of
+
+176
+00:13:24,614 --> 00:13:30,434
+course, you don't visit any vertex you've
+already been to; you keep track of who
+
+177
+00:13:30,434 --> 00:13:34,983
+you've visited. And if you find any vertex
+that you haven't seen before, you
+
+178
+00:13:34,983 --> 00:13:39,573
+immediately start recursing on that node.
+So I said the first modification we need
+
+179
+00:13:39,573 --> 00:13:43,949
+is to embed this into an outer for loop to
+ensure that every single node gets labeled
+
+180
+00:13:43,949 --> 00:13:49,518
+so I'm gonna call that subroutine DFS-loop.
+It does not take a start vertex.
+
+181
+00:13:49,518 --> 00:13:54,299
+Initialization all nodes start out
+unexplored of course. And we're also going
+
+182
+00:13:54,299 --> 00:13:58,844
+to keep track of a global variable which
+I'll call current label. This is going to
+
+183
+00:13:58,844 --> 00:14:02,850
+be initialized to N and we're gonna
+count down each time we finish exploring a
+
+184
+00:14:02,850 --> 00:14:06,787
+new node. And these will be precisely the
+F values. These will be exactly the
+
+185
+00:14:06,787 --> 00:14:10,466
+positions of the vertices in the
+topological ordering that we output. In
+
+186
+00:14:10,466 --> 00:14:14,516
+the main, in the main loop we're gonna
+iterate over all of the nodes of the
+
+187
+00:14:14,516 --> 00:14:18,881
+graph. So, for example, we just do a scan
+through the node array. As usual, we don't
+
+188
+00:14:18,881 --> 00:14:23,358
+wanna do any work twice, so for a, if a
+vertex has already been explored in some
+
+189
+00:14:23,358 --> 00:14:27,824
+previous indication of DFS, we don't, we
+don't search from it. This should all be
+
+190
+00:14:27,824 --> 00:14:31,211
+familiar from our embedding a
+breadth-first search in a for loop when we
+
+191
+00:14:31,211 --> 00:14:34,248
+computed the connected components of an
+undirected graph, and if we get to a
+
+192
+00:14:34,248 --> 00:14:37,634
+vertex V of the graph that we haven't
+explored yet, then we just invoke DFS
+
+193
+00:14:37,634 --> 00:14:43,934
+in the graph with that vertex as the
+starting point. So, the final thing I need
+
+194
+00:14:43,934 --> 00:14:47,264
+to add is I need to tell you what the F
+values are with the actually assignments
+
+195
+00:14:47,264 --> 00:14:50,954
+of vertices to positions are. And as I
+foreshadowed we're going to use this global
+
+196
+00:14:50,954 --> 00:14:55,972
+current label variable and that will have
+us assign vertices to positions from
+
+197
+00:14:55,972 --> 00:14:59,954
+right to the left. Very much mimicking
+what was going on our recursive solution
+
+198
+00:14:59,954 --> 00:15:05,197
+where we plucked off sink vertices one at a
+time. So when's the right time to assign a
+
+199
+00:15:05,197 --> 00:15:08,797
+vertex its position? Well, it turns out
+the right time is when we've completely
+
+200
+00:15:08,797 --> 00:15:13,758
+finished with that vertex. So we're about
+to pop the recursive call from the stack
+
+201
+00:15:13,758 --> 00:15:18,899
+corresponding to that vertex. So after
+we've gone through the for loop of all
+
+202
+00:15:18,899 --> 00:15:26,853
+the edges outgoing from a given vertex,
+we set F of S equal to whatever the
+
+203
+00:15:26,853 --> 00:15:31,477
+current label is and then we decrement the
+current label. And that's it. That is the
+
+204
+00:15:31,477 --> 00:15:35,346
+entire algorithm. So, the claim is going
+to be that the F values produced, which
+
+205
+00:15:35,346 --> 00:15:39,250
+you'll notice, are going to be the
+integers between N through one, because
+
+206
+00:15:39,250 --> 00:15:43,638
+DFS will be called eventually once on
+every vertex and it will get some integer
+
+207
+00:15:43,638 --> 00:15:47,856
+assignment at the end. And everybody's
+gonna get a distinct value and the largest
+
+208
+00:15:47,856 --> 00:15:51,693
+one is N and the smallest one is one. The
+claim is that is a topological ordering.
+
+209
+00:15:51,693 --> 00:15:57,182
+Clearly this algorithm is just as
+blazingly fast as DFS itself, with just a
+
+210
+00:15:57,182 --> 00:16:01,120
+trivial amount of extra bookkeeping. Let's
+see how it works on our running example.
+
+211
+00:16:01,120 --> 00:16:04,911
+So let's just say we have this four node
+directed graph, which we're getting quite
+
+212
+00:16:04,911 --> 00:16:11,067
+used to. So this has four vertices. So we
+initialize the current label variable to be equal to four.
+
+213
+00:16:11,067 --> 00:16:15,521
+So let's say that, in the outer DFS loop, let's stay we
+start somewhere like the vertex V. So
+
+214
+00:16:15,521 --> 00:16:18,704
+notice, in this outer for loop, we wind
+up considering the vertices in a
+
+215
+00:16:18,704 --> 00:16:23,778
+totally arbitrary order. So let's say we
+first call DFS from this vertex V. So
+
+216
+00:16:23,778 --> 00:16:28,931
+what happens? Well, the only place you can
+go from V is to T and then at T there's
+
+217
+00:16:28,931 --> 00:16:33,104
+nowhere to go. So we recursively call
+DFS of T. There's no edges to go through.
+
+218
+00:16:33,104 --> 00:16:37,683
+We finish the for loop and so T is
+going to be assigned an F value equal to
+
+219
+00:16:37,683 --> 00:16:42,149
+the current label, which is N and here N
+is the number of vertices which is four.
+
+220
+00:16:42,149 --> 00:16:47,673
+So F of T is going to get. Sorry T is
+going to get the assignment the label
+
+221
+00:16:47,673 --> 00:16:55,019
+four. So then now we're done with T we
+back track back to V. We decrement the
+
+222
+00:16:55,019 --> 00:16:58,911
+current label as we finish up with T. We
+get to V, and now there's no more outgoing
+
+223
+00:16:58,911 --> 00:17:01,803
+arcs to explore, so its for loop is
+finished. So we're done with it, with
+
+224
+00:17:01,803 --> 00:17:05,279
+depth-first search. So it gets what's the new
+current label, which is now three. And
+
+225
+00:17:05,279 --> 00:17:13,241
+again having finished with V we decrement
+the current label which is now down to
+
+226
+00:17:13,241 --> 00:17:17,921
+two. So now we go back to the outer
+for loop. Maybe the next vertex we
+
+227
+00:17:17,921 --> 00:17:22,072
+consider is the vertex T. But we've
+already been there so don't bother to DFS
+
+228
+00:17:22,072 --> 00:17:27,900
+on T. Then maybe after that we tried it on
+S. So, maybe S is the third vertex that
+
+229
+00:17:27,900 --> 00:17:32,530
+the for loop considers. We haven't seen S
+yet so invoked DSF starting from vertex S.
+
+230
+00:17:32,530 --> 00:17:37,806
+From S there's two arcs to explore the one
+with V. V we've already seen nothing is
+
+231
+00:17:37,806 --> 00:17:42,635
+gonna happen with arc SV. But on the other hand
+the arc SW will cause us to recursively
+
+232
+00:17:42,635 --> 00:17:48,327
+call DFS on W. From W we try to look at
+the arc from W to T, but we've already
+
+233
+00:17:48,327 --> 00:17:53,154
+been to T so we don't do anything, that
+finishes up with W so depth-first search then
+
+234
+00:17:53,154 --> 00:17:57,170
+finishes up at the vertex W, W gets the
+assignment of the current label, so F of
+
+235
+00:17:57,170 --> 00:18:04,460
+W equals two. We decrement current
+label, now its value is one, now we
+
+236
+00:18:04,460 --> 00:18:08,352
+backtrack to S, we've already considered
+all of S's outgoing arcs so we're done
+
+237
+00:18:08,352 --> 00:18:14,606
+with S, it gets the current label which is
+one. And this is indeed one of the two
+
+238
+00:18:14,606 --> 00:18:19,603
+topological orderings of this graph that
+we exhibited, a couple slides ago. So
+
+239
+00:18:19,603 --> 00:18:23,471
+that's the full description of the
+algorithm and how it works on a concrete
+
+240
+00:18:23,471 --> 00:18:27,599
+example. Let's just discuss what are its
+key properties, its running time and its
+
+241
+00:18:27,599 --> 00:18:32,302
+correctness. So as far as the running
+time of this algorithm, the running time
+
+242
+00:18:32,302 --> 00:18:36,587
+is linear; it's exactly what you'd want it
+to be. And the reason the running time is
+
+243
+00:18:36,587 --> 00:18:41,110
+linear is for the usual reasons that these
+graph search algorithms have run a linear
+
+244
+00:18:41,110 --> 00:18:44,451
+time, you're explicitly keeping track of
+which nodes you've been to so that you
+
+245
+00:18:44,451 --> 00:18:48,108
+don't visit them twice. So you only do
+a constant amount of work for each of
+
+246
+00:18:48,108 --> 00:18:51,752
+the N nodes and each edge in a directed
+graph, you actually only look at each edge
+
+247
+00:18:51,752 --> 00:18:56,169
+once when you visit the tail of that edge.
+So you only do a constant amount of work
+
+248
+00:18:56,169 --> 00:19:01,000
+per edge as well. Of course the other key
+property is correctness. That is we need
+
+249
+00:19:01,000 --> 00:19:04,937
+to show that you all are guaranteed to get
+a topological ordering. So what does that
+
+250
+00:19:04,937 --> 00:19:10,697
+mean? That means every edge. Every arc
+travels forward in the ordering. So if UV
+
+251
+00:19:10,697 --> 00:19:18,865
+is in edge, then F of U, the label
+assigned to U, in this algorithm is
+
+252
+00:19:18,865 --> 00:19:23,522
+less than the label assigned to V. The
+proof of correctness splits into two cases
+
+253
+00:19:23,522 --> 00:19:29,496
+depending on which of the vertices U or V
+is visited first by depth-first search.
+
+254
+00:19:29,496 --> 00:19:33,478
+Because of our for loop, which iterates
+over all of the vertices of the graph
+
+255
+00:19:33,478 --> 00:19:37,731
+G, depth-first search is going to be
+invoked exactly once from each of the
+
+256
+00:19:37,731 --> 00:19:42,298
+vertices. Either U or V could be first,
+both are possible. So, first, let's assume
+
+257
+00:19:42,298 --> 00:19:47,642
+that U is visited by DFS before V. So then
+what happens? Well, remember what
+
+258
+00:19:47,642 --> 00:19:51,136
+depth-first search does when you invoke it
+from a node, it's going to find everything
+
+259
+00:19:51,136 --> 00:19:55,224
+findable from that node. So, if U is
+visited before V, that means V doesn't get
+
+260
+00:19:55,224 --> 00:20:00,152
+explored so it's a candidate for being
+discovered. Moreover, there's an arc
+
+261
+00:20:00,152 --> 00:20:04,776
+straight from U to V. So, certainly, DFS
+invoked at U is going to discover V.
+
+262
+00:20:04,776 --> 00:20:09,827
+Furthermore, the recursive call
+corresponding to the node V, is going to
+
+263
+00:20:09,827 --> 00:20:14,045
+finish, is going to get popped off the
+program stack before that of U. The
+
+264
+00:20:14,045 --> 00:20:17,128
+easiest way to see this is just to think
+about the recursive structure of
+
+265
+00:20:17,128 --> 00:20:20,759
+depth-first search. So when you call
+depth-first search from U, that recursive
+
+266
+00:20:20,759 --> 00:20:24,516
+call, that's gonna make further recursive
+calls to all of the relevant neighbors
+
+267
+00:20:24,516 --> 00:20:29,938
+including V and U's call is not gonna get
+popped off the stack until V's does
+
+268
+00:20:29,938 --> 00:20:36,391
+beforehand, that's because of the last in first out
+nature of a stack or of a recursive algorithm.
+
+269
+00:20:36,391 --> 00:20:41,900
+So, because V's recursive call finishes
+before that of U, that means it will be
+
+270
+00:20:41,900 --> 00:20:46,231
+assigned a larger label than U.
+Remember, the labels keep decreasing as
+
+271
+00:20:46,231 --> 00:20:50,203
+more and more recursive calls get popped
+off the stack. So that's exactly what we
+
+272
+00:20:50,203 --> 00:20:55,636
+wanted. Now, what's up in the second case,
+case two? So this is where V is visited
+
+273
+00:20:55,636 --> 00:21:01,115
+before U. And here's where we use the
+fact that the graph has no cycles. So
+
+274
+00:21:01,115 --> 00:21:05,569
+there's a direct arc from U to V. That
+means there cannot be any directed path
+
+275
+00:21:05,569 --> 00:21:11,622
+from V all the way back to U. That would
+create a directed cycle. Therefore, DFS,
+
+276
+00:21:11,622 --> 00:21:16,426
+invoked from V, is not going to discover
+U. There's no directed path from V to U,
+
+277
+00:21:16,426 --> 00:21:19,947
+again, if there was, there would be a
+directed cycle, so it doesn't find U at
+
+278
+00:21:19,947 --> 00:21:26,539
+all. So the recursive call of V, again, is
+going to get popped before U's is even
+
+279
+00:21:26,539 --> 00:21:30,286
+pushed onto the stack. So we're totally
+done with V before we even start to
+
+280
+00:21:30,286 --> 00:21:33,975
+consider U. So therefore for the same
+reasons, since V's recursive call finishes
+
+281
+00:21:33,975 --> 00:21:38,802
+first, its label is going to be larger,
+which is exactly what we wanted to prove.
+
+282
+00:21:38,802 --> 00:21:42,311
+So that concludes the first quite
+interesting application of depth-first
+
+283
+00:21:42,311 --> 00:21:45,957
+search. In the next video we'll look at an
+even more interesting one, which computes
+
+284
+00:21:45,957 --> 00:21:50,310
+the strongly connected components of a
+directed graph. This time we can't do it
+
+285
+00:21:50,310 --> 00:21:53,595
+in one depth for search, we'll need two.

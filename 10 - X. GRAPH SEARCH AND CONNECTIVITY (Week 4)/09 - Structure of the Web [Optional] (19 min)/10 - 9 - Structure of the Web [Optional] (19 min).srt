@@ -1,0 +1,1263 @@
+1
+00:00:00,000 --> 00:00:04,430
+So he's now put in a lot of work designing
+and analyzing super fast algorithms for
+
+2
+00:00:04,430 --> 00:00:08,434
+reasoning about graphs. So in this
+optional video, what I want to do is show
+
+3
+00:00:08,434 --> 00:00:12,705
+you why you might want such a primitive,
+especially for computation on extremely
+
+4
+00:00:12,705 --> 00:00:17,189
+large graphs. Specifically, we're going to
+look at the results of a famous study that
+
+5
+00:00:17,189 --> 00:00:21,406
+computes the strongly connected components
+of the web graph. So what is the web
+
+6
+00:00:21,406 --> 00:00:25,653
+graph? Well, it's the graph in which the
+vertices correspond to web pages. So for
+
+7
+00:00:25,653 --> 00:00:30,034
+example, I have my own web page where I,
+you know, list my research papers, and
+
+8
+00:00:30,034 --> 00:00:34,761
+also links to courses such as this one And
+the edges are going to be directed, and
+
+9
+00:00:34,761 --> 00:00:39,431
+they correspond precisely to hyperlinks.
+So, the links that, bring you from one web
+
+10
+00:00:39,431 --> 00:00:44,215
+page to another. Note of course that these
+are directed edges, where the tail is the
+
+11
+00:00:44,215 --> 00:00:49,000
+page that contains the hyperlink, and the
+head is the pa, page that you go to if you
+
+12
+00:00:49,000 --> 00:00:53,439
+click the hyperlink, and so this is a
+directed graph. So from my home page you
+
+13
+00:00:53,439 --> 00:00:58,404
+can get to my papers. You can get to my
+courses. Sometimes I have random links up
+
+14
+00:00:58,404 --> 00:01:03,103
+to things I like, like say, my favorite
+record store And of course for many of
+
+15
+00:01:03,103 --> 00:01:07,630
+these web pages there are additional links
+going out and going in. So for example
+
+16
+00:01:07,630 --> 00:01:12,157
+from my papers I might link some to my
+co-authors, some of my co-authors might be
+
+17
+00:01:12,157 --> 00:01:16,741
+linking from their home pages to me, or of
+course there's web pages out there that
+
+18
+00:01:16,741 --> 00:01:21,880
+list the currently available free online
+courses And so on So obviously this is
+
+19
+00:01:21,880 --> 00:01:27,821
+just part of a, massive, web graph, Just a
+tiny, tiny piece of it. So the origins of
+
+20
+00:01:27,821 --> 00:01:33,083
+the web were probably around 1990 or so
+but it started to really explode in the
+
+21
+00:01:33,083 --> 00:01:37,965
+mid'90s. And by the year 2000 it was
+already beyond comprehension. Even though
+
+22
+00:01:38,155 --> 00:01:43,164
+in internet years the year 2000 is sort of
+the Stone Age relative to right now,
+
+23
+00:01:43,164 --> 00:01:47,983
+relative to 2012 But still, even by 2000
+people were so overwhelmed with the
+
+24
+00:01:47,983 --> 00:01:52,738
+massive scale of the web graph; they
+wanted to understand anything about it,
+
+25
+00:01:52,738 --> 00:01:57,166
+even the most basic things. Of course one
+issue with understanding what the graph
+
+26
+00:01:57,166 --> 00:02:01,039
+looks like is you don't even have it
+locally, right? It's distributed over all
+
+27
+00:02:01,039 --> 00:02:05,013
+these different servers Over the entire
+world. So the first thing people really
+
+28
+00:02:05,013 --> 00:02:09,188
+focused on when they wanted to answer this
+question Was on techniques for crawling.
+
+29
+00:02:09,188 --> 00:02:13,463
+So having software which just follows lots
+of hyperlinks Reports back to the home
+
+30
+00:02:13,463 --> 00:02:17,387
+base, from which you can assemble. At
+least some kind of sketch of what this
+
+31
+00:02:17,387 --> 00:02:20,908
+graph actually is. So, but then the
+question is Even once you have this
+
+32
+00:02:20,908 --> 00:02:25,234
+crawled information Even if, once you've
+accessed A good chunk of the nodes and the
+
+33
+00:02:25,234 --> 00:02:29,110
+edges of this Of this network. What does
+it look like? So what makes this a
+
+34
+00:02:29,110 --> 00:02:33,491
+difficult question, more difficult than,
+say, for any other directed graph you
+
+35
+00:02:33,491 --> 00:02:37,987
+might encounter? Well, it's simply the
+massive scale of the web graph, it's just
+
+36
+00:02:37,987 --> 00:02:42,311
+so big. So for the graph used in the
+particular study I'm gonna discuss, you
+
+37
+00:02:42,311 --> 00:02:46,576
+know, like we said, it was in the year
+2000, which was sort of the stone age
+
+38
+00:02:46,576 --> 00:02:50,900
+compared to 2012, so the graph was small,
+relatively, but still, the graph was
+
+39
+00:02:50,900 --> 00:02:55,338
+really, really, big. So, it was something
+like 200 million nodes and one billion
+
+40
+00:02:55,338 --> 00:03:00,082
+edges, really, one and a half billion
+edges. So the reference for the work I'm
+
+41
+00:03:00,082 --> 00:03:04,333
+gonna discuss is a paper by a number of
+authors. The first author is Andrei Broder
+
+42
+00:03:04,333 --> 00:03:08,583
+And then he has many co-authors And this
+was a paper that appeared in the Dub, Dub,
+
+43
+00:03:08,583 --> 00:03:12,471
+Dub conference of the year 2000. That's
+the World Wide Web Conference And I
+
+44
+00:03:12,471 --> 00:03:16,151
+encourage you, those of you who are
+interested, to go track down the, the
+
+45
+00:03:16,151 --> 00:03:20,246
+paper on line And read the original
+source. So Andrei Broder the lead author.
+
+46
+00:03:20,246 --> 00:03:24,342
+At this time he was at a company that was
+called Alta Vista. So how many of you
+
+47
+00:03:24,342 --> 00:03:28,295
+remember a company called Alta Vista?
+Well, some of you, especially, you know,
+
+48
+00:03:28,295 --> 00:03:32,806
+the youngest ones among you maybe have
+never heard of Alta Vista And the youngest
+
+49
+00:03:32,806 --> 00:03:37,372
+ones among you maybe can't even conceive
+of a world in which we didn't have Google
+
+50
+00:03:37,537 --> 00:03:42,158
+But in fact there was a time when we had
+Web Search that it would, but Google did
+
+51
+00:03:42,158 --> 00:03:46,778
+not yet exist. That was sort of in the,
+you know, maybe 97 or so. And so this was
+
+52
+00:03:46,778 --> 00:03:51,289
+in the very embryonic years of Google And
+this, this data set actually came out of,
+
+53
+00:03:51,289 --> 00:03:55,190
+out of Alta Vista instead. So [inaudible]
+etc all wanted to get some answers to this
+
+54
+00:03:55,190 --> 00:03:58,440
+question. What does the web graph look
+like? And they approached it in a few
+
+55
+00:03:58,440 --> 00:04:02,057
+ways, but the one I'm going to focus on
+here is they asked, well. You know, what's
+
+56
+00:04:02,057 --> 00:04:06,494
+the most detailed structure we can get
+about this web graph without doing an
+
+57
+00:04:06,494 --> 00:04:11,098
+infeasible amount of computation? Really
+just sticking to linear time algorithms,
+
+58
+00:04:11,098 --> 00:04:15,424
+at, at the worst And what have we seen?
+We've seen that in a directed graph you
+
+59
+00:04:15,424 --> 00:04:20,139
+can get full connectivity information just
+really using [inaudible] first search. You
+
+60
+00:04:20,139 --> 00:04:24,687
+can compute strongly connected components
+in linear time with small constants, and
+
+61
+00:04:24,687 --> 00:04:29,806
+that's one of the major things that they
+did in this study. Now if you wanted to do
+
+62
+00:04:29,806 --> 00:04:33,741
+this same computation today you'd have one
+thing going against you and one thing
+
+63
+00:04:33,741 --> 00:04:37,530
+going for you. The obvious thing that
+you'd have going against you is that the
+
+64
+00:04:37,530 --> 00:04:42,920
+web is still very much bigger Than it was
+here. Certainly by an order of magnitude
+
+65
+00:04:43,240 --> 00:04:47,576
+The thing that you'd have going for you is
+now there's specialized systems which are
+
+66
+00:04:47,576 --> 00:04:51,657
+meant to operate on massive data sets And
+in particular, they can do things like
+
+67
+00:04:51,657 --> 00:04:55,739
+compute connectivity information on graph
+data. So what you have to remember, for
+
+68
+00:04:55,739 --> 00:04:59,820
+those of you who are aware of these terms,
+in 2000, there was no map reduce. There
+
+69
+00:04:59,820 --> 00:05:04,055
+was no [inaudible]. There were no tools
+for automated processing large data sets.
+
+70
+00:05:04,055 --> 00:05:09,475
+These guys really had to do it from
+scratch. So let me tell you about what
+
+71
+00:05:09,475 --> 00:05:14,508
+Broder et al found when they did strong
+connectivity computations one the web
+
+72
+00:05:14,508 --> 00:05:19,541
+graph. They explained their results in
+what they called the bow tie picture of
+
+73
+00:05:19,541 --> 00:05:25,271
+the web. So let's begin with the center of
+the knot of the bow tie. So in the middle
+
+74
+00:05:25,271 --> 00:05:32,482
+we have what we're gonna call a giant,
+strongly connected component. With the
+
+75
+00:05:32,482 --> 00:05:40,823
+interpretation being this is the core of
+the web in some sense. Alright, so all of
+
+76
+00:05:40,823 --> 00:05:44,823
+you know what a, an SCC is at this point.
+A strongly connected component is the reg
+
+77
+00:05:44,823 --> 00:05:48,872
+ion from which you can get from any point
+to any other point along a directed path.
+
+78
+00:05:48,872 --> 00:05:52,750
+So in the context of the web graph, with
+this giant SCC, what this means is that
+
+79
+00:05:52,750 --> 00:05:56,726
+from any webpage inside this [inaudible]
+you can get to any other webpage inside
+
+80
+00:05:56,726 --> 00:06:00,550
+this [inaudible] just by traversing a
+sequence of hyperlinks. And hopefully, it
+
+81
+00:06:00,550 --> 00:06:04,313
+doesn't strike you as too surprising that
+a big chunk of the web is strongly
+
+82
+00:06:04,313 --> 00:06:08,222
+connected, is well connected in this sense
+Right? So if you think about all these
+
+83
+00:06:08,222 --> 00:06:11,887
+different universities in the world. You
+know, probably all of the web pages
+
+84
+00:06:11,887 --> 00:06:15,748
+corresponding to all of the different
+universities. You can get from any one
+
+85
+00:06:15,748 --> 00:06:20,041
+place to any other place For example, from
+the homepage on which I put my papers,
+
+86
+00:06:20,041 --> 00:06:24,955
+that often include links to my co-authors
+which very commonly are other universities
+
+87
+00:06:24,955 --> 00:06:29,423
+so that already provides a web link from
+some Stanford page to some page at say,
+
+88
+00:06:29,423 --> 00:06:33,946
+Berkeley or Cornell or whatever and of
+course I'm just a one person. I'm just one
+
+89
+00:06:33,946 --> 00:06:38,358
+of many faculty members at Stanford. So
+you put all of these together, you would
+
+90
+00:06:38,358 --> 00:06:42,770
+expect all of the different SCCs
+corresponding to different universities to
+
+91
+00:06:42,770 --> 00:06:47,458
+collapse into a single one and so on for
+other sectors s well. An then of course if
+
+92
+00:06:47,458 --> 00:06:51,589
+you knew that a huge chunk of the web was
+in the same shelling ham component, let's
+
+93
+00:06:51,589 --> 00:06:55,116
+say ten percent of the web, which would be
+tens of millions of web pages, you
+
+94
+00:06:55,116 --> 00:06:59,147
+wouldn't expect there to be a second one,
+right, it would be super weird if there
+
+95
+00:06:59,147 --> 00:07:03,329
+were two different blobs, ten million web
+pages each, that somehow were not mutually
+
+96
+00:07:03,329 --> 00:07:07,214
+reachable from each other. That would
+just, all it takes to collapse two SCCs
+
+97
+00:07:07,214 --> 00:07:11,230
+into one, is a lone arc going from one to
+the other, and then a lone arc in the
+
+98
+00:07:11,230 --> 00:07:15,555
+reverse direction. And then those two SCCs
+collapse into one. So we do expect a giant
+
+99
+00:07:15,555 --> 00:07:19,520
+SCC, just sort of thinking anecdotally
+about what the web looks like, and then
+
+100
+00:07:19,520 --> 00:07:23,640
+once we realize there's one giant SCC, we
+don't expect there to be more than one.
+
+101
+00:07:23,640 --> 00:07:27,866
+Alright, so is that the whole story? Is
+the web graph just one big SCC? Well, one
+
+102
+00:07:27,866 --> 00:07:32,148
+of the perhaps intere sting findings of
+this [inaudible] paper is that, you know
+
+103
+00:07:32,148 --> 00:07:35,941
+there is a giant SCC, but it doesn't
+actually take up the whole web, or
+
+104
+00:07:35,941 --> 00:07:40,439
+anything really that close to the entire
+web. So what else would there be in such a
+
+105
+00:07:40,439 --> 00:07:45,667
+picture? Well, there's the other two ends
+of the bow tie. Which are called the in
+
+106
+00:07:45,667 --> 00:07:51,207
+and the out regions In the out regions,
+you have a bunch of strongly connecting
+
+107
+00:07:51,207 --> 00:07:55,561
+components, not giant SCCs. We've
+established that shouldn't be any other
+
+108
+00:07:55,561 --> 00:08:00,459
+giant SCCs, but small SCCs Which you can
+reach from the giant strongly connecting
+
+109
+00:08:00,459 --> 00:08:05,115
+component, but from which you cannot go
+back to the giant strongly connecting
+
+110
+00:08:05,115 --> 00:08:10,612
+component. I encourage you to think about
+what types of web sites you would expect
+
+111
+00:08:10,612 --> 00:08:15,007
+to see in this out part of the bow tie.
+I'll give you once example, very often if
+
+112
+00:08:15,007 --> 00:08:19,296
+you look at a corporate site including
+those of well known corporations, which
+
+113
+00:08:19,296 --> 00:08:23,055
+you would definitely expect to be
+reachable from the giant SEC. There's
+
+114
+00:08:23,055 --> 00:08:27,079
+actually a corporate policy that no
+hyperlinks can go from something in the
+
+115
+00:08:27,079 --> 00:08:30,945
+corporate site to something outside the
+corporate site. So that means the
+
+116
+00:08:30,945 --> 00:08:35,445
+corporate site is going to be a collection
+of web pages which are certainly strongly
+
+117
+00:08:35,445 --> 00:08:39,205
+connected, because it's a major
+corporation you can certainly get there
+
+118
+00:08:39,205 --> 00:08:43,084
+from. The giant has [cough], but because
+of this corporate policy you can't get
+
+119
+00:08:43,084 --> 00:08:48,289
+back out. Symmetrically, in the in part of
+the bow tie, you have a strong [inaudible]
+
+120
+00:08:48,289 --> 00:08:53,564
+of components, generally small ones, from
+which you can reach the giant SCC But you
+
+121
+00:08:53,564 --> 00:08:58,256
+cannot get through them from the giant
+SCC. Again I encourage you to think about
+
+122
+00:08:58,256 --> 00:09:02,577
+all the different types of web-pages you
+might expect to see in this import of the
+
+123
+00:09:02,577 --> 00:09:06,898
+bow-tie [inaudible]. Certainly one really
+obvious example would be new web-pages. So
+
+124
+00:09:06,898 --> 00:09:11,062
+if you just create something, and then,
+you know if I just created a web-page and
+
+125
+00:09:11,062 --> 00:09:15,279
+pointed it to Stanford University that
+would immediately be in this in-component,
+
+126
+00:09:15,279 --> 00:09:19,236
+in this in-collection of components. Now,
+if you think about it, this does not
+
+127
+00:09:19,236 --> 00:09:23,504
+exhaust all of the possibilities of where
+notes can log. There's a few other cases.
+
+128
+00:09:23,661 --> 00:09:29,104
+They frankly are pretty weird, but they're
+there. You can have passive hyperlinks
+
+129
+00:09:29,104 --> 00:09:36,343
+which bypass the giant FCC, and go
+straight from the in part of the Bowtie to
+
+130
+00:09:36,343 --> 00:09:43,997
+the out part So [inaudible] suggested
+calling these tubes. And then there's also
+
+131
+00:09:43,997 --> 00:09:49,733
+a kind of very curious outgrowths going
+out of the in component, but which don't
+
+132
+00:09:49,733 --> 00:09:55,541
+make it all the way to the giant SCC, and
+similarly there's stuff which goes into
+
+133
+00:09:55,541 --> 00:10:00,417
+the out component And [inaudible]
+recommended calling these strange
+
+134
+00:10:00,417 --> 00:10:09,336
+creatures' tendrils And then in fact you
+can also just have some weird isolated
+
+135
+00:10:09,336 --> 00:10:14,963
+islands of SCCs that are not connected
+even weekly to the giant SCC. So this is
+
+136
+00:10:14,963 --> 00:10:20,956
+the picture that emerged from Broderall's
+strong component computation on the web
+
+137
+00:10:20,956 --> 00:10:27,023
+graph and here's qualitatively some of the
+main findings that they came up with. So
+
+138
+00:10:27,023 --> 00:10:33,235
+first of all, that picture on the previous
+slide I drew roughly to scale in the sense
+
+139
+00:10:33,235 --> 00:10:38,862
+that all four parts, so the giant SCC, the
+in-part, the out-part and then their
+
+140
+00:10:38,862 --> 00:10:44,636
+residual stuff; the tubes and tendrils,
+have roughly the same size. You know, more
+
+141
+00:10:44,636 --> 00:10:50,454
+or less 25 percent of the nodes in the
+graph. I think this surprised some people.
+
+142
+00:10:50,454 --> 00:10:55,046
+I think some people might have thought
+that the core that the giant SCC might
+
+143
+00:10:55,046 --> 00:11:00,061
+have been a little bit bigger than just 25
+or 28%. But [inaudible] is a lot of other
+
+144
+00:11:00,061 --> 00:11:05,939
+stuff outside of the stronger connected
+core. You might wonder if this is, is just
+
+145
+00:11:05,939 --> 00:11:10,649
+an artifact of the, this data set being
+from the Stone Age, being from 2000 or so.
+
+146
+00:11:10,649 --> 00:11:15,889
+But, people have rerun this experiment on,
+on the web graph again in later years. And
+
+147
+00:11:15,889 --> 00:11:20,717
+of course the numbers are changing because
+the graph is growing rapidly, but these
+
+148
+00:11:20,717 --> 00:11:24,838
+qualitatively findings, qualitative
+findings have seemed pretty stable,
+
+149
+00:11:25,015 --> 00:11:29,789
+throughout subsequent, reevaluations of
+the structure of the web. On the other
+
+150
+00:11:29,789 --> 00:11:34,700
+hand, while the. Core of the web is not as
+big as you might have expected. It's
+
+151
+00:11:34,700 --> 00:11:39,740
+extremely well connected Perhaps better
+connected than you might have expected.
+
+152
+00:11:39,740 --> 00:11:43,366
+Now you'd be right to ask the question.
+You know, what could I mean by unusually
+
+153
+00:11:43,366 --> 00:11:47,313
+well connected? We've already established
+that this giant core of the web is strong
+
+154
+00:11:47,313 --> 00:11:50,939
+and connected. You can get from any one
+place to any other place, via a sequence
+
+155
+00:11:50,939 --> 00:11:55,377
+of hyperlinks. What else could you want?
+Well, in fact. It has a very richer notion
+
+156
+00:11:55,377 --> 00:11:59,225
+of connectivity called the small world
+property. So let me tell you about the
+
+157
+00:11:59,225 --> 00:12:03,073
+small world property or the phenomenon
+colloquially known as six-degrees of
+
+158
+00:12:03,073 --> 00:12:07,175
+separation. So this is an idea which had
+been in the air at least since the early
+
+159
+00:12:07,175 --> 00:12:11,370
+twentieth century, but it really it was
+kind of studied. In a major way and
+
+160
+00:12:11,370 --> 00:12:16,820
+popularized by [inaudible]. Norgren was a
+social scientist back in 1967. So Norgren
+
+161
+00:12:16,820 --> 00:12:21,821
+was interested in understanding you know
+are people at great distance in fact
+
+162
+00:12:21,821 --> 00:12:26,117
+connected by short chains of
+intermediaries. So the way he evaluated
+
+163
+00:12:26,117 --> 00:12:31,503
+this he ran the following experiment. He
+gave he identified a friend in Boston
+
+164
+00:12:31,503 --> 00:12:36,811
+Massachusetts. A doctor I believe And so
+this was gonna be the target And then he
+
+165
+00:12:36,811 --> 00:12:41,824
+identified a bunch of people who were
+thought to be far away both culturally and
+
+166
+00:12:41,824 --> 00:12:46,837
+geographically. Specifically Omaha So for
+those of you who don't live in the US just
+
+167
+00:12:46,837 --> 00:12:51,504
+take it on faith that many people in the
+US would regard Boston and, and Omaha as
+
+168
+00:12:51,504 --> 00:12:56,574
+being fairly far apart geographically and
+otherwise And what he did is he wrote each
+
+169
+00:12:56,574 --> 00:13:01,472
+of these residents of Omaha the following
+letter. He said look here's the name and
+
+170
+00:13:01,472 --> 00:13:05,624
+address of this doctor who lives in
+Boston. Okay, your job is to get this
+
+171
+00:13:05,624 --> 00:13:09,896
+letter to this doctor in Boston. Now,
+you're not allowed to mail the letter
+
+172
+00:13:09,896 --> 00:13:14,630
+directly to the doctor, instead you need
+to mail it to an intermediary, someone who
+
+173
+00:13:14,630 --> 00:13:19,133
+you know on a first name basis. So of
+course if you knew the doctor on a first
+
+174
+00:13:19,133 --> 00:13:23,752
+name basis you could mail it straight to
+them, but that was very unlikely. So you
+
+175
+00:13:23,752 --> 00:13:27,711
+know what people would do in Omaha is,
+they'd say, well. I don't know any
+
+176
+00:13:27,711 --> 00:13:31,327
+doctors, or I don't know anyone in Boston,
+but at least I know somebody in
+
+177
+00:13:31,327 --> 00:13:35,437
+Pittsburgh, and at least that's closer to
+Boston than Omaha, that's further eastward
+
+178
+00:13:35,437 --> 00:13:39,399
+Or maybe someone would say, well I don't
+really know anyone at E ast coast, but at
+
+179
+00:13:39,399 --> 00:13:43,509
+least I do know some doctors here in Omaha
+And so they give the letter to somebody
+
+180
+00:13:43,509 --> 00:13:47,323
+depending on a first name basis in Omaha
+And then, the situation would repeat.
+
+181
+00:13:47,323 --> 00:13:51,235
+Whoever got the letter, again they'd be
+given the same instructions: If you know
+
+182
+00:13:51,235 --> 00:13:54,900
+this doctor in Boston on a first name
+basis, send him the letter. Otherwise,
+
+183
+00:13:54,900 --> 00:13:59,060
+pass the letter on to somebody who seems
+more likely closer to them then you are
+
+184
+00:13:59,400 --> 00:14:03,935
+Now of course many of these letters never
+reached their destination but shocking at
+
+185
+00:14:03,935 --> 00:14:08,196
+least to me is that a lot of them did. So
+something like 25 percent at least of the
+
+186
+00:14:08,196 --> 00:14:12,568
+letters that they started with made it all
+the way to Boston. Which I think says
+
+187
+00:14:12,568 --> 00:14:17,212
+something about people in the late sixties
+just having more free time on their hands
+
+188
+00:14:17,376 --> 00:14:21,856
+than they do in the early 21th century And
+I find this hard to imagine but it's a
+
+189
+00:14:21,856 --> 00:14:25,940
+fact. So you had dozens and dozens of
+letters reaching this doctor in Boston.
+
+190
+00:14:25,940 --> 00:14:30,265
+And they were able to trace exactly which
+path of individuals the letter went along
+
+191
+00:14:30,265 --> 00:14:34,384
+before it eventually reached this doctor
+in Boston And so then what they did is
+
+192
+00:14:34,384 --> 00:14:38,452
+they looked at the distribution of chain
+links. So how many intermediaries were
+
+193
+00:14:38,452 --> 00:14:42,777
+required to get from some random person in
+Omaha to this doctor in Boston? Some were
+
+194
+00:14:42,777 --> 00:14:46,588
+as few as two. Some were as big as nine
+But the average number of hops, the
+
+195
+00:14:46,588 --> 00:14:50,810
+average number of intermediaries was in
+the range of five and one-half or six And
+
+196
+00:14:50,810 --> 00:14:55,032
+so this is what has given rise to the
+colloquialism even the name of a popular
+
+197
+00:14:55,032 --> 00:14:59,599
+play the six degrees of separation. So
+that's the origin myth. That's where this
+
+198
+00:14:59,599 --> 00:15:04,084
+phrase comes from. These sorts of
+experiments with physical letters But now,
+
+199
+00:15:04,084 --> 00:15:08,451
+in network science, the small world
+property is meant to be a network, which,
+
+200
+00:15:08,451 --> 00:15:13,169
+on the one hand, is richly connected But
+also, in some sense, there are enough cues
+
+201
+00:15:13,169 --> 00:15:17,886
+about which links are likely to get closer
+to some target. So that if you need to
+
+202
+00:15:17,886 --> 00:15:22,545
+route information from point a, to point
+b. Not only is there a short path But if
+
+203
+00:15:22,545 --> 00:15:27,191
+you, in some sense, follow your nose, then
+you'll actually exhibit a short path. So
+
+204
+00:15:27,191 --> 00:15:31,386
+in some sense, routing information is easy
+in small world networks And this is
+
+205
+00:15:31,386 --> 00:15:35,690
+exactly the property that [inaudible]
+identified with [inaudible] SCC, very rich
+
+206
+00:15:35,690 --> 00:15:40,046
+with short paths and if you want to get
+from point A to point B just follow your
+
+207
+00:15:40,046 --> 00:15:44,242
+nose and you'll do great. You don't need a
+very sophisticated [inaudible] path
+
+208
+00:15:44,242 --> 00:15:48,462
+algorithm to find a short path. Some of
+you may have heard of Stanley Migrim, not
+
+209
+00:15:48,462 --> 00:15:52,630
+for this small world experiment but for
+another famous, or maybe infamous, he did
+
+210
+00:15:52,630 --> 00:15:56,850
+earlier in the Sixties which consisted
+into tricking volunteers into thinking
+
+211
+00:15:56,850 --> 00:16:01,226
+they were subjecting other human beings to
+massive doses of electric shocks. So that
+
+212
+00:16:01,226 --> 00:16:05,498
+wound up, you know, ended up causing a
+rewrite to certain standards of ethics in
+
+213
+00:16:05,498 --> 00:16:09,770
+experimental psychology. You don't hear
+about that so much when people are talking
+
+214
+00:16:09,770 --> 00:16:14,201
+about networks, but that's another reason
+why Migram's work is well known And just
+
+215
+00:16:14,201 --> 00:16:18,395
+as a point of contrast, outside of this
+[inaudible] opponent which has this rich
+
+216
+00:16:18,395 --> 00:16:22,275
+small world structure very poor
+conductivity in other parts of the web
+
+217
+00:16:22,275 --> 00:16:26,090
+graph. So there's a lot of cool research
+going on these days about the study of
+
+218
+00:16:26,090 --> 00:16:29,543
+information networks like, like the web
+graph. So they want you to get the
+
+219
+00:16:29,543 --> 00:16:33,235
+impression that the entire interaction
+between algorithms and thinking about
+
+220
+00:16:33,235 --> 00:16:37,168
+information networks is just being as one
+strong component competition in 2000. Of
+
+221
+00:16:37,168 --> 00:16:41,148
+course, there is all kind of interactions,
+I have just singled one out that was easy
+
+222
+00:16:41,148 --> 00:16:45,176
+to explain and also highly influential and
+interesting back in the day But you know
+
+223
+00:16:45,176 --> 00:16:49,013
+these days; lots of stuffs are going on.
+People are thinking about information
+
+224
+00:16:49,013 --> 00:16:52,801
+networks kind of different ways and of
+course algorithms and almost everything
+
+225
+00:16:52,801 --> 00:16:56,590
+explained a very fundamental law. So let
+me just dash off to a few examples. I'm
+
+226
+00:16:56,590 --> 00:17:00,894
+Whetting your appetite, maybe you want to
+go explore this topic in greater depth
+
+227
+00:17:01,059 --> 00:17:05,032
+outside of this course. So one super
+interesting question is, rather than
+
+228
+00:17:05,032 --> 00:17:09,121
+looking at a static snapshot of the web
+Like we were doing so far in this video
+
+229
+00:17:09,121 --> 00:17:12,932
+Alright, the web is changing all the time.
+New pages are getting created, new links
+
+230
+00:17:12,932 --> 00:17:17,023
+are getting created and destroyed and so
+on And How does this evolution proceed?
+
+231
+00:17:17,023 --> 00:17:21,780
+Can we have a mathematical model which
+faithfully reproduces the most important
+
+232
+00:17:21,780 --> 00:17:25,859
+first order properties of this
+evolutionary process? So the second issue
+
+233
+00:17:25,859 --> 00:17:29,815
+is to not think not just about the
+dynamics of the graph itself, but the
+
+234
+00:17:29,815 --> 00:17:34,377
+dynamics of information that gets carried
+by the graph. And you could ask this both
+
+235
+00:17:34,377 --> 00:17:38,828
+about the web graph and about other social
+networks like say, Facebook or Twitter.
+
+236
+00:17:38,828 --> 00:17:42,895
+Another really important topic which
+there's been a lot of work on, but we
+
+237
+00:17:42,895 --> 00:17:47,566
+still don't fully understand by any means,
+is getting at the finer grain structure in
+
+238
+00:17:47,566 --> 00:17:51,896
+networks, including the web graph And
+particularly what we really like to do is
+
+239
+00:17:51,896 --> 00:17:56,217
+that full proof method for identifying
+communities. So groups of notes is going
+
+240
+00:17:56,217 --> 00:18:00,264
+to be web pages and web graph for
+individuals and social network which we
+
+241
+00:18:00,264 --> 00:18:04,367
+should think of as grouped together. We
+discussed this when we talked about
+
+242
+00:18:04,367 --> 00:18:08,250
+applications of cuts. One motivation of
+cuts is to identify communities
+
+243
+00:18:08,250 --> 00:18:12,189
+everything. Communities has been
+relatively densely connected inside and
+
+244
+00:18:12,189 --> 00:18:16,619
+sparsely connected outside And that's just
+a, and that's just baby step, really we
+
+245
+00:18:16,619 --> 00:18:20,721
+need much better techniques for both
+defining and computing communities in
+
+246
+00:18:20,721 --> 00:18:25,402
+these kind of networks. So I think these
+questions are super interesting, both from
+
+247
+00:18:25,402 --> 00:18:29,547
+a mathematical/technical level, but also
+they're very timely. Answering them really
+
+248
+00:18:29,699 --> 00:18:33,641
+helps us understand our world better.
+Unfortunately these are gonna be well
+
+249
+00:18:33,641 --> 00:18:37,584
+outside the course of just the bread and
+better design analysis of algorithms,
+
+250
+00:18:37,584 --> 00:18:41,274
+which is what the, on task with covering
+here. But I will leave you with a
+
+251
+00:18:41,274 --> 00:18:45,369
+reference of a book that I recommend if
+you want to read more about these topics
+
+252
+00:18:45,369 --> 00:18:48,907
+Namely the, quite recent book by David
+Easley and Jon Kleinberg, called
+
+253
+00:18:48,907 --> 00:18:50,323
+"Networks, Crowds, and Markets."
