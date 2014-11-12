@@ -1,0 +1,2037 @@
+1
+00:00:00,000 --> 00:00:04,057
+So what I want to do next is test your
+understanding about the search and
+
+2
+00:00:04,057 --> 00:00:09,052
+insertion procedures by asking you about
+their running time. So of the following
+
+3
+00:00:09,052 --> 00:00:14,016
+four parameters of a search tree that
+contains n different keys, which one
+
+4
+00:00:14,016 --> 00:00:19,031
+governs the worst case time of a search or
+insertion. So the correct answer is the
+
+5
+00:00:19,031 --> 00:00:24,028
+third one. So, the heights of a search
+tree governs the worst case time of the
+
+6
+00:00:24,028 --> 00:00:29,031
+search or of an insertion. Notice
+that means merely knowing the number of
+
+7
+00:00:29,031 --> 00:00:34,059
+keys n is not enough to deduce what the
+worst case search time is. You also have
+
+8
+00:00:34,059 --> 00:00:39,049
+to know something about the structure of
+the tree. So, to see that, just let's
+
+9
+00:00:39,049 --> 00:00:44,072
+think about the two examples that we've
+been running so far. One of which is nice
+
+10
+00:00:44,072 --> 00:00:53,050
+and balanced. And the other of which,
+which contains exactly the same five keys
+
+11
+00:00:53,050 --> 00:00:58,037
+is super unbalanced, It's this crazy
+linked list in effect. So, in any
+
+12
+00:00:58,037 --> 00:01:02,062
+search tree, the worst case time to do is
+search or insertion is
+
+13
+00:01:02,062 --> 00:01:07,009
+proportional to the largest number of
+pointers left to right child pointer that
+
+14
+00:01:07,009 --> 00:01:11,031
+you might have to follow to get from the
+root all the way to a null pointer. Of course
+
+15
+00:01:11,031 --> 00:01:14,094
+in a successful search, you're going to
+terminate before you encounter a null
+
+16
+00:01:14,094 --> 00:01:17,912
+pointer but in the worst case, you want
+insertion you go all the way to a null
+
+17
+00:01:18,063 --> 00:01:22,061
+pointer. Now on the tree on the left
+you're going to follow at most 3 such
+
+18
+00:01:22,061 --> 00:01:27,044
+pointers. So for example, if you're
+searching for 2.5. You're going to follow
+
+19
+00:01:27,044 --> 00:01:30,083
+a left pointer followed by a right
+pointer. By another pointer and that one
+
+20
+00:01:30,083 --> 00:01:34,059
+is going to be null. So we're going to
+follow three pointers. On the other hand,
+
+21
+00:01:34,059 --> 00:01:38,026
+in the right tree, you might follow as
+many as five pointers before that fifth
+
+22
+00:01:38,026 --> 00:01:41,089
+pointer is null. For example, if you
+search for the key zero, you're going to
+
+23
+00:01:41,089 --> 00:01:45,075
+traverse five left pointers in a row and
+then you're finally going to encounter the
+
+24
+00:01:45,075 --> 00:01:49,042
+null at the end. So, it is not constant
+time certainly, you have to get to the
+
+25
+00:01:49,042 --> 00:01:53,037
+bottom of the tree. It's going to be from
+proportional to logarithmic, logarithm in
+
+26
+00:01:53,037 --> 00:01:57,033
+the number of keys if you have a nicely
+balanced binary search tree like this one
+
+27
+00:01:57,033 --> 00:02:01,029
+on the left. It's going to be proportional
+to the number of keys n as in the fourth
+
+28
+00:02:01,034 --> 00:02:05,073
+answer if you have a really lousy
+search tree like this one on the right and
+
+29
+00:02:05,073 --> 00:02:09,088
+in general. Search time or the insertion
+time is going to be proportional to the
+
+30
+00:02:09,088 --> 00:02:14,011
+height. The largest number of hops we need
+to take to get from the root to
+
+31
+00:02:14,011 --> 00:02:19,026
+the leaf of the tree. Let's move on to some more
+operations that search tree support but
+
+32
+00:02:19,026 --> 00:02:24,033
+that, for example, the dynamics data
+structures of heaps and hash tables do not.
+
+33
+00:02:24,033 --> 00:02:29,009
+So let's start with the minimum and
+the maximum. So, by contrast and a heap
+
+34
+00:02:29,009 --> 00:02:33,089
+remember, you can choose one or the two.
+You can either find the minimum, usually
+
+35
+00:02:33,089 --> 00:02:38,068
+you find the maximum easily but not both.
+And the search tree is really easy to
+
+36
+00:02:38,068 --> 00:02:43,053
+find, either the min or the max. So, let's
+start with the minimum. One way to think
+
+37
+00:02:43,053 --> 00:02:48,026
+of it is that you do a search for negative
+infinity in the search tree. So, you
+
+38
+00:02:48,026 --> 00:02:52,031
+started the root. And you just keep
+following left child pointers until you
+
+39
+00:02:52,031 --> 00:02:56,015
+run out, until you hit a null. And
+whatever the last key that you visit has
+
+40
+00:02:56,015 --> 00:03:00,010
+to be the smallest key of the tree, right?
+Because, think about it, suppose you
+
+41
+00:03:00,010 --> 00:03:04,015
+started the root. Supposed that the root
+was not the minimum, then where is the
+
+42
+00:03:04,015 --> 00:03:08,015
+minimum got to be, It's got to be in the
+left sub-tree so you follow the left
+
+43
+00:03:08,015 --> 00:03:12,004
+child pointer and then you just
+repeat the argument. If you haven't
+
+44
+00:03:12,004 --> 00:03:16,025
+already found the minimum, where it's got
+to be with respect to current place,
+
+45
+00:03:16,025 --> 00:03:20,056
+it's got to be in the left sub tree and
+you just iterate until you can't go to the left
+
+46
+00:03:20,056 --> 00:03:25,085
+any further. So for example, in our
+running search tree. You'll notice that if
+
+47
+00:03:25,085 --> 00:03:29,083
+we just keep following left child
+pointers, we'll start at the three, we'll
+
+48
+00:03:29,083 --> 00:03:33,097
+go to the one, we'll try to go left from
+the one. We'll hit a null pointer and
+
+49
+00:03:33,097 --> 00:03:38,021
+we'll return one and one is indeed the
+minimum key in this tree. Now, given that
+
+50
+00:03:38,021 --> 00:03:42,036
+we've gone over how to compute the
+minimum, no prizes to guess how we compute
+
+51
+00:03:42,036 --> 00:03:46,050
+the maximum. Of course, if we want to
+compute the maximum instead of following
+
+52
+00:03:46,050 --> 00:03:50,063
+left child pointers we follow right child
+pointers by symmetric reasoning as
+
+53
+00:03:50,063 --> 00:03:54,099
+guaranteed upon the largest key in the
+tree. It's like searching for the key plus
+
+54
+00:03:54,099 --> 00:03:59,084
+infinity. Alright. So what about computing
+the predecessor? So remember this means
+
+55
+00:03:59,084 --> 00:04:04,009
+you're given key in the tree, in the
+element of the tree and you want to find
+
+56
+00:04:04,009 --> 00:04:08,055
+the next smallest element so for example
+the predecessor of the three is two. The
+
+57
+00:04:08,055 --> 00:04:12,951
+predecessor of the two in this tree is the
+one. The predecessor of the five is the
+
+58
+00:04:12,951 --> 00:04:17,031
+four. The predecessor of the four is the
+three. So, here I'll be a little hand
+
+59
+00:04:17,031 --> 00:04:20,905
+wavy just in the interest of getting
+through all of the operations in
+
+60
+00:04:21,016 --> 00:04:25,068
+reasonable amount of time but let me just
+point out that there is one really easy
+
+61
+00:04:25,068 --> 00:04:30,057
+case and then there is one slightly
+trickier case. So the easy case. Is
+
+62
+00:04:30,057 --> 00:04:37,022
+when the node with the key k has a
+non-empty left sub tree. If that's the
+
+63
+00:04:37,022 --> 00:04:43,623
+case, then what you want is simply the
+biggest element in this node left sub
+
+64
+00:04:43,623 --> 00:04:48,065
+tree. So, I'll leave it for you to prove
+formally that this is indeed the
+
+65
+00:04:48,065 --> 00:04:52,776
+correct way to compute predecessors
+for keys that do have a non-empty left sub
+
+66
+00:04:52,776 --> 00:04:58,000
+tree, let's just verify in our example
+by going through the trees that have a
+
+67
+00:04:58,000 --> 00:05:02,080
+left sub tree and checking this is in
+fact what we want. Now, if you look at it,
+
+68
+00:05:02,080 --> 00:05:07,065
+there's actually only two nodes that have
+a non-empty left sub tree. The three has a
+
+69
+00:05:07,065 --> 00:05:11,879
+non-empty left sub tree and indeed the
+largest key in the left sub tree three is
+
+70
+00:05:11,879 --> 00:05:16,436
+the two and that is the predecessor of the
+three so that worked out fine. And then
+
+71
+00:05:16,436 --> 00:05:21,079
+the other node with a non-empty left subtree is the five
+and it's left subtree is simply the element four
+
+72
+00:05:21,080 --> 00:05:26,067
+of course the maximum of that tree is also
+four. And then you'll notice that is
+
+73
+00:05:26,067 --> 00:05:31,054
+indeed the predecessor of five in this
+entire search tree. So, the trickier case
+
+74
+00:05:31,054 --> 00:05:36,026
+is what happens if you know the key with
+no left subtree at all. Okay. So, what are
+
+75
+00:05:36,026 --> 00:05:39,082
+you going to do if you not in the
+easy case, Well, given at this node with
+
+76
+00:05:39,082 --> 00:05:43,056
+key k, you only have three pointers and by
+assumption, the left one is null so that's
+
+77
+00:05:43,056 --> 00:05:47,112
+not going to get you anywhere, now, the
+right childpointer if you think about it
+
+78
+00:05:47,112 --> 00:05:50,636
+is totally pointless for computing
+the predecessor. Remember, the predecessor
+
+79
+00:05:50,636 --> 00:05:54,802
+is going to be a key less than the given key
+k. The right subtree by definition of a
+
+80
+00:05:54,802 --> 00:05:58,801
+search tree only has keys that are bigger
+than k. So, it stands for reason to find
+
+81
+00:05:58,801 --> 00:06:02,720
+the predecessor we got to follow the
+parent pointer. Maybe in fact more than
+
+82
+00:06:02,720 --> 00:06:07,777
+one parent pointer so to motivate exactly
+how we're going to follow parent pointers,
+
+83
+00:06:07,777 --> 00:06:11,705
+let's look at a couple of examples in our
+favorite search tree here on the right.
+
+84
+00:06:11,705 --> 00:06:15,443
+So, let's start with a node two. So, we
+know we got to follow a parent
+
+85
+00:06:15,443 --> 00:06:19,394
+pointer. When we follow to this parent
+pointer, we get to one and boom, one in
+
+86
+00:06:19,394 --> 00:06:23,998
+fact is two's predecessor in this tree so
+that was really easy to computer two's
+
+87
+00:06:24,000 --> 00:06:28,025
+predecessor. It seemed that all we have to
+do is follow the parent pointer. So, for
+
+88
+00:06:28,025 --> 00:06:32,040
+another example though which think about
+the node four. Now, four when we follow
+
+89
+00:06:32,040 --> 00:06:36,054
+which parent pointer, we get to five and.
+Five is not 4's predecessor, it's 4's
+
+90
+00:06:36,054 --> 00:06:40,077
+successor. What we wanted a key that is less
+than where we started, we follow the
+
+91
+00:06:40,077 --> 00:06:45,028
+parent pointer and it was bigger. But, if
+we follow one more parent pointer, then we
+
+92
+00:06:45,028 --> 00:06:49,052
+get to the three. So, from the two we
+needed to follow one parent pointer, from
+
+93
+00:06:49,052 --> 00:06:53,092
+the four we needed to follow two parent
+pointers. But the point is, you just need
+
+94
+00:06:53,092 --> 00:06:58,059
+to follow parent pointers until you get to
+a node with key smaller than your own. And
+
+95
+00:06:58,059 --> 00:07:02,065
+at that point you can stop and that's
+guaranteed to be the predecessor. So,
+
+96
+00:07:02,065 --> 00:07:06,043
+hopefully, you would find this intuitive.
+I should say, I have definitely not
+
+97
+00:07:06,043 --> 00:07:10,058
+formally proved that this works and that
+is a good exercise for those of you that
+
+98
+00:07:10,058 --> 00:07:14,067
+want to have a deeper understanding of
+search trees and this magical search tree
+
+99
+00:07:14,067 --> 00:07:18,036
+property and all of the structure that it
+grants you. The other thing I should
+
+100
+00:07:18,036 --> 00:07:22,014
+mention is another way to interpret the,
+the terminating criteria. So what I've
+
+101
+00:07:22,014 --> 00:07:25,092
+said is you stop your search of parent
+pointers as soon as you get to through
+
+102
+00:07:25,092 --> 00:07:30,000
+smaller than yours If you think it about
+a little bit, you'll realize you'll get to
+
+103
+00:07:30,000 --> 00:07:33,078
+a key smaller than yours, the very first
+time you take a left turn. So the very
+
+104
+00:07:33,078 --> 00:07:37,075
+first time that you go from a right child
+to it's parent. Look at the example, when
+
+105
+00:07:37,075 --> 00:07:41,044
+we started from two, we took a left turn,
+right? We went from upper link going
+
+106
+00:07:41,044 --> 00:07:45,047
+leftward To it's a right child of one, and
+that's when we got to the predecessor in
+
+107
+00:07:45,047 --> 00:07:49,039
+just one step. By contrast when we started
+from the four, our first step was to the
+
+108
+00:07:49,039 --> 00:07:52,594
+right. So, we got to a node
+that was bigger than where we started for
+
+109
+00:07:52,594 --> 00:07:57,026
+five is four's left child which is going
+to be smaller than five. But the first
+
+110
+00:07:57,026 --> 00:08:01,033
+time we took a left turn on the next step,
+we got to a node that is not only smaller
+
+111
+00:08:01,033 --> 00:08:05,017
+than five but actually smaller from four,
+smaller from the starting point. So, in
+
+112
+00:08:05,017 --> 00:08:08,095
+fact, you're going to see a key smaller
+than your starting point at very first
+
+113
+00:08:08,095 --> 00:08:13,003
+time, you take a left turn, the very first
+time you go from a node to a parent and in
+
+114
+00:08:13,003 --> 00:08:16,079
+fact, that node is that parent's right
+child. So this is another statement which
+
+115
+00:08:16,079 --> 00:08:20,073
+I think is intuitive but which formally is
+not totally obvious. And again I encourage
+
+116
+00:08:20,073 --> 00:08:24,063
+you to think carefully about why these two
+descriptions of the terminating criteria
+
+117
+00:08:24,063 --> 00:08:28,034
+are exactly the same so it doesn't matter
+if you stop when you first find a key
+
+118
+00:08:28,034 --> 00:08:31,096
+smaller than your starting point. It
+doesn't matter if you first stop when you
+
+119
+00:08:31,096 --> 00:08:35,062
+follow a parent pointer that goes from a
+node that's the right child of a node.
+
+120
+00:08:35,062 --> 00:08:39,056
+Either way you're going to stop at exactly
+the same time so I encourage you to think
+
+121
+00:08:39,056 --> 00:08:43,010
+about why those are the exact same
+stopping condition. A couple of other
+
+122
+00:08:43,010 --> 00:08:46,085
+details if you start from the unique node
+that has no predecessor at all, you'll
+
+123
+00:08:46,085 --> 00:08:50,074
+never going to trigger this terminating
+condition so for example if you start from
+
+124
+00:08:50,074 --> 00:08:54,039
+the node one in the search tree, not only
+is the left subtree empty which says
+
+125
+00:08:54,039 --> 00:08:58,014
+you're suppose to start traversing parent
+pointers but then when you traverse a
+
+126
+00:08:58,014 --> 00:09:01,085
+parent pointer, you only go to the right.
+You never turn left and that's because
+
+127
+00:09:01,085 --> 00:09:05,064
+there is no predecessor so that's how you
+detect that you're at the minimum of a
+
+128
+00:09:05,064 --> 00:09:09,020
+search tree. And then of course if you
+wanted to be the successor of the key
+
+129
+00:09:09,020 --> 00:09:13,009
+instead of the predecessor, obviously you
+just flip left and right through out this
+
+130
+00:09:13,009 --> 00:09:16,058
+entire description. So that's the high
+level explanation of all of these
+
+131
+00:09:16,058 --> 00:09:20,070
+different ordering operations, minimum and
+maximum predecessor and successor work in
+
+132
+00:09:20,070 --> 00:09:24,062
+a search tree. Let me ask you the same
+question I asked you when we talked about
+
+133
+00:09:24,062 --> 00:09:28,052
+search in insertion. How long that these
+operations take in the worst case? Well,
+
+134
+00:09:28,052 --> 00:09:32,083
+the answer is the same as it was before.
+It's proportional to the height of the
+
+135
+00:09:32,083 --> 00:09:37,004
+tree and the explanation is exactly the
+same as it was before. So to understand
+
+136
+00:09:37,004 --> 00:09:39,974
+the dependence on the height was just
+focused on the maximum operation that has
+
+137
+00:09:39,974 --> 00:09:44,071
+the state within the question. The other
+three operations, the running time is
+
+138
+00:09:44,071 --> 00:09:48,046
+proportional to the height in the worst
+case for exactly the same reasons. So,
+
+139
+00:09:48,046 --> 00:09:52,032
+what is the max operation do when you
+started the root and you just follow the
+
+140
+00:09:52,032 --> 00:09:56,017
+right child pointers until you run out
+them so you hit null. So, you know, that
+
+141
+00:09:56,017 --> 00:10:00,023
+the running time is going to be no worse
+in the longest such paths. It's particular
+
+142
+00:10:00,023 --> 00:10:04,010
+path from the root to essentially a
+leaf. So instead we're going to have a
+
+143
+00:10:04,010 --> 00:10:08,045
+running time more than the height of the
+tree, on the other hand for all you know.
+
+144
+00:10:08,045 --> 00:10:12,081
+The path from the root to the maximum key
+might well be the longest one in the tree.
+
+145
+00:10:12,081 --> 00:10:16,075
+It might be the path that actually
+determines the height of the search tree.
+
+146
+00:10:16,075 --> 00:10:21,001
+So, for example in our running unbalanced
+example, that would be a bad tree for the
+
+147
+00:10:21,001 --> 00:10:24,096
+minimum operation If you look for the
+minimum in this tree, then you have to
+
+148
+00:10:24,096 --> 00:10:29,022
+traverse every single pointer from five
+all the way down to one. Of course there's
+
+149
+00:10:29,022 --> 00:10:33,027
+an analogious bad search tree for the
+maximum operation where the one is the
+
+150
+00:10:33,027 --> 00:10:37,058
+root and the five is all the way down to the left. Another thing you can do is search
+
+151
+00:10:37,058 --> 00:10:41,085
+trees which mimics what you can do with
+sorted arrays is you can print out all of
+
+152
+00:10:41,085 --> 00:10:45,074
+the keys in the sorted order in linear
+time with constant time per element.
+
+153
+00:10:45,074 --> 00:10:48,889
+Obviously, in the sorted array this is
+trivial. Use your for loop start ing at
+
+154
+00:10:48,889 --> 00:10:53,090
+the beginning at the array pointing up the
+keys one at a time and there's a very
+
+155
+00:10:53,090 --> 00:10:58,039
+elegant recursive implementation for doing
+the exact same thing in a search tree. And
+
+156
+00:10:58,039 --> 00:11:04,013
+this is known as an in order traversal of
+binary search tree. So as always you begin
+
+157
+00:11:04,013 --> 00:11:10,010
+at the beginning namely at the root of the
+search tree. And a little bit of notation
+
+158
+00:11:10,010 --> 00:11:16,022
+of which call, all of the search tree that
+starts at r's left child t sub l and the
+
+159
+00:11:16,022 --> 00:11:21,057
+search tree routed at r's right child t
+Sub r. In our running example of course
+
+160
+00:11:21,057 --> 00:11:25,037
+the root is three t sub l with
+correspondent in the search tree
+
+161
+00:11:25,037 --> 00:11:30,025
+comprising only the elements one and two,
+t sub r would correspond to the sub-tree
+
+162
+00:11:30,025 --> 00:11:34,052
+comprising only the elements five and
+four. Now, remember we want to print out
+
+163
+00:11:34,052 --> 00:11:38,042
+the keys in increasing order. So in
+particular, the first key we want to print
+
+164
+00:11:38,042 --> 00:11:42,052
+out is the smallest of them all. So it's
+something we definitely don't want to do
+
+165
+00:11:42,052 --> 00:11:46,067
+is we don't want to first print out the
+key at the root. For example in our search
+
+166
+00:11:46,067 --> 00:11:50,062
+tree example, the root's key is three, we
+don't want to print that out first. We
+
+167
+00:11:50,062 --> 00:11:54,061
+want to print out the one first. So where
+is the minimum lie? Well, by the search
+
+168
+00:11:54,061 --> 00:11:58,071
+tree property, it's got to lie in the left
+subtree t sub l, So we're just going to
+
+169
+00:11:58,071 --> 00:12:03,023
+recurse on t Sub l. So by the magic of
+recursion or if you prefer induction, what
+
+170
+00:12:03,023 --> 00:12:07,071
+re-cursing on t sub l is going to
+accomplish is we're going to print out all
+
+171
+00:12:07,071 --> 00:12:12,055
+of the keys in t sub l in increasing order
+from smallest to largest. Now that's
+
+172
+00:12:12,055 --> 00:12:16,044
+pretty cool because t sub l contains
+exactly the keys that are smaller than the
+
+173
+00:12:16,044 --> 00:12:20,010
+key of the root. Remember that's the
+search tree property. Everything bigger
+
+174
+00:12:20,010 --> 00:12:23,089
+than the root's key has to be in the left
+sub tree. Everything bigger than the
+
+175
+00:12:23,089 --> 00:12:27,085
+root's key have to be in its right sub
+tree. So in our concrete example of this
+
+176
+00:12:27,085 --> 00:12:31,093
+first recursive call is we're going to
+print the keys one and then two. And now,
+
+177
+00:12:31,093 --> 00:12:35,091
+if you think about it it's the perfect
+time to print out the key at the root,
+
+178
+00:12:35,091 --> 00:12:39,053
+right? we want to print out all the keys in
+increasing order we've already done
+
+179
+00:12:39,053 --> 00:12:43,093
+everything less than the root's key Where
+re-cursing and on the right hand side will
+
+180
+00:12:43,093 --> 00:12:48,002
+take you everything bigger in it so in
+between the two recursive calls, this is
+
+181
+00:12:48,002 --> 00:12:55,048
+why it's called an in order traversal,
+that's when we want to print out. R's key.
+
+182
+00:12:57,075 --> 00:13:01,076
+And clearly this works in our concrete example, the first recursive call print out one and two,
+
+183
+00:13:01,076 --> 00:13:05,161
+it's the perfect time to print out three and
+then a recursive call of print out four
+
+184
+00:13:05,161 --> 00:13:09,040
+and five. And more generally, the
+recursive call on there right subtree
+
+185
+00:13:09,047 --> 00:13:13,067
+will print out all of the keys bigger than
+the roots key and increasing order again
+
+186
+00:13:13,067 --> 00:13:18,071
+by the magic of recursion or induction
+So, the fact that the pseudo-code is
+
+187
+00:13:18,071 --> 00:13:23,054
+correct. The fact that the so-called
+in-order traversal indeed print out the
+
+188
+00:13:23,054 --> 00:13:28,076
+keys in increasing order. This is a fairly
+straightforward proof by induction. It's
+
+189
+00:13:28,076 --> 00:13:33,078
+very much in the spirit or the proofs by induction, correctness of divide and conquer
+algorithms that we've discussed earlier in
+
+190
+00:13:33,078 --> 00:13:38,012
+the course. So what about the running time
+of an in order traversal? The claim is
+
+191
+00:13:38,012 --> 00:13:42,055
+that the running time of this procedure is
+linear. It's O of n where n is the number
+
+192
+00:13:42,055 --> 00:13:46,099
+of keys in the search tree. And the reason
+is, there's exactly one recursive call for
+
+193
+00:13:46,099 --> 00:13:51,047
+each node of the tree and constant work is
+done in each of those recursive calls. And
+
+194
+00:13:51,047 --> 00:13:55,042
+a little more detail, so what is the
+in order] traversal do, It will print
+
+195
+00:13:55,042 --> 00:13:59,081
+out the keys in increasing. In particular
+it prints out each key exactly once. Each
+
+196
+00:13:59,081 --> 00:14:04,097
+recursive call prints out exactly one key's
+value. So there's exactly n recursive
+
+197
+00:14:04,097 --> 00:14:10,019
+calls and all of the recursive call does
+is print one thing. So n recursive calls
+
+198
+00:14:10,019 --> 00:14:15,015
+constant time for each that gives us a
+running time of O(n) overall. In most
+
+199
+00:14:15,015 --> 00:14:19,046
+data structures, deletion is the most
+difficult operation and in search trees.
+
+200
+00:14:19,046 --> 00:14:23,082
+There are no exception. So let's get into
+it and talk about how deletion works,
+
+201
+00:14:23,082 --> 00:14:28,030
+there are three different cases. So the
+first order of business is to locate the
+
+202
+00:14:28,030 --> 00:14:32,066
+node that has the key k, locate
+the node that we want to get rid off.
+
+203
+00:14:32,066 --> 00:14:36,080
+Right so for starters, maybe we're
+trying to delete the key two from our
+
+204
+00:14:36,080 --> 00:14:41,050
+running example search tree. So the first
+thing we need to do is figure out where it
+
+205
+00:14:41,050 --> 00:14:46,001
+is. So, there are three possibilities for
+the number of children that a node in a
+
+206
+00:14:46,001 --> 00:14:50,042
+search tree might have and might have zero
+children that might have one child
+
+207
+00:14:50,042 --> 00:14:54,036
+it might have two children, corresponding to
+those three cases that the deletion
+
+208
+00:14:54,036 --> 00:14:59,023
+pseudo-code will also have three cases.
+So, let's start with the happy case where
+
+209
+00:14:59,023 --> 00:15:03,066
+there's only zero children like in this
+case where deleting the key 2
+
+210
+00:15:03,074 --> 00:15:08,026
+from the search tree. Then of course, we
+can, without any reservations just delete
+
+211
+00:15:08,026 --> 00:15:12,084
+the node directly from the search tree,
+Nothing can go wrong, there's no children
+
+212
+00:15:12,084 --> 00:15:18,047
+depending on that node. Then there is the
+medium difficult case. This is where. The
+
+213
+00:15:18,047 --> 00:15:23,092
+node containing k has one child. An
+example here would be, if we wanted to
+
+214
+00:15:23,092 --> 00:15:28,096
+delete five from the search tree so the
+medium case is also not too bad. All you
+
+215
+00:15:28,096 --> 00:15:34,026
+got to do is splice out the node that you
+want to delete. That creates a hole in the
+
+216
+00:15:34,026 --> 00:15:39,043
+tree but then that node, deleted node's
+unique child assumes the previous position
+
+217
+00:15:39,043 --> 00:15:44,055
+of the deleted node. I can make a nerdy
+joke about Shakespeare right here but I'll
+
+218
+00:15:44,055 --> 00:15:49,017
+refrain. For example, in our five node
+search tree if we wanted to, let's say we
+
+219
+00:15:49,017 --> 00:15:53,024
+haven't actually deleted two out of this
+one, if we wanted to delete the five. The
+
+220
+00:15:53,024 --> 00:15:57,092
+five when we take it out of the tree that
+would leave a hole but then we just
+
+221
+00:15:57,092 --> 00:16:02,021
+replace the position previously held by five
+by it's unique child four. And if you
+
+222
+00:16:02,021 --> 00:16:06,066
+think about it that works just fine in the
+sense of that preserves the search tree
+
+223
+00:16:06,066 --> 00:16:10,058
+property. Remember the search tree
+property says that everything in say, a
+
+224
+00:16:10,058 --> 00:16:14,076
+right subtree has to be bigger than
+everything in the nodes key, so we've made
+
+225
+00:16:14,076 --> 00:16:19,027
+four the new right child of three but four
+and any children that it might have were
+
+226
+00:16:19,027 --> 00:16:23,071
+always part of 3's right subtree so all
+that stuff has got to be bigger than three
+
+227
+00:16:23,072 --> 00:16:28,031
+so there's no problem putting four and
+possibly all of its descendants. as the
+
+228
+00:16:28,031 --> 00:16:33,038
+right child of three. The search tree
+property is in fact retained. So, the
+
+229
+00:16:33,038 --> 00:16:37,087
+final difficult case then is when the node
+being deleted has both of its children,
+
+230
+00:16:37,092 --> 00:16:42,007
+has two children. So, in our running
+example with five nodes, this would only
+
+231
+00:16:42,007 --> 00:16:46,028
+transpire if you wanted to delete the
+root, you want to delete the key three
+
+232
+00:16:46,028 --> 00:16:50,054
+from the tree. The problem, of course, is
+that, you know, you can try ripping out
+
+233
+00:16:50,054 --> 00:16:55,002
+this node from the tree but then, there's
+this hole and it's not clear that it's
+
+234
+00:16:55,002 --> 00:16:59,012
+going to work to promote either child.
+Into that spot. You might stare at our
+
+235
+00:16:59,012 --> 00:17:03,052
+example search tree and try to understand
+what would happen if you try to bring one
+
+236
+00:17:03,052 --> 00:17:07,067
+up to be the root or if you try to bring
+five up to be the root. Problems would
+
+237
+00:17:07,067 --> 00:17:11,072
+happen, that's what would happen. This is an
+interesting contrast to when we faced the
+
+238
+00:17:11,072 --> 00:17:15,053
+same issue with heaps. Because the heap
+property in some sense is perhaps less
+
+239
+00:17:15,053 --> 00:17:19,044
+stringent, there we didn't have an issue.
+When we wanted to delete something with
+
+240
+00:17:19,044 --> 00:17:23,055
+two children, we just promoted the smaller
+of the two children assuming we wanted to
+
+241
+00:17:23,055 --> 00:17:27,055
+export and extract them in operation.
+Here, we're going to have to work a little
+
+242
+00:17:27,055 --> 00:17:31,075
+harder. In fact this is going to be really
+neat trick. We're going to do something
+
+243
+00:17:31,075 --> 00:17:36,057
+that reduces the case of two children to
+the previously solved cases of zero or one
+
+244
+00:17:36,057 --> 00:17:41,005
+children. So here's a very sneaky way we
+identify a node to which we can apply
+
+245
+00:17:41,005 --> 00:17:45,058
+either the case zero or the case one
+operation. What we're going to do is we're
+
+246
+00:17:45,058 --> 00:17:50,075
+going to. Start from k and we're going to
+compute k's predecessor. Remember, this is
+
+247
+00:17:50,075 --> 00:17:55,095
+the next smallest key in the tree. So, for
+example, the predecessor of the key three
+
+248
+00:17:55,095 --> 00:18:01,043
+is two. That's the next smallest key in
+the tree. In general, let's call case
+
+249
+00:18:01,043 --> 00:18:05,086
+predecessor l. Now, this might seem
+complicated. We're trying to implement one
+
+250
+00:18:05,086 --> 00:18:09,094
+tree operation and with deletion and all
+of a sudden we're invoking a different
+
+251
+00:18:09,094 --> 00:18:12,513
+tree operation predecessor which we
+covered a couple of slides ago. And to
+
+252
+00:18:12,513 --> 00:18:17,079
+some extent you're right you know,
+delete, this is a nontrivial operation.
+
+253
+00:18:17,079 --> 00:18:21,086
+But, it's not quite as bad as you think
+for the following reason. When we compute
+
+254
+00:18:21,086 --> 00:18:25,084
+this predecessor, we're actually in the
+easy case of the predecessor operation
+
+255
+00:18:25,084 --> 00:18:29,088
+conceptually . Remember how do you get a
+predecessor, well it depends. What does it
+
+256
+00:18:29,088 --> 00:18:33,073
+depend on? It depends on whether you got a
+non-empty left sub tree or not. If you
+
+257
+00:18:33,073 --> 00:18:37,038
+don't have a non-empty left sub tree,
+that's how you got to those things and
+
+258
+00:18:37,038 --> 00:18:41,023
+follow a parent pointers upward until you
+find a key which is smaller than what
+
+259
+00:18:41,023 --> 00:18:45,037
+you've started. But. If you've got a left
+sub tree, then it's easy. You just find
+
+260
+00:18:45,037 --> 00:18:49,042
+the maximum of the left sub tree and
+that's got to be the predecessor and
+
+261
+00:18:49,042 --> 00:18:53,052
+remember, finding maximum are easy. All
+you have to do is follow right child
+
+262
+00:18:53,052 --> 00:18:57,079
+pointers until you can't anymore. Now,
+what's cool is because we only bother with
+
+263
+00:18:57,079 --> 00:19:02,034
+this predecessor computation in the case
+where case k's node has both children. We only
+
+264
+00:19:02,034 --> 00:19:06,096
+have to do it in the case where it has a
+non-empty left subtree. So really when we
+
+265
+00:19:06,096 --> 00:19:12,095
+say compute k's predecessor l. All you
+got to do is follow k's left child. That's
+
+266
+00:19:12,095 --> 00:19:17,050
+not null because it has both children. And
+then, follow right child pointers until
+
+267
+00:19:17,050 --> 00:19:21,075
+you can't anymore and that's the
+predecessor. Now, here's the fairly
+
+268
+00:19:21,075 --> 00:19:27,037
+brilliant parts of the way you do
+implement deletion in the search tree
+
+269
+00:19:27,037 --> 00:19:33,005
+which is you swap these two keys, k and l.
+So for example in our running search tree,
+
+270
+00:19:33,005 --> 00:19:38,014
+instead of this three at the root we would
+put a two there and instead of this two at
+
+271
+00:19:38,014 --> 00:19:42,030
+the leaf, it would put a three there. And
+the first time you see this, it just
+
+272
+00:19:42,030 --> 00:19:46,049
+strikes you as a little crazy, maybe even
+cheating or just simply disregarding the
+
+273
+00:19:46,049 --> 00:19:50,041
+roles of, rules of search trees. And
+actually, it is like check out what happen
+
+274
+00:19:50,041 --> 00:19:54,060
+to our example search tree. We swap the
+three and the two and this is not a search
+
+275
+00:19:54,060 --> 00:19:58,078
+tree anymore, right? So, we have this three
+which is in two left sub tree and a three
+
+276
+00:19:58,078 --> 00:20:02,081
+is bigger than the two and that is not
+allowed. That is violation of the search
+
+277
+00:20:02,081 --> 00:20:06,079
+tree property. Oops. So, how can we get
+away with this and we get away with this
+
+278
+00:20:06,079 --> 00:20:10,087
+is we're going to delete three anyway. So,
+we're going to wind up with the search
+
+279
+00:20:10,087 --> 00:20:14,091
+tree at the end of the day. So we may have
+messed up the search tree property a
+
+280
+00:20:14,091 --> 00:20:19,000
+little bit but we've swapped k in the
+position where its really easy to get rid of.
+
+281
+00:20:19,000 --> 00:20:22,075
+Well how did we compute case
+predecessor l? Ultimately that was the
+
+282
+00:20:22,075 --> 00:20:27,013
+result of a maximum computation which
+involves following right child pointers
+
+283
+00:20:27,013 --> 00:20:31,056
+until you get stuck and l was the place we
+got stuck. What's the meaning to get
+
+284
+00:20:31,056 --> 00:20:36,005
+stuck? It means l's right child pointer is
+null. It does not have two children. In
+
+285
+00:20:36,005 --> 00:20:40,071
+particular it does not have a right child.
+Once we swap k in the l's old position, k
+
+286
+00:20:40,071 --> 00:20:45,043
+now does not have a right child. It may or
+may not have a left child and the example
+
+287
+00:20:45,043 --> 00:20:50,025
+on the right it does not have a left child
+either in this new position but in general
+
+288
+00:20:50,025 --> 00:20:54,029
+it might have a left child. But, it
+definitely doesn't have a right child.
+
+289
+00:20:54,029 --> 00:20:59,062
+Because that was a position at which a
+maximum computation got stuck. And if we
+
+290
+00:20:59,062 --> 00:21:03,096
+want to delete a node that has only zero
+or one child, well that we know how to do.
+
+291
+00:21:03,096 --> 00:21:08,024
+That we covered in the last slide. Either
+you just delete it, that's what we do in
+
+292
+00:21:08,024 --> 00:21:12,082
+the running example here. Or in the case
+where k's new node does have a left child,
+
+293
+00:21:12,082 --> 00:21:17,050
+you would do the splice out operation. So
+you would rip out the node that contains k
+
+294
+00:21:17,050 --> 00:21:22,036
+and that the unique child of that node
+would assume the previous position of that
+
+295
+00:21:22,036 --> 00:21:26,098
+node. Now an exercise which I'm not going
+to do here but I strongly encourage you
+
+296
+00:21:26,098 --> 00:21:31,037
+think through in the privacy of your own
+home, is that , in fact, this deletion
+
+297
+00:21:31,055 --> 00:21:35,084
+operation retains the search tree
+property. So roughly speaking, when you do
+
+298
+00:21:35,084 --> 00:21:40,063
+the swap, you can violate the search tree
+property as we see in this example but all
+
+299
+00:21:40,063 --> 00:21:45,014
+of the violations involved the node
+you're about to delete so once you delete
+
+300
+00:21:45,014 --> 00:21:49,091
+that node, there's no other violations of
+the search property so bingo, you're left
+
+301
+00:21:49,091 --> 00:21:54,045
+with the search tree. The running time
+this time no get, no prizes for guessing
+
+302
+00:21:54,045 --> 00:21:59,022
+what it is because it's basically just one
+of these predecessor computations plus
+
+303
+00:21:59,022 --> 00:22:03,053
+some pointer rewiring just like the
+predecessor and search is going to be
+
+304
+00:22:03,053 --> 00:22:07,085
+governed by the height of the tree. So let
+me just say a little bit about the
+
+305
+00:22:07,085 --> 00:22:10,998
+final two operations mentioned earlier,
+select and rank. Remember select is just
+
+306
+00:22:10,998 --> 00:22:15,089
+a selection problem. I'll give you an
+order statistic like seventeen and I want you
+
+307
+00:22:15,089 --> 00:22:19,096
+to return the seventeenth smallest key in
+the tree. Rank is I give you a key value
+
+308
+00:22:19,096 --> 00:22:24,014
+and I want to know how many keys in the
+tree are less than or equal to that value.
+
+309
+00:22:24,014 --> 00:22:28,094
+So, to implement these operations
+efficiently, we actually need one small
+
+310
+00:22:28,094 --> 00:22:34,017
+new idea which is to augment binary search
+trees with additional information at each
+
+311
+00:22:34,017 --> 00:22:39,027
+node. So, now the search tree will contain
+not just a key but also information about
+
+312
+00:22:39,027 --> 00:22:44,026
+the tree itself. So, this idea is often
+called augmenting your data structure and
+
+313
+00:22:44,026 --> 00:22:49,055
+perhaps the most canonical augmentation of
+the search tree like these is to keep track
+
+314
+00:22:49,055 --> 00:22:54,060
+in each node, not just to the key value
+but also over the population of tree nodes
+
+315
+00:22:54,060 --> 00:23:02,001
+in the sub tree that is rooted there. So
+let's call this size of x. Which is the
+
+316
+00:23:02,001 --> 00:23:08,074
+number of tree nodes in the subtree rooted
+at x. So to make sure you know what I
+
+317
+00:23:08,074 --> 00:23:13,018
+mean, let me just tell you what the size
+field should be for each of the five nodes
+
+318
+00:23:13,018 --> 00:23:17,029
+in our running search tree example. So
+again example, we're thinking about how
+
+319
+00:23:17,029 --> 00:23:21,051
+many nodes are in the subtree rooted given
+node. Or equivalently, following child
+
+320
+00:23:21,051 --> 00:23:26,005
+pointers from that node how many different
+tree nodes can you reach? So from the root
+
+321
+00:23:26,005 --> 00:23:30,016
+of course, you can reach everybody.
+Everybody's in the tree rooted at the root
+
+322
+00:23:30,016 --> 00:23:34,027
+so the size there is five. By contrast,
+you start at the node one, well, you can
+
+323
+00:23:34,027 --> 00:23:38,081
+get to the one or you can follow the right
+child pointer to get to the two. So at the
+
+324
+00:23:38,081 --> 00:23:43,017
+one. The size would be two and the node
+with the key value five for the same
+
+325
+00:23:43,017 --> 00:23:47,090
+reason, the size would be two. At the two
+leaves, the subtree where the leaf is just
+
+326
+00:23:47,090 --> 00:23:53,010
+the leaf itself so there, the size would
+be one. There's an easy way to compute the
+
+327
+00:23:53,010 --> 00:23:58,035
+size of a given node once you know the
+size of its two sub trees. So, if the
+
+328
+00:23:58,044 --> 00:24:04,043
+given node in the search tree has children
+y and z, then, how many nodes are there in
+
+329
+00:24:04,043 --> 00:24:10,020
+the sub tree rooted x, well, there's those
+that are rooted at y. There are those in
+
+330
+00:24:10,020 --> 00:24:15,083
+the left sub tree, there are those that
+are reachable from z that is there are
+
+331
+00:24:15,083 --> 00:24:22,091
+the children that are also children of z
+and then there's x itself. Now in
+
+332
+00:24:22,091 --> 00:24:27,004
+general, whenever you augment a data
+structure, and this is something we'll
+
+333
+00:24:27,004 --> 00:24:31,051
+talk about again when we discuss red black
+trees, you've got to pay the piper. So,
+
+334
+00:24:31,051 --> 00:24:35,075
+the extra data that you maintain it might
+be useful for speeding up certain
+
+335
+00:24:35,075 --> 00:24:39,039
+operations. But whenever you have
+operations that modify the tree,
+
+336
+00:24:39,039 --> 00:24:43,097
+specifically insertion and deletion, you
+have to take care to keep that extra data
+
+337
+00:24:43,097 --> 00:24:48,016
+valid, keep it maintained. Now, in the
+case of the subtree sizes, there are quite
+
+338
+00:24:48,016 --> 00:24:52,018
+straightforward to maintain under
+insertion and deletion without affecting the
+
+339
+00:24:52,018 --> 00:24:56,046
+running time of insertion and deletion
+very much but that's something you should
+
+340
+00:24:56,046 --> 00:25:00,084
+always think about offline. For example,
+when you perform an insertion remember how
+
+341
+00:25:00,084 --> 00:25:04,082
+that works. You do as, essentially a
+search. You follow left and right child
+
+342
+00:25:04,082 --> 00:25:09,017
+pointers down to the bottom of the tree
+until you get a null pointer then that's
+
+343
+00:25:09,017 --> 00:25:13,047
+where you stick a new node. Now what you
+have to do is you have to trace back up
+
+344
+00:25:13,047 --> 00:25:18,004
+that path, all of the ancestors of the new
+node you just inserted and increment their
+
+345
+00:25:18,004 --> 00:25:22,039
+subtree sizes by one. So let's wrap up
+this video by showing you how to implement
+
+346
+00:25:22,039 --> 00:25:26,047
+the selection procedure given an nth order
+statistic in a search tree that's been
+
+347
+00:25:26,047 --> 00:25:30,094
+augmented so that at every node you know
+the size of a subtree rooted at that node.
+
+348
+00:25:31,027 --> 00:25:36,034
+Well of course as always you start at the
+beginning which in the search tree is the
+
+349
+00:25:36,034 --> 00:25:40,078
+root. And let's say the root has a
+sub-children y and z. Y or z could be
+
+350
+00:25:40,078 --> 00:25:46,025
+null, that's no problem. We just think of
+the size of a null node as being zero.
+
+351
+00:25:46,025 --> 00:25:50,054
+Now, what's the search tree property? It
+says, every, these keys that are less than
+
+352
+00:25:50,054 --> 00:25:54,079
+the keys sorted x are precisely the one
+that are in the left sub tree of x. The
+
+353
+00:25:54,079 --> 00:25:59,036
+keys in the tree, they are bigger than the
+key to x or precisely the ones that you're
+
+354
+00:25:59,036 --> 00:26:03,023
+going to find in x's right sub tree. So,
+supposed we're asked to find the
+
+355
+00:26:03,023 --> 00:26:07,031
+seventeenth order statistic in the search
+three. Seventeenth smallest key that's
+
+356
+00:26:07,031 --> 00:26:11,054
+stored in the tree, Where is it going to
+be? Where should we look? Well, it's going
+
+357
+00:26:11,054 --> 00:26:15,042
+to depend on the structure of the tree and
+in fact it's going to depend on the
+
+358
+00:26:15,042 --> 00:26:20,021
+subtree sizes. This is exactly. We're
+keeping track of them so we can quickly
+
+359
+00:26:20,021 --> 00:26:25,052
+make decisions about how to navigate
+through the tree. So for a simple example,
+
+360
+00:26:25,052 --> 00:26:30,082
+suppose that x's left subtree contains say
+25 keys. So remember y know locally
+
+361
+00:26:30,082 --> 00:26:36,026
+exactly what the population of the subtree
+is so in constant time from x, we can
+
+362
+00:26:36,026 --> 00:26:41,050
+figure out how many keys are in y subtree
+let's say its 25. Now, by the defining
+
+363
+00:26:41,050 --> 00:26:47,012
+property of search trees, these are the 25
+smallest keys anywhere in the tree. Right,
+
+364
+00:26:47,012 --> 00:26:52,020
+x is bigger than all of them. Everything
+in x's right subtree is bigger than all of
+
+365
+00:26:52,020 --> 00:26:56,080
+them. So, the 25 smallest order
+statistics are all in the subtree rooted
+
+366
+00:26:56,080 --> 00:27:00,953
+to y, clearly that where we should recurse. Clearly
+that's where the answer lies so in
+
+367
+00:27:00,953 --> 00:27:06,002
+recursing the subtree root of y and then
+we are again looking for the seventeenth
+
+368
+00:27:06,008 --> 00:27:10,057
+order statistic in this new smaller search
+tree. On the other supposed when we
+
+369
+00:27:10,057 --> 00:27:15,014
+started x and we look, we ask why. How,
+how many nodes are there in your subtree.
+
+370
+00:27:15,014 --> 00:27:19,071
+Maybe y locally have stored the number
+twelve. So there's only twelve things in
+
+371
+00:27:19,071 --> 00:27:24,027
+x's left subtree. Well, okay, x itself is
+bigger than all of them so that's going
+
+372
+00:27:24,027 --> 00:27:29,021
+to, x is going to be the thirteenth
+biggest order statistic. It's going to be
+
+373
+00:27:29,021 --> 00:27:37,762
+the thirteenth biggest element in the
+tree. Everything else is in the right sub
+
+374
+00:27:37,762 --> 00:27:39,599
+tree. So, in particular, the seventeenth
+order statistic is going to be in
+
+375
+00:27:39,599 --> 00:27:41,017
+the right sub tree so we're going to
+recurse in the rght sub tree. Now, what
+
+376
+00:27:41,017 --> 00:27:45,038
+are we looking for, we're not looking for
+the seventeenth order statistic anymore. The
+
+377
+00:27:45,038 --> 00:27:49,035
+twelve smallest things all in x's sub tree, 
+x itself is the thirteenth
+
+378
+00:27:49,044 --> 00:27:53,024
+smallest so we are looking for the fourth
+smallest of what remains. So, the
+
+379
+00:27:53,024 --> 00:27:57,036
+recursion is very much along the lines of
+what we did in the divide and conquer
+
+380
+00:27:57,050 --> 00:28:03,025
+selection algorithms earlier in the
+course. So to fill in some more details,
+
+381
+00:28:03,025 --> 00:28:10,026
+let's let a denote the subtree size at y.
+And if it happens that x has no left
+
+382
+00:28:10,026 --> 00:28:15,040
+child, we'll, the point would be a to be
+zero. So the super lucky case is when
+
+383
+00:28:15,040 --> 00:28:20,080
+there's exactly i - 1 nodes in the left
+subtree. That means the root here, x is
+
+384
+00:28:20,080 --> 00:28:26,050
+itself the ith order statistic remember it's bigger
+than everything In it's left subtree it's
+
+385
+00:28:26,054 --> 00:28:31,033
+smaller than everything in its right
+subtree.  But, in the general case we're
+
+386
+00:28:31,033 --> 00:28:35,048
+going to be recursing either on the left
+subtree or in the right subtree. We
+
+387
+00:28:35,048 --> 00:28:39,043
+recurse on the left subtree when its
+population is large enough that we
+
+388
+00:28:39,043 --> 00:28:43,064
+guarantee it and compasses the ith order
+statistic. And that happens exactly when it
+
+389
+00:28:43,064 --> 00:28:47,068
+sides is at least i. That's because the left
+subtree has the smallest keys that are
+
+390
+00:28:47,068 --> 00:28:53,039
+anywhere in the search tree. And in the
+final case when the left subtree is so
+
+391
+00:28:53,039 --> 00:28:58,059
+small that the only does it not contain
+the ith order statistic but also x is
+
+392
+00:28:58,059 --> 00:29:03,079
+too small to be an ith order statistic then we
+recurse in the right subtree knowing that
+
+393
+00:29:03,079 --> 00:29:08,060
+we have thrown away a + 1, the a + 1
+smallest key values anywhere in the
+
+394
+00:29:08,060 --> 00:29:12,095
+original tree. So, correctness of this
+procedure is pretty much exactly the same
+
+395
+00:29:12,095 --> 00:29:16,082
+as the inducted correctness for the
+selection algorithms we've discussed
+
+396
+00:29:16,082 --> 00:29:20,094
+earlier in effect to the root of the
+search tree is acting as a pivot element
+
+397
+00:29:20,094 --> 00:29:25,039
+with everything in the left sub tree being
+less than the root everything in the right
+
+398
+00:29:25,039 --> 00:29:29,083
+sub tree being greater than the element in
+the root so that's why the recursion is
+
+399
+00:29:29,083 --> 00:29:33,060
+correct. As far as the running time, I
+hope it's evident from the pseudo code
+
+400
+00:29:33,069 --> 00:29:37,063
+that we do constant time each time they
+recurse. How many times can we recurse
+
+401
+00:29:37,063 --> 00:29:41,067
+when we keep moving down the tree that
+maximum number of times we can move down
+
+402
+00:29:41,067 --> 00:29:45,086
+the tree is proportional to the height of
+the tree. So, it was again is proportional
+
+403
+00:29:45,086 --> 00:29:49,069
+to the height. So, that's the select
+operation, There is an analogous way to
+
+404
+00:29:49,069 --> 00:29:53,081
+write the rank operation. Remember, this
+is where you're given the key value and
+
+405
+00:29:53,081 --> 00:29:58,009
+you want to count up the number of stored
+keys that are less than or equal to that
+
+406
+00:29:58,009 --> 00:30:01,089
+target value, Again, you use this
+augmented search trees and again, you can
+
+407
+00:30:01,089 --> 00:30:06,022
+get running time porportional to the height
+and I encourage you to think through
+
+408
+00:30:06,022 --> 00:00:00,000
+the details of how implement rank
+offline.

@@ -1,0 +1,1671 @@
+1
+00:00:00,000 --> 00:00:03,084
+So, in this video, we'll graduate beyond
+the domain of just vanilla binary search
+
+2
+00:00:03,084 --> 00:00:07,035
+trees, like we've been talking about
+before, and we'll start talking about
+
+3
+00:00:07,035 --> 00:00:10,067
+balanced binary search trees.
+These are the search trees you'd really
+
+4
+00:00:10,067 --> 00:00:13,852
+want to use when you want to have real
+time guarantees on your operation time.
+
+5
+00:00:13,852 --> 00:00:17,627
+Cuz they're search trees which are
+guaranteed to stay balanced, which means
+
+6
+00:00:17,627 --> 00:00:21,015
+the height is guaranteed to stay
+logarithmic, which means all of the
+
+7
+00:00:21,015 --> 00:00:25,005
+operations search trees support that we
+know and love, will also be a logarithmic
+
+8
+00:00:25,005 --> 00:00:27,012
+in the number of keys that they're
+storing.
+
+9
+00:00:27,012 --> 00:00:30,056
+So, let's just quickly recap.
+What is the basic structure tree property?
+
+10
+00:00:30,056 --> 00:00:34,075
+It should be the case that at every single
+node of your search tree, if you go to the
+
+11
+00:00:34,075 --> 00:00:38,060
+left, you'll only see keys that are
+smaller than where you started and if you
+
+12
+00:00:38,060 --> 00:00:42,025
+go to the right you only see keys that
+are bigger than where you started.
+
+13
+00:00:42,025 --> 00:00:45,614
+And a really important observation, which
+is that, given a set of keys, there's
+
+14
+00:00:45,614 --> 00:00:48,875
+going to be lot and lots of legitimate,
+valid, binary search trees with those
+
+15
+00:00:48,875 --> 00:00:50,986
+keys.
+So, we've been having these running
+
+16
+00:00:50,986 --> 00:00:53,532
+examples where the keys one, two, three,
+four, five.
+
+17
+00:00:53,532 --> 00:00:57,589
+On the one hand, you can have a nice and
+balanced search tree that has height only
+
+18
+00:00:57,589 --> 00:01:01,618
+two, with the keys one through five.
+On the other hand, you can also have these
+
+19
+00:01:01,618 --> 00:01:05,957
+crazy chains, basically devolved to link
+lists where the heights for, and elements
+
+20
+00:01:05,957 --> 00:01:08,936
+could be as high as N - 1.
+So, in general, you could have an
+
+21
+00:01:08,936 --> 00:01:13,479
+exponential difference in the height.
+It can be as small, in the best case, as
+
+22
+00:01:13,479 --> 00:01:16,417
+logarithmic and as big, in the worst case,
+as linear.
+
+23
+00:01:16,417 --> 00:01:20,148
+So, this obviously motivates search trees
+that have the additional property that you
+
+24
+00:01:20,148 --> 00:01:23,621
+never have to worry about their height.
+You know they're going to be well
+
+25
+00:01:23,621 --> 00:01:25,589
+balanced.
+You know they're going to have height
+
+26
+00:01:25,589 --> 00:01:28,236
+logarithmic.
+You're never worried about them having
+
+27
+00:01:28,236 --> 00:01:32,309
+this really lousy linear height.
+Remember, why it's so important to have a
+
+28
+00:01:32,309 --> 00:01:35,481
+small height?
+It's because the running time of all of
+
+29
+00:01:35,481 --> 00:01:38,773
+the operations of search trees depends on
+the height.
+
+30
+00:01:38,773 --> 00:01:43,455
+You want to do search, you want to
+insertions, you want to find predecessors
+
+31
+00:01:43,455 --> 00:01:48,334
+or whatever, the height is going to be
+what governs the running time of all those
+
+32
+00:01:48,334 --> 00:01:50,013
+properties.
+So, the high level idea behind balanced search
+
+33
+00:01:50,013 --> 00:01:54,776
+trees is really exactly what you think,
+which is that, you know, because the
+
+34
+00:01:54,776 --> 00:01:58,463
+height can't be any better than
+logarithmic in the number of things you're
+
+35
+00:01:58,463 --> 00:02:02,186
+storing, that's because the trees are
+binary so the number of nodes can only
+
+36
+00:02:02,186 --> 00:02:05,151
+double each level so you need a
+logarithmic number of levels to
+
+37
+00:02:05,151 --> 00:02:07,040
+accommodate everything that you are
+storing.
+
+38
+00:02:07,040 --> 00:02:11,007
+But it's got to be logarithmic, lets make
+sure it stays logarithmic all the time,
+
+39
+00:02:11,007 --> 00:02:16,399
+even as we do insertions and deletions.
+If we can do that, then we get a very rich
+
+40
+00:02:16,399 --> 00:02:21,012
+collection of supported operations all
+running in logarithmic time.
+
+41
+00:02:21,056 --> 00:02:25,048
+As usual, n denotes, the number of
+keys being stored in the tree.
+
+42
+00:02:25,048 --> 00:02:29,006
+There are many, many, many different
+balanced search trees.
+
+43
+00:02:29,006 --> 00:02:33,022
+They're not super, most of them are not
+super different from each other.
+
+44
+00:02:33,022 --> 00:02:37,092
+I'm going to talk about one of the more
+popular ones which are called Red Black
+
+45
+00:02:37,092 --> 00:02:40,062
+Trees.
+So, these were invented back in the '70s.
+
+46
+00:02:40,096 --> 00:02:44,674
+These were not the first balanced binary
+search tree data structures, that honor
+
+47
+00:02:44,674 --> 00:02:49,000
+belongs to AVL trees, which again are not
+very different from red black trees,
+
+48
+00:02:49,000 --> 00:02:51,617
+though the invariants are slightly
+different.
+
+49
+00:02:51,617 --> 00:02:55,997
+Another thing you might want to look up
+and read about is a very cool data
+
+50
+00:02:55,997 --> 00:02:58,454
+structure called splay trees, due to
+Sleator and Tarjan,
+
+51
+00:02:58,454 --> 00:03:01,797
+These, unlike red black trees and AVL
+trees, which only are modified on
+
+52
+00:03:01,797 --> 00:03:05,725
+insertions and deletions, which, if you
+think about it, is sort of what you'd
+
+53
+00:03:05,725 --> 00:03:08,583
+expect.
+Splay trees modify themselves, even when
+
+54
+00:03:08,583 --> 00:03:11,788
+you're doing look ups, even when you're
+doing searches.
+
+55
+00:03:11,788 --> 00:03:15,738
+So, they're sometimes called
+self-adjusting trees for that reason.
+
+56
+00:03:15,738 --> 00:03:20,653
+And it's super simple, but they still have
+kind of amazing guarantees.
+
+57
+00:03:20,653 --> 00:03:25,213
+And then finally, going beyond the, just
+the binary tree paradigm many of you might
+
+58
+00:03:25,213 --> 00:03:28,281
+want to look up examples of B trees or
+also B+ trees.
+
+59
+00:03:28,281 --> 00:03:31,443
+These are very relevant for implementing
+databases.
+
+60
+00:03:31,443 --> 00:03:35,499
+Here what the idea is, in a given node
+you're going to have not just one key but
+
+61
+00:03:35,499 --> 00:03:39,567
+many keys and from a node, you have
+multiple branches that you can take
+
+62
+00:03:39,567 --> 00:03:44,306
+depending where you're searching for falls
+with respect to the multiple keys that are
+
+63
+00:03:44,306 --> 00:03:47,138
+at that node.
+The motivation in a database context for
+
+64
+00:03:47,138 --> 00:03:50,668
+going beyond the binary paradigm, is to
+have a better match up with the memory
+
+65
+00:03:50,668 --> 00:03:53,295
+hierarchy.
+So, that's also very important, although a
+
+66
+00:03:53,295 --> 00:03:57,316
+little bit out of the scope here.
+That said, what we discuss about red-black
+
+67
+00:03:57,316 --> 00:04:01,133
+trees, much of the intuition will
+translate to all of these other balance
+
+68
+00:04:01,133 --> 00:04:05,641
+tree data structures, if you ever find
+yourself in a position where you need to
+
+69
+00:04:05,641 --> 00:04:09,169
+learn more about them.
+So, red black trees are just the same as
+
+70
+00:04:09,169 --> 00:04:13,414
+binary search trees, except they also
+always maintain a number of additional
+
+71
+00:04:13,414 --> 00:04:16,356
+invariants.
+And so, what I'm going to focus on in this
+
+72
+00:04:16,356 --> 00:04:19,775
+video is, first of all, what the
+invariants are, and then how the
+
+73
+00:04:19,775 --> 00:04:22,849
+invariants guarantee that the height will
+be logarithmic.
+
+74
+00:04:22,849 --> 00:04:27,080
+Time permitting, at some point, there will
+be optional videos more about the guts,
+
+75
+00:04:27,080 --> 00:04:31,612
+more about the implementations of red
+black trees namely how do you maintain
+
+76
+00:04:31,612 --> 00:04:34,098
+these invariants under insertions and
+deletions.
+
+77
+00:04:34,098 --> 00:04:37,676
+That's quite a bit more complicated, so
+that's appropriate for, for optional
+
+78
+00:04:37,676 --> 00:04:40,530
+material.
+But understanding what the invariants are
+
+79
+00:04:40,530 --> 00:04:44,794
+and what role they play in controlling the
+height is very accessible, and it's
+
+80
+00:04:44,794 --> 00:04:47,291
+something I think every programmer should
+know.
+
+81
+00:04:47,291 --> 00:04:51,152
+So, there, I'm going to write down four
+invariants and really, the bite comes from
+
+82
+00:04:51,152 --> 00:04:54,420
+the second two, okay, from the third and
+the fourth invariant.
+
+83
+00:04:54,420 --> 00:04:57,986
+The first two invariants you know, are
+just really cosmetic.
+
+84
+00:04:57,986 --> 00:05:01,980
+So, the first one we're going to store one
+bit of information additionally at each
+
+85
+00:05:01,980 --> 00:05:06,783
+node, beyond just the key and we're going
+call this bit as indicating whether it's a
+
+86
+00:05:06,783 --> 00:05:09,827
+red or a black node.
+You might be wondering, you know, why red
+
+87
+00:05:09,827 --> 00:05:12,464
+black?
+Well, I asked my colleague, Leo Guibas
+
+88
+00:05:12,464 --> 00:05:16,076
+about that a few years ago.
+And he told me that when he and Professor
+
+89
+00:05:16,076 --> 00:05:20,990
+Sedgewick were writing up this article the
+journals were, just had access to a
+
+90
+00:05:20,990 --> 00:05:24,793
+certain kind of new printing technology
+that allowed very limited color in the
+
+91
+00:05:24,793 --> 00:05:28,097
+printed copies of the journals.
+And so, they were eager to use it, and so
+
+92
+00:05:28,097 --> 00:05:32,085
+they named the data structure red black,
+so they could have these nice red and
+
+93
+00:05:32,085 --> 00:05:36,028
+black pictures in the journal article.
+Unfortunately, there was then some snafu,
+
+94
+00:05:36,028 --> 00:05:40,172
+and at the end of the day, that technology
+wasn't actually available, so it wasn't
+
+95
+00:05:40,172 --> 00:05:44,038
+actually printed the way they were
+envisioning it but the name has stuck.
+
+96
+00:05:44,038 --> 00:05:47,897
+So, that's the rather idiosyncratic reason
+why these data structures got the name
+
+97
+00:05:48,055 --> 00:05:51,942
+that they did, red black trees.
+So, secondly we're going to maintain the
+
+98
+00:05:51,942 --> 00:05:56,060
+invariant that the roots of the search
+tree is always black, it can never be red.
+
+99
+00:05:56,060 --> 00:05:58,092
+Okay.
+So, with the superficial pair of
+
+100
+00:05:58,092 --> 00:06:02,045
+invariants out of the way, let's go to the
+two main ones.
+
+101
+00:06:02,045 --> 00:06:06,023
+So, first of all, we're never going to
+allow two reds in a row.
+
+102
+00:06:06,023 --> 00:06:12,820
+By which, I mean, if you have a red node
+in the search tree, then its children must
+
+103
+00:06:12,820 --> 00:06:16,011
+be black.
+If you think about for a second, you
+
+104
+00:06:16,011 --> 00:06:20,019
+realize this also implies that if a notice
+red, and it has a parent, then that
+
+105
+00:06:20,019 --> 00:06:24,076
+parent has to be a black node.
+So, in that sense, there are no two red
+
+106
+00:06:24,076 --> 00:06:30,079
+nodes in a row anywhere in the tree.
+And the final invariant which is also
+
+107
+00:06:30,079 --> 00:06:37,046
+rather severe is that every path you might
+take from a root to a null pointer, passes
+
+108
+00:06:37,046 --> 00:06:41,019
+through exactly the same number of black
+nodes.
+
+109
+00:06:41,019 --> 00:06:45,956
+So, to be clear on what I mean by a root
+null path, what you should think about is an
+
+110
+00:06:45,956 --> 00:06:49,371
+unsuccessful search, right?
+So, what happens in an unsuccessful
+
+111
+00:06:49,371 --> 00:06:53,225
+search, you start at the root depending on
+whether you need to go smaller or bigger,
+
+112
+00:06:53,225 --> 00:06:57,154
+you go left or right respectably.
+You keep going left right as appropriate
+
+113
+00:06:57,154 --> 00:07:01,053
+until eventually you hit a null pointer.
+So, I want you to think about the process
+
+114
+00:07:01,053 --> 00:07:04,938
+that which you start at the root and then,
+eventually, fall off the end of the tree.
+
+115
+00:07:04,938 --> 00:07:07,098
+In doing so, you traverse some number of
+nodes.
+
+116
+00:07:07,098 --> 00:07:11,030
+Some of those nodes will be black some of
+those nodes will be red.
+
+117
+00:07:11,030 --> 00:07:15,364
+And I want you to keep track of the number
+of black nodes and the constraints that a
+
+118
+00:07:15,364 --> 00:07:19,529
+red black tree, by definition, must
+satisfy, is that no matter what path you
+
+119
+00:07:19,529 --> 00:07:24,096
+take through the tree starting from the
+root terminating at a null pointer, the
+
+120
+00:07:24,096 --> 00:07:27,278
+number of black nodes traversed, has to be
+exactly the same.
+
+121
+00:07:27,278 --> 00:07:31,788
+It cannot depend on the path, it has to be
+exactly the same on every single root null path.
+
+122
+00:07:31,788 --> 00:07:34,559
+Let's move on to some examples.
+
+123
+00:07:34,559 --> 00:07:38,408
+So, here's a claim.
+And this is meant to, kind of, whet your
+
+124
+00:07:38,408 --> 00:07:42,667
+appetite for the idea that red black trees
+must be pretty balanced.
+
+125
+00:07:42,667 --> 00:07:45,745
+They have to have height, basically
+logarithmic.
+
+126
+00:07:45,745 --> 00:07:49,019
+So, remember, what's the most unbalanced
+search tree?
+
+127
+00:07:49,019 --> 00:07:54,123
+Well, that's these chains.
+So, the claim is, even a chain with three
+
+128
+00:07:54,123 --> 00:07:58,393
+nodes can not be a red black tree.
+So, what's the proof?
+
+129
+00:07:58,393 --> 00:08:04,965
+Well, consider such a search tree.
+So, maybe, with the key values one, two and three.
+
+130
+00:08:04,965 --> 00:08:08,465
+So, the question that we're asking is, is
+
+131
+00:08:08,465 --> 00:08:13,382
+there a way to color the node, these three
+nodes, red and black so that all four of
+
+132
+00:08:13,382 --> 00:08:17,060
+the invariants are satisfied.
+So, we need to color each red or black.
+
+133
+00:08:17,060 --> 00:08:20,379
+Remember, variant two says, the root, the
+one has to be black.
+
+134
+00:08:20,379 --> 00:08:24,412
+So, we have four possibilities for how to
+use the color two and three.
+
+135
+00:08:24,412 --> 00:08:27,446
+But really, because of the third
+invariant, we only have three possibilities.
+
+136
+00:08:27,446 --> 00:08:30,246
+We can't color two and three both red, cuz
+
+137
+00:08:30,246 --> 00:08:34,018
+then we'd have two reds in a row.
+So, we can either make two red, three
+
+138
+00:08:34,018 --> 00:08:37,007
+black, two black, three red, or both two
+and three black.
+
+139
+00:08:37,007 --> 00:08:41,069
+And all of the cases are the same.
+Just to give one example, suppose that we
+
+140
+00:08:41,069 --> 00:08:44,083
+colored the node two, red, and one and
+three are black.
+
+141
+00:08:44,083 --> 00:08:48,491
+The claim is invariant four has been
+broken and invariant four is going to be
+
+142
+00:08:48,491 --> 00:08:53,001
+broken no matter how we try to color two
+and three red and black.
+
+143
+00:08:53,001 --> 00:08:56,619
+What is invariant four says?
+It says, really on any unsuccessful
+
+144
+00:08:56,619 --> 00:09:00,006
+search, you pass through the same number
+of black nodes.
+
+145
+00:09:00,006 --> 00:09:03,062
+And so, one unsuccessful search would be,
+you search for zero.
+
+146
+00:09:03,062 --> 00:09:07,083
+And if you search for a zero, you go to
+the root, you immediately go left to hit a
+
+147
+00:09:07,083 --> 00:09:10,027
+null pointer.
+So, you see exactly one black node.
+
+148
+00:09:10,027 --> 00:09:12,063
+Namely one.
+On the other hand, suppose you searched
+
+149
+00:09:12,063 --> 00:09:15,285
+for four, then you'd start at the root,
+and you'd go right, and you go to two,
+
+150
+00:09:15,285 --> 00:09:19,396
+you'd go right, and you go to three, you'd
+go right again, and only then will you get
+
+151
+00:09:19,396 --> 00:09:22,018
+a null pointer.
+And on that, unsuccessful search, you'd
+
+152
+00:09:22,018 --> 00:09:24,060
+encounter two black nodes, both the one
+and the three.
+
+153
+00:09:24,060 --> 00:09:28,008
+So, it's a violation of the fourth
+invariant, therefore, this would not be a
+
+154
+00:09:28,008 --> 00:09:30,063
+red black tree.
+I'll leave that for you to check, that no
+
+155
+00:09:30,063 --> 00:09:34,043
+matter how you try to code two and three
+red or black, you're going to break one of
+
+156
+00:09:34,043 --> 00:09:37,003
+the invariants.
+If they're both red, you'd break the third
+
+157
+00:09:37,003 --> 00:09:39,023
+invariant.
+If at most one is red, you'd break the
+
+158
+00:09:39,023 --> 00:09:42,040
+fourth invariant.
+So, that's a non-example of a red-black tree.
+
+159
+00:09:42,040 --> 00:09:44,410
+So, let's look at an example of a red-black tree.
+
+160
+00:09:44,410 --> 00:09:48,014
+One, a search tree where you can actually
+
+161
+00:09:48,014 --> 00:09:52,016
+color the nodes red or black so that all
+four invariants are maintained.
+
+162
+00:09:52,016 --> 00:09:56,057
+So, one search tree which is very easy to
+make red black is a perfectly balanced one.
+
+163
+00:09:56,057 --> 00:09:59,008
+So, for example, let's consider this three
+
+164
+00:09:59,008 --> 00:10:03,049
+nodes search tree has the keys three,
+five, and seven and let's suppose the five
+
+165
+00:10:03,049 --> 00:10:06,022
+is the root.
+So, it has one child on each side, the
+
+166
+00:10:06,022 --> 00:10:09,040
+three and the seven.
+So, can this be made a red black tree?
+
+167
+00:10:09,040 --> 00:10:11,097
+So, remember what that question really
+means.
+
+168
+00:10:11,097 --> 00:10:16,049
+It's asking can we color theses three
+nodes some combination of red and black so
+
+169
+00:10:16,049 --> 00:10:19,005
+that all four of the invariants are
+satisfied?
+
+170
+00:10:19,075 --> 00:10:24,010
+If you think about it a little bit, you
+realize, yeah, you can definitely color
+
+171
+00:10:24,010 --> 00:10:27,061
+these nodes red or black to make and
+satisfy for the invariants.
+
+172
+00:10:27,061 --> 00:10:31,000
+In particular, suppose we color all three
+of the nodes, black.
+
+173
+00:10:31,036 --> 00:10:34,048
+We've satisfied variant number one, we've
+colored all the nodes.
+
+174
+00:10:34,048 --> 00:10:37,095
+We've satisfied variant number two, and
+particularly, the root is black.
+
+175
+00:10:37,095 --> 00:10:41,076
+We've satisfied invariant number three.
+There's no reds at all, so there's
+
+176
+00:10:41,076 --> 00:10:45,019
+certainly no two reds in a row.
+And, if you think about it, we've
+
+177
+00:10:45,019 --> 00:10:48,073
+satisfied invariant four because this tree
+is perfectly balanced.
+
+178
+00:10:48,073 --> 00:10:52,098
+No matter what you unsuccessfully search
+for, you're going to encounter two black
+
+179
+00:10:52,098 --> 00:10:55,043
+nodes.
+If you search for, say, one, you're going
+
+180
+00:10:55,043 --> 00:10:59,002
+to encounter three and five.
+If you search for, say, six, you're going
+
+181
+00:10:59,002 --> 00:11:01,909
+to encounter five and seven.
+So, all root null paths have exactly
+
+182
+00:11:01,909 --> 00:11:05,077
+two black nodes and variant number four is
+also satisfied.
+
+183
+00:11:05,077 --> 00:11:08,046
+So, that's great.
+But, of course, the whole point of having
+
+184
+00:11:08,046 --> 00:11:11,033
+a binary search tree data structure is you
+want to be dynamic.
+
+185
+00:11:11,033 --> 00:11:13,068
+You want to accommodate insertions and
+deletions.
+
+186
+00:11:13,068 --> 00:11:17,047
+Every time you have an insertion or a
+deletion into a red black tree, you get a
+
+187
+00:11:17,047 --> 00:11:19,290
+new node.
+Let's say, an insertion, you get a new
+
+188
+00:11:19,290 --> 00:11:23,279
+node, you have to color it something.
+And now, all of a sudden, you got to worry
+
+189
+00:11:23,279 --> 00:11:25,485
+about breaking one of these four
+invariants.
+
+190
+00:11:25,485 --> 00:11:28,952
+So, let me just show you some easy cases
+where you can accommodate insertions
+
+191
+00:11:28,952 --> 00:11:32,056
+without too much work.
+Time permitting we will include some
+
+192
+00:11:32,056 --> 00:11:35,998
+optional videos with the notion of
+rotations which do more fundamental
+
+193
+00:11:35,998 --> 00:11:40,540
+restructuring of search trees so that they
+can maintain the four invariants, and stay
+
+194
+00:11:40,699 --> 00:11:44,164
+nearly perfectly balanced.
+So, if we have this red black tree where
+
+195
+00:11:44,164 --> 00:11:48,367
+everything's black, and we insert, say,
+six, that's going to get inserted down
+
+196
+00:11:48,367 --> 00:11:51,054
+here.
+Now, if we try to color it black, it's no
+
+197
+00:11:51,054 --> 00:11:55,033
+longer going to be a red black tree.
+And that's because, if we do an
+
+198
+00:11:55,033 --> 00:11:59,622
+unsuccessful search now for, say, 5.5,
+we're going to encounter three black
+
+199
+00:11:59,622 --> 00:12:03,462
+nodes, where if we do an unsuccessful
+search for one, we only encounter two
+
+200
+00:12:03,462 --> 00:12:05,706
+black nodes.
+So, that's not going to work.
+
+201
+00:12:05,706 --> 00:12:09,969
+But the way we can fix it is instead of
+coloring the six black, we color it red.
+
+202
+00:12:09,969 --> 00:12:13,544
+And now, this six is basically invisible
+to invariant number four.
+
+203
+00:12:13,544 --> 00:12:16,406
+It doesn't show up in any root null
+paths.
+
+204
+00:12:16,406 --> 00:12:20,858
+So, because you have two black nodes in
+all roots in all paths before, before the
+
+205
+00:12:20,858 --> 00:12:24,275
+six was there, that's still true now that
+you have this red six.
+
+206
+00:12:24,275 --> 00:12:28,993
+So, all four invariants are satisfied once
+you insert the six and color it red.
+
+207
+00:12:28,993 --> 00:12:33,209
+If we then insert, say, an eight, we can
+pull exactly the same trick, we can call
+
+208
+00:12:33,209 --> 00:12:37,142
+it an eight red.
+Again, it doesn't participate in invariant
+
+209
+00:12:37,142 --> 00:12:42,021
+four at all so we haven't broken it.
+Moreover, we still don't have two reds in
+
+210
+00:12:42,021 --> 00:12:45,073
+a row, so we haven't broken invariant
+number three either.
+
+211
+00:12:45,073 --> 00:12:50,042
+So, this is yet another red black tree.
+In fact, this is not the unique way to
+
+212
+00:12:50,042 --> 00:12:54,092
+color the nodes of this search tree, so
+that it satisfies all four of the
+
+213
+00:12:54,092 --> 00:12:57,082
+invariants.
+If we, instead, recolor six and eight
+
+214
+00:12:57,082 --> 00:13:02,001
+black, but at the same time, recolor the
+node seven, red, we're also golden.
+
+215
+00:13:02,001 --> 00:13:05,000
+Clearly, the first three invariants are
+all satisfied.
+
+216
+00:13:05,000 --> 00:13:09,009
+But also, in pushing the red upward,
+consolidating the red at six and eight,
+
+217
+00:13:09,009 --> 00:13:13,035
+and putting it at seven instead, we
+haven't changed the number of black nodes
+
+218
+00:13:13,035 --> 00:13:16,044
+on any given path.
+Any black, any path that previously went
+
+219
+00:13:16,044 --> 00:13:20,070
+through six, went through seven, anything
+that went through eight, went through
+
+220
+00:13:20,070 --> 00:13:24,923
+seven so there's exactly the same number
+of red and black nodes on each such path
+
+221
+00:13:24,923 --> 00:13:28,077
+as there was before.
+So, all paths still have equal number of
+
+222
+00:13:28,077 --> 00:13:30,835
+black nodes and invariant four remains
+satisfied.
+
+223
+00:13:30,835 --> 00:13:36,595
+As I said, I've shown you here only simple
+examples, where you don't have to do much
+
+224
+00:13:36,595 --> 00:13:39,895
+work on an insertion to retain the red
+black properties.
+
+225
+00:13:39,895 --> 00:13:44,459
+In general, if you keep inserting more and
+more stuff and certainly if you do the
+
+226
+00:13:44,459 --> 00:13:48,771
+deletions, you have to work much harder to
+maintain those four invariants.
+
+227
+00:13:48,771 --> 00:13:52,807
+Time permitting, we'll cover just a taste
+of it in some optional videos.
+
+228
+00:13:52,807 --> 00:13:57,748
+So, what's the point of these seemingly
+arbitrary four invariants of a red black
+
+229
+00:13:57,748 --> 00:14:00,478
+tree?
+Well, the whole point is that if you
+
+230
+00:14:00,478 --> 00:14:05,475
+satisfy these four invariants in your
+search tree, then your height is going to
+
+231
+00:14:05,475 --> 00:14:07,839
+be small.
+And because your height's going to be
+
+232
+00:14:07,839 --> 00:14:10,098
+small, all your operations are going to be
+fast.
+
+233
+00:14:10,098 --> 00:14:15,695
+So, let me give you a proof that if a
+search tree satisfies the four invariants,
+
+234
+00:14:15,695 --> 00:14:20,030
+then it has super small height.
+In fact, no more than double the absolute
+
+235
+00:14:20,030 --> 00:14:24,040
+minimum that we conceivably have, almost
+two times log base two of N.
+
+236
+00:14:24,040 --> 00:14:31,003
+So, the formal claim, is that every
+red-black tree with N nodes, has height O
+
+237
+00:14:31,003 --> 00:14:36,884
+of log N, were precisely in those two
+times log base two of N + 1.
+
+238
+00:14:36,886 --> 00:14:41,723
+So, here's the proof.
+And what's clear about this proof is it's
+
+239
+00:14:41,723 --> 00:14:46,089
+very obvious the role played by this
+invariants three and four.
+
+240
+00:14:46,089 --> 00:14:51,914
+Essentially, what the invariants guarantee
+is that, a red black tree has to look like
+
+241
+00:14:51,914 --> 00:14:57,010
+a perfectly balanced tree with at most a
+sort of factor two inflation.
+
+242
+00:14:57,010 --> 00:15:01,010
+So, let's see exactly what I mean.
+So, let's begin with an observation.
+
+243
+00:15:01,010 --> 00:15:03,083
+And this, this has nothing to do with red
+black trees.
+
+244
+00:15:03,083 --> 00:15:08,006
+Forget about the colors for a moment, and
+just think about the structure of binary
+
+245
+00:15:08,006 --> 00:15:10,059
+trees.
+And let's suppose we have a lower bound on
+
+246
+00:15:10,059 --> 00:15:14,082
+how long root null paths are in the tree.
+So, for some parameter k, and go ahead and
+
+247
+00:15:14,082 --> 00:15:18,079
+think of k as, like, ten if you want.
+Suppose we have a tree where if you start
+
+248
+00:15:18,079 --> 00:15:22,097
+from the root, and no matter how it is you
+navigate left and right, child pointers
+
+249
+00:15:22,097 --> 00:15:26,079
+until you terminate in a null pointer.
+No matter how you do it, you have no
+
+250
+00:15:26,079 --> 00:15:29,032
+choice but to see at least k nodes along
+the way.
+
+251
+00:15:29,032 --> 00:15:34,069
+If that hypothesis is satisfied, then if
+you think about it, the top of this tree
+
+252
+00:15:34,069 --> 00:15:39,032
+has to be totally filled in.
+So, the top of this tree has to include a
+
+253
+00:15:39,032 --> 00:15:43,060
+perfectly balanced search tree, binary
+tree of depth k - 1.
+
+254
+00:15:43,062 --> 00:15:46,028
+So, let me draw a picture here of the case
+of k = three.
+
+255
+00:15:46,033 --> 00:15:50,083
+So, if no matter how you go from the root
+to a null pointer, you have to see at
+
+256
+00:15:50,083 --> 00:15:54,098
+least three nodes along the way.
+That means the top three levels of this
+
+257
+00:15:54,098 --> 00:15:57,087
+tree have to be full.
+So, you have to have the root.
+
+258
+00:15:57,087 --> 00:16:01,074
+It has to have both of its children.
+It has to have all four of its
+
+259
+00:16:01,074 --> 00:16:04,083
+grandchildren.
+The proof of this observation is by
+
+260
+00:16:04,083 --> 00:16:08,019
+contradiction.
+If, in fact, you were missing some nodes
+
+261
+00:16:08,019 --> 00:16:13,016
+in any of these top k levels.
+We'll that would give you a way of hitting
+
+262
+00:16:13,016 --> 00:16:18,045
+a null pointer seeing less then k nodes.
+So, what's the point is, the point is this
+
+263
+00:16:18,045 --> 00:16:23,086
+gives us a lower bound on the population
+of a search tree as a function of the
+
+264
+00:16:23,086 --> 00:16:28,086
+lengths of its root null paths.
+So, the size N of the tree must include at
+
+265
+00:16:28,086 --> 00:16:34,315
+least the number of nodes in a perfectly
+balanced tree of depth k - 1 which is
+
+266
+00:16:34,315 --> 00:16:40,094
+2^k - 1, So, for example,
+when k = 3, it's 2^3 (two cubed) - 1,
+
+267
+00:16:40,094 --> 00:16:45,346
+or 7  that's just a basic fact about trees,
+
+268
+00:16:45,346 --> 00:16:49,553
+nothing about red black trees.
+So, let's now combine that with a red
+
+269
+00:16:49,553 --> 00:16:54,740
+black tree invariant to see why red black
+trees have to have small height.
+
+270
+00:16:54,740 --> 00:16:58,828
+So again, to recap where we got to on the
+previous slide.
+
+271
+00:16:58,828 --> 00:17:04,407
+The size N, the number of nodes in a tree,
+is at least 2^k - 1, where k is
+
+272
+00:17:04,407 --> 00:17:08,932
+the fewest number of nodes you will ever
+see on a root null path.
+
+273
+00:17:08,932 --> 00:17:13,503
+So, let's rewrite this a little bit and
+let's actually say, instead of having a
+
+274
+00:17:13,503 --> 00:17:18,366
+lower bound on N in terms of k, let's have
+an upper bound on k in terms of N.
+
+275
+00:17:18,366 --> 00:17:23,481
+So, the length of every root null path,
+the minimum length of every root null
+
+276
+00:17:23,481 --> 00:17:26,803
+path is bounded above by log base two of
+quantity N + 1.
+
+277
+00:17:26,804 --> 00:17:31,243
+This is just adding one to both sides and
+taking the logarithm base two.
+
+278
+00:17:31,243 --> 00:17:35,355
+So, what does this buy us?
+Well, now, let's start thinking about red
+
+279
+00:17:35,355 --> 00:17:38,022
+black trees.
+So now, red black tree with N nodes.
+
+280
+00:17:38,022 --> 00:17:42,208
+What does this say?
+This says that the number of nodes, forget
+
+281
+00:17:42,208 --> 00:17:48,156
+about red or black, just the number of
+nodes on some root null path has to be the
+
+282
+00:17:48,156 --> 00:17:52,622
+most log base two of N + 1.
+In the best case, all of those are black.
+
+283
+00:17:52,622 --> 00:17:57,236
+Maybe some of them are red, but in the,
+in, the maximum case, all of them are
+
+284
+00:17:57,236 --> 00:18:00,065
+black.
+So, we can write in a red black tree with
+
+285
+00:18:00,065 --> 00:18:06,176
+N nodes, there is a root null path with at
+most log base two of N + 1, black nodes.
+
+286
+00:18:06,176 --> 00:18:10,747
+This is an even weaker statement than what
+we just proved.
+
+287
+00:18:10,747 --> 00:18:15,500
+We proved that it have some, somehow must
+have at most log based two, n + 1 total
+
+288
+00:18:15,500 --> 00:18:18,339
+nodes.
+So, certainly, that path has the most log
+
+289
+00:18:18,339 --> 00:18:21,878
+base two of N + 1 black nodes.
+Now, let's, now let's apply the two
+
+290
+00:18:21,878 --> 00:18:25,742
+knockout punches of our two invariants.
+Alright, so fundamentally, what is the
+
+291
+00:18:25,742 --> 00:18:29,167
+fourth invariant telling us?
+It's telling us that if we look at a path
+
+292
+00:18:29,167 --> 00:18:33,014
+in our red black tree, we go from the
+root, we think about, let's say, that's an
+
+293
+00:18:33,014 --> 00:18:35,380
+unsuccessful search, we go down to a null
+pointer.
+
+294
+00:18:35,380 --> 00:18:39,093
+It says, if we think of the red nodes as
+invisible, if we don't count them in our
+
+295
+00:18:39,093 --> 00:18:43,033
+tally, then we're only going to see log,
+basically a logarithmic number of nodes.
+
+296
+00:18:43,033 --> 00:18:47,054
+But when we care about the height of the
+red black tree, of course, we care about
+
+297
+00:18:47,054 --> 00:18:49,730
+all of the nodes, the red nodes and the
+black nodes.
+
+298
+00:18:49,730 --> 00:18:54,169
+So, so far we know, that if we only count
+black nodes then we're good, We only have
+
+299
+00:18:54,169 --> 00:18:56,734
+log base two of N + 1 nodes that we need
+to count.
+
+300
+00:18:56,734 --> 00:18:59,048
+So, here's where the third invariant comes
+in.
+
+301
+00:18:59,048 --> 00:19:04,021
+It says, well actually, black nodes are a
+majority of nodes in the tree.
+
+302
+00:19:04,021 --> 00:19:08,033
+In a strong sense, there are no two reds
+in a row, on any path.
+
+303
+00:19:08,033 --> 00:19:12,096
+So, if we know the number of black nodes
+is small, then because you can't have two
+
+304
+00:19:12,096 --> 00:19:17,042
+reds in a row, the number of total nodes
+on the path is at most twice as large.
+
+305
+00:19:17,042 --> 00:19:21,070
+In the worst case, you have a black route,
+then red, then black, then red, then
+
+306
+00:19:21,070 --> 00:19:26,015
+black, then red, then black, et cetera.
+At the worst case, the number of red nodes
+
+307
+00:19:26,015 --> 00:19:30,089
+is equal to the number of black nodes,
+which doubles the length of the path once
+
+308
+00:19:30,089 --> 00:19:35,035
+you start counting the red nodes as well.
+And this is exactly what it means for a
+
+309
+00:19:35,035 --> 00:19:39,001
+tree to have a logarithmic depth.
+So, this, in fact, proves the claim, if
+
+310
+00:19:39,001 --> 00:19:43,046
+the search trees satisfies the invariants
+one through four, in particular if there's
+
+311
+00:19:43,046 --> 00:19:47,085
+no two reds in a row and all root null
+paths have an equal number of black nodes,
+
+312
+00:19:47,085 --> 00:19:51,056
+then, knowing nothing else about this
+search tree, it's got to be almost
+
+313
+00:19:51,056 --> 00:19:54,026
+balanced.
+It's perfectly balanced up to a factor of
+
+314
+00:19:54,026 --> 00:19:56,022
+two.
+And again, the point then is that
+
+315
+00:19:56,022 --> 00:19:59,827
+operations in a search tree and the search
+trees are going to run in logarithmic
+
+316
+00:19:59,827 --> 00:20:04,043
+time, because the height is what governs
+the running time of those operations.
+
+317
+00:20:04,085 --> 00:20:08,633
+Now, in some sense, I've only told you the
+easy part which is if it just so happens
+
+318
+00:20:08,633 --> 00:20:12,192
+that your search tree satisfies these
+four invariants, then you're good.
+
+319
+00:20:12,192 --> 00:20:15,992
+The height is guaranteed to be small so
+the operations are guaranteed to be fast.
+
+320
+00:20:15,992 --> 00:20:18,992
+Clearly that's exactly what you want from
+this data structure.
+
+321
+00:20:18,992 --> 00:20:22,980
+But for the poor soul who has to actually
+implement this data structure, the hard
+
+322
+00:20:22,980 --> 00:20:26,751
+work is maintaining these invariants even
+as the data structure changes.
+
+323
+00:20:26,751 --> 00:20:31,084
+Remember, the point here is to be dynamic,
+to accommodate insertions and deletions.
+
+324
+00:20:31,084 --> 00:20:35,661
+And searches and deletions can disrupt
+these four invariants and then one has to
+
+325
+00:20:35,661 --> 00:20:40,025
+actually change the code to make sure
+they're satisfied again, so that the tree
+
+326
+00:20:40,025 --> 00:20:44,384
+stays balanced, has low height, even under
+arbitrary sequences of insertions and
+
+327
+00:20:44,384 --> 00:20:46,774
+deletions.
+So, we're not going to cover that in this
+
+328
+00:20:46,774 --> 00:20:49,023
+video.
+It can be done, without significantly
+
+329
+00:20:49,023 --> 00:20:53,048
+slowing down any of the operations.
+It's pretty tricky, takes some nice ideas.
+
+330
+00:20:53,048 --> 00:20:57,050
+There's a couple well-known algorithms
+textbooks that cover those details.
+
+331
+00:20:57,050 --> 00:21:00,068
+Or if you look at open source and
+limitations of balanced search trees, you
+
+332
+00:21:00,068 --> 00:21:02,608
+can look at code that does that
+implementations.
+
+333
+00:21:02,608 --> 00:21:07,147
+But, because it can be done in a practical
+way and because Red Black Tree supports
+
+334
+00:21:07,147 --> 00:21:11,512
+such an original array of operations,
+that's why you will find them used in a
+
+335
+00:21:11,512 --> 00:21:15,276
+number practical applications.
+That's why balanced search trees should be
+
+336
+00:21:15,276 --> 00:21:17,051
+part of your programmer tool box.

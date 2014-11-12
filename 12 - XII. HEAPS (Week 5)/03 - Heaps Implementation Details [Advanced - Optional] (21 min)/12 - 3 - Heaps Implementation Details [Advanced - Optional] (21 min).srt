@@ -1,0 +1,1403 @@
+1
+00:00:00,000 --> 00:00:04,256
+So, in this video, we're gonna take it at
+least partway to the next level for the
+
+2
+00:00:04,256 --> 00:00:07,928
+heap data structure. That is, we'll
+discuss some of the implementation
+
+3
+00:00:07,928 --> 00:00:11,752
+details. I.e., how would you code a, a
+heat data structure from scratch? So
+
+4
+00:00:11,752 --> 00:00:15,907
+remember what the point of a heap is. It's
+a container, and it contains objects, and
+
+5
+00:00:15,907 --> 00:00:19,808
+each of these objects, in addition to
+possibly lots of other data, should have
+
+6
+00:00:19,808 --> 00:00:24,064
+some kind of key. And we should be able to
+compare the keys of different objects; you
+
+7
+00:00:24,064 --> 00:00:27,763
+know, Social Security numbers for
+different employers, edge weights for
+
+8
+00:00:27,763 --> 00:00:31,716
+different edges in a network, or time
+stamps on different events, and so on. Now
+
+9
+00:00:31,716 --> 00:00:35,567
+remember, for any data structure the
+number one thing you should remember is
+
+10
+00:00:35,567 --> 00:00:39,722
+what are the operations that it supports,
+i.e., what is the data structure good for.
+
+11
+00:00:39,722 --> 00:00:43,978
+And also, what is the running time you can
+count on of those operations. So something
+
+12
+00:00:43,978 --> 00:00:48,018
+we promised in a previous video.
+[inaudible] Indicate the implementation of
+
+13
+00:00:48,018 --> 00:00:52,294
+the miss video is these two primary
+operations that a heap exports. First of
+
+14
+00:00:52,294 --> 00:00:56,625
+all, you can insert stuff into it, and it
+takes [inaudible] logarithmic in the
+
+15
+00:00:56,625 --> 00:01:00,507
+number of objects that the heap is
+storing. And second of all, you can
+
+16
+00:01:00,507 --> 00:01:04,370
+extract an object. That has the minimum
+key value, and again we're going to allow
+
+17
+00:01:04,370 --> 00:01:08,002
+duplicates in our, in our heaps, so if
+there's multiple objects, then I'll have a
+
+18
+00:01:08,002 --> 00:01:11,404
+minimum, a common minimum key value, the
+heap will return one of those. It's
+
+19
+00:01:11,404 --> 00:01:14,990
+unspecified, which one. As I mentioned
+earlier, you can also dress up heaps with
+
+20
+00:01:14,990 --> 00:01:18,622
+additional operations, like you can do
+batch inserts, and you can do linear time
+
+21
+00:01:18,622 --> 00:01:22,346
+rather than log in time. You can delete
+from the middle of the heap. I'm not gonna
+
+22
+00:01:22,346 --> 00:01:26,116
+discuss those in the video; I'm just going
+to focus on how you'd implement inserts
+
+23
+00:01:26,116 --> 00:01:30,821
+and extract [inaudible]. If you wanna know
+how heaps really work, it's important to
+
+24
+00:01:30,821 --> 00:01:35,974
+keep in mind simultaneously Two different
+views of a heap One, as a tree And one, as
+
+25
+00:01:35,974 --> 00:01:40,631
+a, array. So we're gonna start on this
+slide with the tree view. Conceptually,
+
+26
+00:01:40,631 --> 00:01:45,667
+this will be useful to explain how the
+heap ope rations are implemented. A
+
+27
+00:01:45,667 --> 00:01:50,634
+conceptual will think of a heap not just
+as any old tree, but as a tree that's
+
+28
+00:01:50,634 --> 00:01:56,888
+rooted. It'll be binary. Meaning that,
+each node will have zero, one or two
+
+29
+00:01:56,888 --> 00:02:03,833
+children nodes And third, it will be as
+complete as possible. So let me draw for
+
+30
+00:02:03,833 --> 00:02:10,487
+your amusement an as complete as possible
+binary tree that has nine nodes. So if the
+
+31
+00:02:10,487 --> 00:02:14,245
+tree had, had only seven nodes it would
+have been obvious what, is complete as
+
+32
+00:02:14,245 --> 00:02:17,904
+possible means. It would have meant we
+just would have had three completely
+
+33
+00:02:17,904 --> 00:02:21,759
+filled in levels. If it had, had fifteen
+nodes it would have had four completely
+
+34
+00:02:21,759 --> 00:02:25,760
+filled in levels. If you're in between,
+these two numbers that are powers of two
+
+35
+00:02:25,760 --> 00:02:29,663
+minus one, well we're going to call a
+complete to the tree as just in the bottom
+
+36
+00:02:29,663 --> 00:02:33,762
+level you fill in the leaves from left to
+right. So here the two extra leaves on the
+
+37
+00:02:33,762 --> 00:02:37,617
+fourth level are both, pushed as far to
+the left as possible. So, in our minds,
+
+38
+00:02:37,617 --> 00:02:42,109
+this is how we visualize heaps. Let me
+next define the heat property. This
+
+39
+00:02:42,109 --> 00:02:47,430
+imposes an ordering on how the different
+objects are arranged in this tree
+
+40
+00:02:47,430 --> 00:02:52,886
+structure. The heap property dictates that
+at every single node of this tree it
+
+41
+00:02:52,886 --> 00:02:58,665
+doesn't matter if it's the root if it's a
+leaf if it's an internal node whatever. At
+
+42
+00:02:58,665 --> 00:03:04,512
+every node X the key of the object stored
+in X should be no more than the keys of Xs
+
+43
+00:03:04,512 --> 00:03:10,084
+children. Now X may have zero children if
+it's a leaf it may have one child or it
+
+44
+00:03:10,084 --> 00:03:15,450
+may have two children whatever those cases
+zero one or two children all those
+
+45
+00:03:15,450 --> 00:03:21,142
+children keys should be at least that of
+key at X. For example, here is a heap with
+
+46
+00:03:21,142 --> 00:03:26,420
+seven nodes. Notice that I am allowing
+duplicates. There are three different
+
+47
+00:03:26,420 --> 00:03:31,555
+objects that have the key value four, in
+this heap. Another thing to realize is
+
+48
+00:03:31,555 --> 00:03:36,171
+that while the heap property imposes
+useful structure on how the objects can be
+
+49
+00:03:36,171 --> 00:03:40,960
+arranged it in no way uniquely pins down
+their structure. So this exact same set of
+
+50
+00:03:40,960 --> 00:03:45,778
+seven keys could be arranged differently
+and it would still be a heap. The
+
+51
+00:03:45,778 --> 00:03:51,068
+important thing is that, in any heap, the
+root has to have a minimum value key. Just
+
+52
+00:03:51,068 --> 00:03:56,358
+like in the se two organizations of these
+seven keys, the root is always a four, the
+
+53
+00:03:56,358 --> 00:04:00,993
+minimum key value. So that's a good sign,
+given that one of the main operations
+
+54
+00:04:00,993 --> 00:04:05,117
+we're supposed to. Quickly implement, is
+to extract the minimum value. So at least
+
+55
+00:04:05,117 --> 00:04:09,379
+we know where it's going to be, it' gonna
+be at the root of a heap. So while in or
+
+56
+00:04:09,379 --> 00:04:14,195
+minds we think of heaps as organized in a
+tree fashion, we don't literally implement
+
+57
+00:04:14,195 --> 00:04:18,953
+them as trees. So in something like search
+trees, you actually have pointers at each
+
+58
+00:04:18,953 --> 00:04:23,596
+node and you can traverse pointers to go
+from a [inaudible] to the children from
+
+59
+00:04:23,596 --> 00:04:28,067
+the children to the parents, yada, yada,
+yada. Turns out it's much more efficient
+
+60
+00:04:28,067 --> 00:04:32,940
+in a heap to just directly implement it as
+an array. Let me show you by example how a
+
+61
+00:04:32,940 --> 00:04:37,641
+tree like we had on the last slide maps
+naturally onto an array representation. So
+
+62
+00:04:37,641 --> 00:04:42,580
+let's look at a slightly bigger heap, one
+that has nine elements. So let me draw an
+
+63
+00:04:42,580 --> 00:04:48,175
+array with nine positions. Labeled one,
+two, three all the way up to nine And the
+
+64
+00:04:48,175 --> 00:04:53,518
+way we're going to map this tree which is
+in our mind to this array implementation
+
+65
+00:04:53,518 --> 00:04:58,733
+is really very natural. We're just going
+to group the nodes of this tree by their
+
+66
+00:04:58,733 --> 00:05:03,934
+level. So, the root is gonna be the only
+node at level zero. Then the children of
+
+67
+00:05:03,934 --> 00:05:09,066
+the roots are level one, their children
+constitute level two, and then we have a
+
+68
+00:05:09,066 --> 00:05:14,589
+partial level three, which is just these
+last two notes here. And now we just stick
+
+69
+00:05:14,589 --> 00:05:19,526
+these notes into the array, one level at a
+time. So the roots winds up in the
+
+70
+00:05:19,526 --> 00:05:24,854
+privileged first position, so that's going
+to be the, the first, the object which is
+
+71
+00:05:24,854 --> 00:05:30,311
+the first copy of the four. Then we put in
+the level one object, so that's the second
+
+72
+00:05:30,311 --> 00:05:35,803
+copy of the four and the eight, and then
+we put in level two Which has our third
+
+73
+00:05:35,803 --> 00:05:42,418
+four along with the two nines. And then we
+have the last two notes from level three
+
+74
+00:05:42,418 --> 00:05:48,162
+rounding out the penultimate and final
+position of the array. And you might be
+
+75
+00:05:48,162 --> 00:05:52,264
+wondering how it is we seem to be having
+our cake and eating it, too. On the one
+
+76
+00:05:52,264 --> 00:05:56,261
+hand we have this nice, logical tree
+structure. On the other hand we have this
+
+77
+00:05:56,261 --> 00:06:00,675
+array implementation and we're not wasting
+any space on the usual pointers you would
+
+78
+00:06:00,675 --> 00:06:04,932
+have in a tree to traverse between parents
+and children. So where's the free lunch
+
+79
+00:06:04,932 --> 00:06:08,826
+coming from? Well the reason is that
+because we're able to keep this binary
+
+80
+00:06:08,826 --> 00:06:12,927
+tree as balanced as possible, we don't
+actually need pointers to figure out who
+
+81
+00:06:12,927 --> 00:06:17,353
+is whose parent and who is whose child. We
+can just read that off directly From the
+
+82
+00:06:17,353 --> 00:06:22,375
+positions in the array. So, let me be a
+little bit more specific. If you have a
+
+83
+00:06:22,375 --> 00:06:27,585
+node in the fifth position, I'm assuming I
+here is not one, right? So the, the root
+
+84
+00:06:27,585 --> 00:06:32,728
+doesn't have any, does not have a parent
+But any other, any other objects in
+
+85
+00:06:32,728 --> 00:06:38,272
+position I does have a parent And what the
+position that is, depends on, in a simple
+
+86
+00:06:38,272 --> 00:06:43,082
+way on whether I is even or odd. So if I
+is even, then the parent is just
+
+87
+00:06:43,082 --> 00:06:48,359
+[inaudible] the position of I/2, and if I
+is odd, then it's going to be I/2. Okay,
+
+88
+00:06:48,359 --> 00:06:53,435
+that's a fraction. So we take the floor
+that is we round down to the nearest
+
+89
+00:06:53,435 --> 00:07:00,411
+integer. If I is odd, So for example, the
+objects in positions two and three have as
+
+90
+00:07:00,411 --> 00:07:05,532
+their parent the object in position one,
+and those in four and five have the one in
+
+91
+00:07:05,532 --> 00:07:10,678
+position two as his parent. Six and seven
+have as their parents the node in, the
+
+92
+00:07:10,678 --> 00:07:16,015
+object in position three and so on And of
+course we can invert this function we can
+
+93
+00:07:16,015 --> 00:07:21,177
+equally easily determine who the children
+are of a given node so if we have an
+
+94
+00:07:21,177 --> 00:07:25,416
+object in position I. Then you notice that
+the children of I are gonna be at the
+
+95
+00:07:25,416 --> 00:07:29,519
+position 2i and 2i+1. Of course those may
+be empty so if you have a leaf of course
+
+96
+00:07:29,519 --> 00:07:33,425
+that doesn't have any children and then
+maybe one node that has only one child.
+
+97
+00:07:33,425 --> 00:07:37,627
+But in the common case of an internal node
+it's gonna be two children that are gonna
+
+98
+00:07:37,627 --> 00:07:41,532
+be in positions 2i and 2i+1. So rather
+than traversing pointers it's very easy to
+
+99
+00:07:41,532 --> 00:07:45,388
+just go from a node to its parent to
+either one of its children just by doing
+
+100
+00:07:45,388 --> 00:07:49,226
+these appropriate trivial calculations
+with respects to its position. So this
+
+101
+00:07:49,226 --> 00:07:53,122
+slide illustrates, some of the. Lower
+level reasons that heaps are quite a
+
+102
+00:07:53,122 --> 00:07:57,338
+popular data struct ure So the first one,
+just in terms of storage. We don't need
+
+103
+00:07:57,338 --> 00:08:01,714
+any overhead at all. We are just. We have
+these objects; we're storing them directly
+
+104
+00:08:01,714 --> 00:08:05,983
+In an array, with no extra space. Second
+of all, not only do we not have to have a
+
+105
+00:08:05,983 --> 00:08:10,412
+space for pointers But we don't even have
+to do any traversing. All we do are these
+
+106
+00:08:10,412 --> 00:08:14,734
+really simple. Divide by two or multiply
+two operations And using bit shifting
+
+107
+00:08:14,734 --> 00:08:19,066
+tricks. Those can also be implemented
+extremely quickly. So, the next two slides
+
+108
+00:08:19,066 --> 00:08:23,500
+let me indicate, at a high level, how you
+would implement the two exported
+
+109
+00:08:23,500 --> 00:08:28,297
+operations, namely insertion and extract
+[inaudible] in time algorithmic in the
+
+110
+00:08:28,297 --> 00:08:32,365
+size of the heap And rather than give you
+any pseudo code, I'm just going to show
+
+111
+00:08:32,365 --> 00:08:36,111
+you how these work by example. I think it
+will be obvious how they extended the
+
+112
+00:08:36,111 --> 00:08:40,142
+general case. I think just based on this
+discussion, you'll be able to code up your
+
+113
+00:08:40,142 --> 00:08:44,094
+own versions, of insert and extract
+[inaudible], if you so desire. So let's
+
+114
+00:08:44,094 --> 00:08:48,235
+redraw the 9-node heap that we had on the
+previous slide and again, I'm gonna keep
+
+115
+00:08:48,235 --> 00:08:52,427
+drawing it as a tree and I'm gonna keep
+talking about it as a tree but always keep
+
+116
+00:08:52,427 --> 00:08:56,619
+in mind the way it's really implemented is
+in terms of these array and when I talk
+
+117
+00:08:56,619 --> 00:09:00,558
+about the parent of a node, again, what
+that means is you go to the appropriate
+
+118
+00:09:00,558 --> 00:09:05,136
+position given the position of the node
+from where you started. So let's suppose
+
+119
+00:09:05,136 --> 00:09:10,521
+we have an existing heap, like this blue
+heap here And we're called upon to insert
+
+120
+00:09:10,521 --> 00:09:16,380
+a new object. Let's say with a key value
+K. Now remember heaps are always suppose
+
+121
+00:09:16,380 --> 00:09:21,474
+to be perfectly balanced binary trees. So
+if we want to maintain the property that
+
+122
+00:09:21,474 --> 00:09:26,630
+this tree is perfectly balanced is pretty
+only one place we can try to put the new
+
+123
+00:09:26,630 --> 00:09:31,786
+key K and that's as the next leaf. That is
+it's going to be the new right most leaf
+
+124
+00:09:31,786 --> 00:09:36,756
+on the bottom level. Or in terms of the
+array implementation we just stick it in
+
+125
+00:09:36,756 --> 00:09:42,098
+the first non empty slot in the array And
+if we keep track of the array size we're
+
+126
+00:09:42,098 --> 00:09:47,367
+getting constant time of course know where
+to put the new key. Now whether or not we
+
+127
+00:09:47,367 --> 00:09:52,648
+can get away with this depends on what the
+actual key value K is But, you know, for
+
+128
+00:09:52,648 --> 00:09:57,519
+starters we can say, what if we insert a
+key that's seven? Well, then we get to
+
+129
+00:09:57,519 --> 00:10:02,135
+say, whew, we're done. So, the reason
+we're done is cuz we have not violated the
+
+130
+00:10:02,135 --> 00:10:07,051
+heap property. It is still the case that
+every node has key no bigger than that of
+
+131
+00:10:07,051 --> 00:10:11,727
+its children. In particular, this third
+copy of a four, it picked up a new child,
+
+132
+00:10:11,727 --> 00:10:16,523
+but its key seven was bigger than its key
+four. So, you can imagine that maybe we
+
+133
+00:10:16,523 --> 00:10:21,367
+get lucky with another insert. Maybe the
+next insertion is a ten And again, we put
+
+134
+00:10:21,367 --> 00:10:25,990
+that in the next available spot in the
+last level And that becomes the second
+
+135
+00:10:25,990 --> 00:10:30,672
+child of the third copy of the four And
+again we have no violation of the heap
+
+136
+00:10:30,672 --> 00:10:35,472
+property. No worries still got a heap And
+in these lucky events insertion is even
+
+137
+00:10:35,472 --> 00:10:40,273
+taking constant time. Really all we're
+doing is putting elements at the end of an
+
+138
+00:10:40,273 --> 00:10:45,132
+array and not doing any rearranging. So
+where it gets interesting is when we do an
+
+139
+00:10:45,132 --> 00:10:49,755
+insertion that violates the heap property.
+So let's supposed we do yet another
+
+140
+00:10:49,755 --> 00:10:54,298
+insertion, and the left child of this
+twelve, it becomes a five. Now we got a
+
+141
+00:10:54,298 --> 00:10:59,844
+problem. So now we have a as perfectly as
+possible balanced binary tree, but the key
+
+142
+00:10:59,844 --> 00:11:05,189
+property is not satisfied. In particular,
+it's violated at the node twelve. It has
+
+143
+00:11:05,189 --> 00:11:10,386
+one child. The key of that child is less
+than its own key. That's no good. So is
+
+144
+00:11:10,386 --> 00:11:15,469
+there some way we can restore the heap
+property? Well, a natural idea is just to
+
+145
+00:11:15,469 --> 00:11:20,296
+swap the positions of the five and the
+twelve, and that's something that of
+
+146
+00:11:20,296 --> 00:11:25,573
+course can be done in constant time, cuz
+again from a node, we can go to the parent
+
+147
+00:11:25,573 --> 00:11:30,785
+or the child in constant time just with a
+suitable trivial computation. So we say
+
+148
+00:11:30,785 --> 00:11:35,869
+okay, for starters we put the five at the
+end, but that's no good. So we're gonna
+
+149
+00:11:35,869 --> 00:11:41,352
+swap the five with the twelve And now we
+see we're not out of the woods. No longer
+
+150
+00:11:41,352 --> 00:11:46,140
+is there a heap violation at the node
+twelve. That's been fixed. We've made it a
+
+151
+00:11:46,140 --> 00:11:50,495
+leaf But we've Pushed up the heap
+violations. So now instead it's the eight
+
+152
+00:11:50,495 --> 00:11:54,859
+that has a problem. The eight used to h
+ave two children, with keys twelve and
+
+153
+00:11:54,859 --> 00:11:59,625
+nine that was fine. Now the eight has two
+children with keys five and nine. The five
+
+154
+00:11:59,625 --> 00:12:04,449
+is less than the eight, that's a violation
+of the heap property But again, that's the
+
+155
+00:12:04,449 --> 00:12:08,640
+only violation of the heap property.
+There's no other node you could have
+
+156
+00:12:08,640 --> 00:12:13,062
+screwed up, because eight was the only
+person whose children we messed around
+
+157
+00:12:13,062 --> 00:12:17,484
+with. Alright So now we just it again.
+Let's try [inaudible] again, locally fix
+
+158
+00:12:17,484 --> 00:12:22,429
+the heap violation by swapping the five
+with the 8s And now we see we've restored
+
+159
+00:12:22,429 --> 00:12:27,326
+order. The only place where there could
+possibly be a violation of the heap
+
+160
+00:12:27,326 --> 00:12:32,354
+property is at the root. The root, when we
+did this swap, the only person whose
+
+161
+00:12:32,354 --> 00:12:37,513
+children we really messed with was the
+root four, and fortunately its new child
+
+162
+00:12:37,513 --> 00:12:41,946
+has key five, which is bigger than it. One
+subtle point that you might be thinking
+
+163
+00:12:41,946 --> 00:12:45,520
+that in addition to screwing up at the
+root node, that messing around with his
+
+164
+00:12:45,520 --> 00:12:49,049
+children, maybe we could have screwed up
+the twill by messing around with its
+
+165
+00:12:49,049 --> 00:12:53,598
+parent. Alright, its parent used to be
+five, and now its parent is eight. So is
+
+166
+00:12:53,598 --> 00:12:57,263
+there some possibility that his parent
+would all of a sudden have a key bigger
+
+167
+00:12:57,263 --> 00:13:00,649
+than it But if you think about it, this
+eight and this twelve, they were a
+
+168
+00:13:00,649 --> 00:13:04,673
+parent-child relationship in the original
+heap Right? So back in the blue heap, the
+
+169
+00:13:04,673 --> 00:13:08,991
+twelve was under the 8s. Now the twelve is
+under the eight yet again. Since we have
+
+170
+00:13:08,991 --> 00:13:13,257
+the heap property for that pair before, we
+certainly have it now. So in general, as
+
+171
+00:13:13,257 --> 00:13:17,576
+you push up this five up the tree, there's
+only going to be one possible edge that
+
+172
+00:13:17,576 --> 00:13:21,684
+could be out of order And that's between
+where the five currently resides and
+
+173
+00:13:21,684 --> 00:13:25,792
+whatever its parent is. So when the 5's
+parent was twelve that was a violation
+
+174
+00:13:25,792 --> 00:13:29,952
+When 5's parent was eight that was a
+violation But now that we've pushed it up
+
+175
+00:13:29,952 --> 00:13:34,376
+two levels and 5's parents is four, that's
+not a violation because four is less than
+
+176
+00:13:34,376 --> 00:13:39,594
+five. So in general, step two of insertion
+is, you do this swap, which it's called a
+
+177
+00:13:39,594 --> 00:13:45,070
+lot of different things. I'm gonna call it
+bubble up because that's how I learned it
+
+178
+00:13:45,266 --> 00:13:50,350
+more years ago than I care to admit But
+also this is called, sometimes sift up,
+
+179
+00:13:50,350 --> 00:13:55,363
+happily up, and so on. So now told you to
+just how to implement insertions by
+
+180
+00:13:55,363 --> 00:13:59,534
+repeated bubbling ups in a heap data
+structure And this is really how it works,
+
+181
+00:13:59,534 --> 00:14:03,968
+there is nothing I haven't told you but
+you know, I'm not going to really fill in
+
+182
+00:14:03,968 --> 00:14:07,927
+all the details but I'll encourage you to
+do that on your own time, if it's
+
+183
+00:14:07,927 --> 00:14:12,362
+something that interests you And the two
+main things that you should check is first
+
+184
+00:14:12,362 --> 00:14:16,585
+of all, is bubbling up process is gonna
+stop and when it stops, it stops with the
+
+185
+00:14:16,585 --> 00:14:21,574
+heap property restored. The second thing
+needs to be checked in this, I think is
+
+186
+00:14:21,574 --> 00:14:26,214
+easier to see is that we do have the
+desire one time log [inaudible] make in
+
+187
+00:14:26,214 --> 00:14:31,035
+the number of elements in the heap. The
+key observations areas that because this
+
+188
+00:14:31,035 --> 00:14:35,916
+is a perfectly balanced binary tree. We
+know exactly how many levels there are. So
+
+189
+00:14:35,916 --> 00:14:40,677
+this is basically log based two event
+levels where n is the number of items in
+
+190
+00:14:40,677 --> 00:14:44,971
+the heap And what is the running time of
+this insertion procedure while you only do
+
+191
+00:14:44,971 --> 00:14:49,073
+a constant amount of work at each level,
+just doing the swap and comparison and
+
+192
+00:14:49,073 --> 00:14:53,074
+then in the worst case, you'll have to
+swap at every single level and there is a
+
+193
+00:14:53,074 --> 00:14:56,976
+lot [inaudible] number of levels. So
+that's insertion. Let's now talk about how
+
+194
+00:14:56,976 --> 00:15:01,028
+do we implement the extract [inaudible]
+operation and again I'm gonna do this by
+
+195
+00:15:01,028 --> 00:15:04,979
+example and it's gonna be by repeating the
+[inaudible] of a bubble [inaudible]
+
+196
+00:15:04,979 --> 00:15:09,563
+procedure. So the Extract main operation
+is responsible for removing from the heap
+
+197
+00:15:09,563 --> 00:15:14,043
+an object with minimum key value and
+handing it back to the client on a silver
+
+198
+00:15:14,043 --> 00:15:18,353
+platter. So it pretty much have to whip
+out the root. Remember the minimum is
+
+199
+00:15:18,353 --> 00:15:22,606
+guaranteed to be at the root. So that's
+how we have to begin to extract the
+
+200
+00:15:22,606 --> 00:15:27,095
+subroutine is just we pluck out the root
+and hand it back to the client. So this
+
+201
+00:15:27,095 --> 00:15:31,348
+removal of course leaves a gaping hole in
+our tree structure and that's no good. One
+
+202
+00:15:31,348 --> 00:15:35,196
+of the [inaudible] responsible for
+maintaining is that we always have an as
+
+203
+00:15:35,196 --> 00:15:39,095
+perfectly balanced as possib le binary
+tree And if you are missing a root you
+
+204
+00:15:39,095 --> 00:15:43,223
+certainly don't have an almost perfect.
+Binary tree So, what are we going to do
+
+205
+00:15:43,223 --> 00:15:47,530
+about it? How do we fill this hole? Well,
+there's pretty much only one node that
+
+206
+00:15:47,530 --> 00:15:52,223
+could fill this hole without causing other
+problems with the tree structure, and that
+
+207
+00:15:52,223 --> 00:15:56,640
+is the very last node. So the rightmost
+leaf at the bottom level one that simple
+
+208
+00:15:56,640 --> 00:16:01,278
+fix is to swap that up and have that take
+the place of the original root. So in this
+
+209
+00:16:01,278 --> 00:16:05,395
+case, the thirteen is going to get a
+massive promotion And get teleported all
+
+210
+00:16:05,395 --> 00:16:09,343
+the way to be the new root of this tree.
+So now we've resolved our structural
+
+211
+00:16:09,343 --> 00:16:13,184
+challenges. We now again have a, as
+perfectly balanced as possible, binary
+
+212
+00:16:13,184 --> 00:16:17,184
+tree But of course now we've totally
+screwed up the heap property, right. So
+
+213
+00:16:17,184 --> 00:16:21,772
+the heap property says that at every node,
+including the root, the key value at that
+
+214
+00:16:21,772 --> 00:16:25,666
+node has to be less than both of the
+children, and now it's all messed up.
+
+215
+00:16:25,666 --> 00:16:29,880
+Right, so at the root, the key value's
+actually bigger than both of the children.
+
+216
+00:16:29,880 --> 00:16:33,336
+And matters that are little bit more
+tricky than they were with insertion,
+
+217
+00:16:33,336 --> 00:16:37,027
+right, when we inserted at the bottom
+because every note has a unique parent. If
+
+218
+00:16:37,027 --> 00:16:40,904
+you wanna push a note upward in the tree,
+there's sort of only one place you can go,
+
+219
+00:16:40,904 --> 00:16:44,594
+right, all you can do is swap with your
+parent, unless you're going to try to do
+
+220
+00:16:44,594 --> 00:16:48,425
+something really crazy But if you want to
+do something local, pretty much you only
+
+221
+00:16:48,425 --> 00:16:52,349
+have a unique parent you got to swap with.
+Now when you're trying to push notes down
+
+222
+00:16:52,349 --> 00:16:56,039
+to the rightful position in the tree,
+there is two different swaps you could do,
+
+223
+00:16:56,039 --> 00:16:59,636
+one for the left child, one for the right
+child and the decision that we make
+
+224
+00:16:59,636 --> 00:17:03,539
+matters To see that concretely, let's
+think about this example. There's this
+
+225
+00:17:03,539 --> 00:17:07,806
+thirteen at the root, which is totally not
+where it should be, and there's the two
+
+226
+00:17:07,806 --> 00:17:12,021
+children. The four and the eight, and we
+could try swapping it with either one. So
+
+227
+00:17:12,021 --> 00:17:16,324
+suppose we swap it in a misguided way with
+the right child, with the eight. So now
+
+228
+00:17:16,324 --> 00:17:20,635
+the eight becomes the root, and the
+thirteen gets pushed dow n a level. So on
+
+229
+00:17:20,635 --> 00:17:24,544
+the one hand; we made some progress
+because now at least we don't have a
+
+230
+00:17:24,544 --> 00:17:28,724
+violation between the thirteen and the
+eight. On the other hand, we still have
+
+231
+00:17:28,724 --> 00:17:33,122
+violations involving the thirteen. The
+thirteen is still violated with respect to
+
+232
+00:17:33,122 --> 00:17:37,410
+the twelve and nine And moreover, we've
+created a new problem between the eight
+
+233
+00:17:37,410 --> 00:17:41,862
+and the four, right? So now that the eight
+is the root, that's still bigger than its
+
+234
+00:17:41,862 --> 00:17:46,205
+left child, this four. So it's not even
+clear we made any progress at all when we
+
+235
+00:17:46,205 --> 00:17:50,506
+swapped the thirteen with the eight, okay?
+So that was a bad idea And if you think
+
+236
+00:17:50,506 --> 00:17:54,154
+about it would made it a bad idea, the
+stupid thing was to swap it with the
+
+237
+00:17:54,154 --> 00:17:58,240
+larger child. That doesn't make any sense.
+We really want to swap it with the smaller
+
+238
+00:17:58,240 --> 00:18:02,131
+child. Remember, every node should have a
+key bigger than both of its children. So
+
+239
+00:18:02,131 --> 00:18:06,022
+if we're going to swap up either the four
+or the eight, one of those is going to
+
+240
+00:18:06,022 --> 00:18:10,107
+become the parent of the other. The parent
+is supposed to be smaller, so evidently we
+
+241
+00:18:10,107 --> 00:18:13,804
+should take the smaller of the two
+children and swap the thirteen with that.
+
+242
+00:18:13,804 --> 00:18:18,131
+So we should swap the thirteen with the
+figure. Not with E And now we observe a
+
+243
+00:18:18,131 --> 00:18:22,381
+phenomenon very much analogous to what we
+saw in insert. When we were bubbling up
+
+244
+00:18:22,381 --> 00:18:26,368
+during insertion, it wasn't necessarily
+that we fixed violations of the heat
+
+245
+00:18:26,368 --> 00:18:30,598
+property right away But we would fix one
+And then introduce another one that was
+
+246
+00:18:30,598 --> 00:18:34,444
+higher up in the tree And we had
+confidence that eventually we could just,
+
+247
+00:18:34,444 --> 00:18:38,810
+push this violation up to the root of the
+tree And squash it, just like we're trying
+
+248
+00:18:38,810 --> 00:18:42,915
+to win a game Of Whack a Mole. Here, it's
+the opposite. It's just in the opposite
+
+249
+00:18:42,915 --> 00:18:47,073
+direction. So we swap the thirteen with
+the four. It's true we've created one new
+
+250
+00:18:47,073 --> 00:18:51,075
+violation of the heap property. That's
+again involving the thirteen with its
+
+251
+00:18:51,075 --> 00:18:55,024
+children nine and four. But we haven't
+created any new ones. We've pushed the
+
+252
+00:18:55,024 --> 00:18:59,078
+heap violation further down the tree And
+hopefully again, like in Whack a Mole.
+
+253
+00:18:59,078 --> 00:19:03,812
+We'll squash it At the bottom. So after
+swapping the thirteen and the four, now we
+
+254
+00:19:03,812 --> 00:19:07,839
+just gotta do t he same thing. We say,
+okay, we're not done. We still don't have
+
+255
+00:19:07,839 --> 00:19:11,760
+a heap. This thirteen is bigger than both
+of its children But now, with our
+
+256
+00:19:11,760 --> 00:19:15,735
+accumulated wisdom, we know we should
+definitely swap the thirteen with the
+
+257
+00:19:15,735 --> 00:19:19,921
+four. We're not gonna try swapping with
+the nine, that's for sure. So we move the
+
+258
+00:19:19,921 --> 00:19:24,014
+four up here And we, the thirteen takes
+the 4's old place. Boom! Now we're done.
+
+259
+00:19:24,014 --> 00:19:28,270
+So now we have no violations remaining.
+The thirteen in its new position has no
+
+260
+00:19:28,270 --> 00:19:32,686
+children so there's no way it can have any
+violations, and the four because it was
+
+261
+00:19:32,686 --> 00:19:36,995
+the smaller child that's gonna be bigger
+than the 9's so we haven't introduced a
+
+262
+00:19:36,995 --> 00:19:41,251
+huge violation there, and again we have
+these consecutive 4's but we know that's
+
+263
+00:19:41,251 --> 00:19:45,614
+not gonna be a problem because those were
+consecutive 4's in the original heap as
+
+264
+00:19:45,614 --> 00:19:49,834
+well. So you won't be surprised to hear
+that this procedure by which you push
+
+265
+00:19:49,834 --> 00:19:54,118
+something down, by swapping it with its
+smaller children, is called bubble down,
+
+266
+00:19:54,118 --> 00:19:58,292
+and extract men is nothing more than
+taking more than, taking this last leaf,
+
+267
+00:19:58,292 --> 00:20:03,015
+promoting it to the top of the tree, and
+bubbling down until the heap violation has
+
+268
+00:20:03,015 --> 00:20:07,832
+been fixed. So again on a conceptual level
+that's all of the ingredients necessary
+
+269
+00:20:07,832 --> 00:20:12,875
+for a complete from scratch implementation
+of extracting the minimum from a heap and
+
+270
+00:20:12,875 --> 00:20:17,421
+as before, I'll leave it for you to check
+the details. So first of all you should
+
+271
+00:20:17,421 --> 00:20:21,780
+check that in fact this bubble down has to
+at some point halt And when it halts you
+
+272
+00:20:21,780 --> 00:20:25,777
+do have a bona fide heap. The heap
+property is definitely restored And second
+
+273
+00:20:25,777 --> 00:20:29,098
+of all the running time is, is
+logarithmic. Here the running time
+
+274
+00:20:29,098 --> 00:20:33,458
+analysis is exactly the same as before so
+we already have observed that the heights
+
+275
+00:20:33,458 --> 00:20:37,817
+of a heap because it's perfectly balanced
+is essentially the log base two of the
+
+276
+00:20:37,817 --> 00:20:41,813
+number of elements in the heap and in
+bubbling down all you do is a constant
+
+277
+00:20:41,813 --> 00:20:45,950
+amount of work per level. All you have to
+do is a couple comparisons and swap. So,
+
+278
+00:20:45,950 --> 00:20:49,643
+that's a peek at what's under the hood in
+the heap data structure. A little bit
+
+279
+00:20:49,643 --> 00:20:53,242
+about the guts of its elementation. So
+after having seen this, I hope you feel
+
+280
+00:20:53,242 --> 00:20:56,982
+like a little bit more hard-core of a
+programmer, a little bit more hard-core of
+
+281
+00:20:56,982 --> 00:20:57,964
+a computer scientist.

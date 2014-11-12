@@ -1,0 +1,1224 @@
+1
+00:00:00,000 --> 00:00:04,024
+So in this video, we'll start talking
+about the heap data structure. So in this
+
+2
+00:00:04,024 --> 00:00:08,060
+video I want to be very clear on what are
+the operations supported by heap, what
+
+3
+00:00:08,060 --> 00:00:12,090
+running time guarantees you can expect
+from [inaudible] limitations and I want
+
+4
+00:00:12,090 --> 00:00:17,015
+you to get a feel for what kinds of
+problems they're useful for. In a separate
+
+5
+00:00:17,015 --> 00:00:21,035
+video, we'll take a peek under the hood
+and talk a little bit about how heaps
+
+6
+00:00:21,035 --> 00:00:25,059
+actually get implemented. But for now,
+let's just focus on how to use them as a
+
+7
+00:00:25,059 --> 00:00:30,082
+client. So the number one thing you should
+remember about a given data structure is
+
+8
+00:00:30,082 --> 00:00:35,043
+what operations it supports, and what is
+the running time you can expect from those
+
+9
+00:00:35,043 --> 00:00:39,075
+operations. So basically, a heap supports
+two operations. There's some bells and
+
+10
+00:00:39,075 --> 00:00:43,097
+whistles you can throw on. But the two
+things you gotta now is insertion and
+
+11
+00:00:43,097 --> 00:00:48,031
+extract min. And so the first thing I have
+to say about a heap is that it's a
+
+12
+00:00:48,031 --> 00:00:53,005
+container for a bunch of objects. And each
+of these objects should have a key, like a
+
+13
+00:00:53,005 --> 00:00:57,074
+number so that for any given objects you
+can compare their keys and say one key is
+
+14
+00:00:57,074 --> 00:01:02,049
+bigger than the other key. So for example,
+maybe the objects are employee records and
+
+15
+00:01:02,049 --> 00:01:07,023
+the key is social security numbers, maybe
+the objects are the edges of a network and
+
+16
+00:01:07,023 --> 00:01:11,087
+the keys are something like the length or
+the weight of an edge, maybe each object
+
+17
+00:01:11,087 --> 00:01:16,071
+indicates an event and the key is the time
+at which that event is meant to occur. Now
+
+18
+00:01:16,071 --> 00:01:22,013
+the number one thing you should remember
+about a given data structure is, first of
+
+19
+00:01:22,013 --> 00:01:27,008
+all what are the operations that it
+supports? And second of all, what is the
+
+20
+00:01:27,008 --> 00:01:31,091
+running time you can expect from those
+operations? For a heap, essentially
+
+21
+00:01:31,091 --> 00:01:37,019
+there's two basic operations. Insert and
+extract the object that has the minimum
+
+22
+00:01:37,019 --> 00:01:42,063
+key value. So in our discussion of heaps,
+we're going to allow ties that are pretty
+
+23
+00:01:42,063 --> 00:01:46,095
+much equal to easy with or without ties.
+So, when you extract men from a heap they
+
+24
+00:01:46,095 --> 00:01:51,042
+may have duplicate key values then there's
+no specification about which one you get.
+
+25
+00:01:51,042 --> 00:01:55,085
+You just get one of the objects that has a
+tie for the minimum key value. Now, of
+
+26
+00:01:55,085 --> 00:02:00,018
+course, there's no special reason that I
+chose to extract the minimum rather than
+
+27
+00:02:00,018 --> 00:02:04,045
+the maximum. You either you can have a
+second notion of a heap, which is a max
+
+28
+00:02:04,045 --> 00:02:08,078
+heap, which always returns the object of
+the maximum key value. Or if all you have
+
+29
+00:02:08,078 --> 00:02:13,022
+at your disposal is one of these extract
+min-type heaps, you can just, negate the
+
+30
+00:02:13,022 --> 00:02:17,044
+sign of all of the key values before you
+insert them, And then extract min will
+
+31
+00:02:17,044 --> 00:02:21,098
+actually extract, the max key value. So,
+just to be clear, I'm not proposing here a
+
+32
+00:02:21,098 --> 00:02:25,083
+data structure that supports
+simultaneously an extract-min operation
+
+33
+00:02:25,083 --> 00:02:30,006
+and an extract-max operation. If you
+wanted both of those operations, there'd
+
+34
+00:02:30,006 --> 00:02:34,063
+be data structures that would give it to
+you; probably a binary search tree is the
+
+35
+00:02:34,063 --> 00:02:38,093
+first thing you'd want to consider. So,
+I'm just saying, you can have a heap of
+
+36
+00:02:38,093 --> 00:02:43,022
+one off two flavors. Either the heap
+supports extract-min and not extract-max
+
+37
+00:02:43,022 --> 00:02:48,081
+or the heap will support extract-max and
+not extract-min. So I mentioned that you
+
+38
+00:02:48,081 --> 00:02:53,041
+should remember not just the supported
+operations of a data structure, but what
+
+39
+00:02:53,041 --> 00:02:57,049
+is the running time of those operations.
+Now, for the heap, the way it's
+
+40
+00:02:57,049 --> 00:03:02,021
+canonically implemented, the running time
+you should expect is logarithmic in the
+
+41
+00:03:02,021 --> 00:03:06,081
+number of items in the heap. And its log
+base two, with quite good constants. So
+
+42
+00:03:06,081 --> 00:03:11,041
+when you think about heaps, you should
+absolutely remember these two operations.
+
+43
+00:03:11,041 --> 00:03:15,090
+Optionally, there's a couple other things
+about heaps that are, might be worth
+
+44
+00:03:15,090 --> 00:03:21,018
+remembering Some additional operations
+that they can support. So the first is an
+
+45
+00:03:21,018 --> 00:03:25,069
+operation called heapify. Like a lot of
+the other stuff about heaps, it has a few
+
+46
+00:03:25,069 --> 00:03:30,014
+other names as well. But I'm going to call
+it heapify, one standard name. And the
+
+47
+00:03:30,014 --> 00:03:34,070
+point of heapify is to initialize a heap
+in linear time. Now, if you have N things
+
+48
+00:03:34,070 --> 00:03:39,009
+and you want to put them all in a heap,
+obviously you could just invoke insert
+
+49
+00:03:39,009 --> 00:03:43,031
+once per each object. If you have N
+objects, it seems like that would take N
+
+50
+00:03:43,031 --> 00:03:47,076
+times log N time, log N for each of the N
+inserts. But there's a slick way to do
+
+51
+00:03:47,076 --> 00:03:52,009
+them in a batch, which takes only linear
+time. So tha t's the heapify operation,
+
+52
+00:03:52,043 --> 00:03:56,043
+And another operation which can be
+implemented, although there are some
+
+53
+00:03:56,043 --> 00:04:00,088
+subtleties. Is you can delete not just the
+minimum, but you can delete an ar-,
+
+54
+00:04:00,088 --> 00:04:04,093
+arbitrary element from the middle of a
+heap, again, in logarithmic time. I
+
+55
+00:04:04,093 --> 00:04:09,060
+mention this here primarily cuz we're
+gonna use this operation when we use heaps
+
+56
+00:04:09,060 --> 00:04:14,027
+to speed up Dijkstra's Algorithm. So that's
+the gist of a heap. You maintain objects
+
+57
+00:04:14,027 --> 00:04:18,066
+that have keys you can insert in
+logarithmic time, and you can find the one
+
+58
+00:04:18,066 --> 00:04:23,039
+with the minimum key in logarithmic time.
+So let's turn to applications, I'll give
+
+59
+00:04:23,039 --> 00:04:28,013
+you several. But before I dive into any
+one application let me just say; what's
+
+60
+00:04:28,013 --> 00:04:32,046
+the general principle? What should
+[inaudible] you to think that maybe you
+
+61
+00:04:32,046 --> 00:04:37,025
+want to use a heap data structure in some
+task? So the most common reason to use a
+
+62
+00:04:37,025 --> 00:04:41,087
+heap is if you notice that your program is
+doing repeated minimum computations.
+
+63
+00:04:41,087 --> 00:04:46,063
+Especially via exhaustive search, Most of
+the applications that we go through will
+
+64
+00:04:46,063 --> 00:04:51,024
+have this flavor. It will be, there will
+be a naive program which does a bunch of
+
+65
+00:04:51,024 --> 00:04:55,090
+repeated minimums using just brute force
+search and we'll see that a very simple
+
+66
+00:04:55,090 --> 00:05:00,045
+application of a heap will allow us to
+speed it up tremendously. So let's start
+
+67
+00:05:00,045 --> 00:05:04,043
+by returning to the mother of all
+computational problems, sorting and
+
+68
+00:05:04,043 --> 00:05:09,074
+unsorted array. Now, a sorting algorithm
+which is sort of so obvious and suboptimal
+
+69
+00:05:09,074 --> 00:05:14,082
+that I didn't even really bother to talk
+about it at any other point in the course
+
+70
+00:05:14,082 --> 00:05:18,084
+is selection-sort. What do you do? In
+selection sort, you do a scan through the
+
+71
+00:05:18,084 --> 00:05:22,031
+unsorted array. You find the minimum
+element; you put that in the first
+
+72
+00:05:22,031 --> 00:05:26,031
+position. You scan through the other N-1
+elements; you find the minimum among them.
+
+73
+00:05:26,031 --> 00:05:30,027
+You put that in the second position. You
+scan through the remaining N-2 unsorted
+
+74
+00:05:30,027 --> 00:05:34,013
+elements. You find the minimum; you put
+that in the third position, and so on. So
+
+75
+00:05:34,013 --> 00:05:37,088
+evidently, this [inaudible] sorting
+algorithm does a linear number of linear
+
+76
+00:05:37,088 --> 00:05:41,055
+scans through this array. So this is
+definitely a quadratic time algorithm.
+
+77
+00:05:41,055 --> 00:05:45,065
+That's why I didn't bother to tell you
+about it earlier. So this certainly fits
+
+78
+00:05:45,065 --> 00:05:49,076
+the bill as being a bunch of repeated
+minimum computations. Or for each
+
+79
+00:05:49,076 --> 00:05:54,000
+computation, we're doing exhaustive
+search. So this, we should just, a light
+
+80
+00:05:54,000 --> 00:05:58,064
+bulb should go off, and say, aha! Can we
+do better using a heap data structure? And
+
+81
+00:05:58,064 --> 00:06:03,038
+we can, and the sorting algorithm that we
+get is called heap sort. And given a heap
+
+82
+00:06:03,038 --> 00:06:08,014
+data structure, this sorting algorithm is
+totally trivial. We just insert all of the
+
+83
+00:06:08,014 --> 00:06:12,056
+elements from the array into the heap.
+Then we extract the minimum one by one.
+
+84
+00:06:12,056 --> 00:06:16,081
+From the first extraction, we get the
+minimum of all N elements. The second
+
+85
+00:06:16,081 --> 00:06:21,041
+extraction gives us the minimum of the
+remaining N-1 elements, and so on. So when
+
+86
+00:06:21,041 --> 00:06:25,071
+we extract min one by one, we can just
+populate a sorted array from left to
+
+87
+00:06:25,071 --> 00:06:31,055
+right. Boom, we're done. What is the
+running time of heap sort? Well, we insert
+
+88
+00:06:31,055 --> 00:06:36,020
+each element once and we extract each
+element once so that's 2n heap operations
+
+89
+00:06:36,020 --> 00:06:40,091
+and what I promised you is that you can
+count on heaps being implemented so that
+
+90
+00:06:40,091 --> 00:06:45,062
+every operation takes logarithmic time. So
+we have a linear number of logarithmic
+
+91
+00:06:45,062 --> 00:06:49,097
+time operations for running time of n log
+n. So let's take a step back and
+
+92
+00:06:49,097 --> 00:06:54,019
+appreciate what just happened. We took the
+least imaginative sorting algorithm
+
+93
+00:06:54,019 --> 00:06:58,004
+possible. Selection sort, which is
+evidently quadratic Time. We recognize
+
+94
+00:06:58,004 --> 00:07:01,088
+the pattern of repeated minimum
+computations. We swapped in the Heap Data
+
+95
+00:07:01,088 --> 00:07:06,016
+structure and boom we get an NlogN sorting
+algorithm, which is just two trivial
+
+96
+00:07:06,016 --> 00:07:10,044
+lines. And remember, N log N is a pretty
+good running time for a sorting algorithm.
+
+97
+00:07:10,044 --> 00:07:14,056
+This is exactly the running time we had
+for merge sort; this was exactly the
+
+98
+00:07:14,056 --> 00:07:18,073
+average running time we got for randomized
+quick sort. Moreover, Heap Sort is a
+
+99
+00:07:18,073 --> 00:07:23,075
+comparison based sorting algorithm. We
+don't use any data about the key elements
+
+100
+00:07:23,075 --> 00:07:28,061
+we just used as a totally [inaudible] set.
+And, as some of you may have seen in an
+
+101
+00:07:28,061 --> 00:07:33,029
+optional video, there does not exist a
+comparison-based sorting algorithm with
+
+102
+00:07:33,029 --> 00:07:38,027
+running time better than N log N. So for
+the question, can we do better? The answer
+
+103
+00:07:38,027 --> 00:07:43,023
+is no, if we use a comparison based
+sorting algorithm like heap sort. So
+
+104
+00:07:43,023 --> 00:07:48,023
+that's pretty amazing, all we do is swap
+in a Heap and a running time drops from really quite unsatisfactory quadratic
+
+105
+00:07:48,023 --> 00:07:53,029
+to the optimal N log N. Moreover, HeapSort is a pretty practical sorting algorithm:
+
+106
+00:07:53,029 --> 00:07:58,005
+when you run this it's gonna go really fast. Is it as good as quick
+
+107
+00:07:58,005 --> 00:08:02,094
+sort? Hm, maybe not quite but its close
+it's getting into the same [inaudible]. So
+
+108
+00:08:02,094 --> 00:08:07,082
+let's talk of another application which frankly in some sense is almost trivial
+
+109
+00:08:08,000 --> 00:08:13,020
+but this is also a canonical way in which heaps are used. And in this application it
+
+110
+00:08:13,020 --> 00:08:18,022
+will be natural to call a heap by a
+synonymous name, a priority queue. So what
+
+111
+00:08:18,022 --> 00:08:22,085
+I want you to think about for this example
+is that you've been tasked with writing
+
+112
+00:08:22,085 --> 00:08:27,048
+software that performs a simulation of the
+physical world. So you might pretend, for
+
+113
+00:08:27,048 --> 00:08:32,008
+example, that you're helping write a video
+game which is for basketball. Now why
+
+114
+00:08:32,008 --> 00:08:36,020
+would a heap come up in a simulation
+context? Well, the objects in this
+
+115
+00:08:36,020 --> 00:08:40,086
+application are going to be events
+records. So an event might be for example
+
+116
+00:08:40,086 --> 00:08:45,063
+that the ball will reach the hoop at a
+particular time and that would be because
+
+117
+00:08:45,063 --> 00:08:50,070
+a player shot it a couple of seconds ago.
+When if for example the ball hits the rim,
+
+118
+00:08:50,070 --> 00:08:55,029
+that could trigger another event to be
+scheduled for the near future which is
+
+119
+00:08:55,029 --> 00:09:00,019
+that a couple players are going to vie for
+the rebound. That event in turn could
+
+120
+00:09:00,019 --> 00:09:04,052
+trigger the scheduling of another event,
+which is one of these players? commits, an
+
+121
+00:09:04,052 --> 00:09:08,075
+over the back foul on the other one and
+knocks them to the ground. That in turn
+
+122
+00:09:08,075 --> 00:09:13,024
+could trigger another event which is the
+player that got knocked on the ground gets
+
+123
+00:09:13,024 --> 00:09:17,062
+up and argues that a foul call, and so on.
+So when you have event records like this,
+
+124
+00:09:17,062 --> 00:09:21,079
+there's a very natural key, which is just
+the timestamp, the time at which this
+
+125
+00:09:21,079 --> 00:09:26,050
+event in the future is scheduled to occur.
+Now clearly a problem which has to get
+
+126
+00:09:26,050 --> 00:09:30,034
+solved over and over and over again in
+this kind of simulation is you have to
+
+127
+00:09:30,034 --> 00:09:34,014
+figure out what's the next event that's
+going to occur. You have to know what
+
+128
+00:09:34,014 --> 00:09:37,094
+other events to schedule; you have to
+update the screen and so on. So that's a
+
+129
+00:09:37,094 --> 00:09:42,013
+minimum computation. So a very silly thing
+you could do is just maintain an unordered
+
+130
+00:09:42,013 --> 00:09:45,092
+list of all of the events that have ever
+been scheduled and do a linear path
+
+131
+00:09:45,092 --> 00:09:49,092
+through them and compute the minimum. But
+you're gonna be computing minimums over
+
+132
+00:09:49,092 --> 00:09:53,081
+and over and over again, so again that
+light bulb should go on. And you could say
+
+133
+00:09:53,096 --> 00:09:57,089
+maybe a heap is just what I need for this
+problem. And indeed it is. So, if you're
+
+134
+00:09:57,089 --> 00:10:01,090
+storing these event records in a heap.
+With the key being the time stamps then
+
+135
+00:10:01,090 --> 00:10:06,053
+when you extract them in the hands for you
+on a silver platter using logarithmic time
+
+136
+00:10:06,053 --> 00:10:11,047
+exactly which algorithm is going to occur
+next. So let's move on to a less obvious
+
+137
+00:10:11,047 --> 00:10:16,096
+application of heaps, which is a problem
+I'm going to call median maintenance. The
+
+138
+00:10:16,096 --> 00:10:21,052
+way this is gonna work is that you and I
+are gonna play a little game. So on my
+
+139
+00:10:21,052 --> 00:10:26,031
+side, what I'm going to do is I'm going to
+pass you index cards, one at a time, where
+
+140
+00:10:26,031 --> 00:10:30,077
+there's a number written on each index
+card. Your responsibility is to tell me at
+
+141
+00:10:30,077 --> 00:10:34,077
+each time step the median of the number
+that I've passed you so far. So, after
+
+142
+00:10:34,077 --> 00:10:39,002
+I've given you the first eleven numbers
+you should tell me as quickly as possible
+
+143
+00:10:39,002 --> 00:10:43,017
+the sixth smallest after I've given you
+thirteen numbers you should tell me the
+
+144
+00:10:43,017 --> 00:10:47,027
+seventh smallest and so on. Moreover, we
+know how to compute the median in linear
+
+145
+00:10:47,027 --> 00:10:51,042
+time but the last thing I want is for you
+to be doing a linear time computation
+
+146
+00:10:51,042 --> 00:10:55,057
+every single time step. [inaudible] I only
+give you one new number? Do you really
+
+147
+00:10:55,057 --> 00:10:59,072
+have to do linear time just to re-compute
+the median? If I just gave you one new
+
+148
+00:10:59,072 --> 00:11:03,074
+number. So to make sure that you don't run
+a linear time selection algorithm every
+
+149
+00:11:03,074 --> 00:11:07,083
+time I give you one new number, I'm going
+to put a budget on the amount of time that
+
+150
+00:11:07,083 --> 00:11:11,039
+you can use on each time step to tell me
+the median. And it's going to be
+
+151
+00:11:11,039 --> 00:11:15,038
+logarithmic in the number of numbers I've
+passed you so far. So I encourage you to
+
+152
+00:11:15,038 --> 00:11:19,023
+pause the video at this point and spend
+some time thinking about how you would
+
+153
+00:11:19,023 --> 00:11:26,011
+solve this problem. Alright, so hopefully
+you've thoug ht about this problem a
+
+154
+00:11:26,011 --> 00:11:30,033
+little bit. So let me give you a hint.
+What if you use two heaps, do you see a
+
+155
+00:11:30,033 --> 00:11:36,078
+good way to solve this problem then.
+Alright, so let me show you a solution to
+
+156
+00:11:36,078 --> 00:11:42,071
+this problem that makes use of two heaps.
+The first heap we'll call H low. This
+
+157
+00:11:42,071 --> 00:11:47,027
+equal supports extract max. Remember we
+discussed that a heap, you could pick
+
+158
+00:11:47,027 --> 00:11:52,020
+whether it supports extract min or extract
+max. You don't get both, but you can get
+
+159
+00:11:52,020 --> 00:11:56,070
+either one, it doesn't matter. And then
+we'll have another heap H high which
+
+160
+00:11:56,070 --> 00:12:01,026
+supports extract min. And the key idea is
+to maintain the invariant that the
+
+161
+00:12:01,026 --> 00:12:06,013
+smallest half of the numbers that you've
+seen so far are all in the low heap. And
+
+162
+00:12:06,013 --> 00:12:10,069
+the largest half of the numbers that
+you've seen so far are all in the high
+
+163
+00:12:10,069 --> 00:12:14,083
+heap. So, for example, after you've seen
+the first ten elements, the smallest five
+
+164
+00:12:14,083 --> 00:12:18,093
+of them should reside in H low, and the
+biggest five of them should reside in H
+
+165
+00:12:18,093 --> 00:12:22,087
+high. After you've seen twenty elements
+then the bottom ten, the smallest ten,
+
+166
+00:12:22,087 --> 00:12:26,087
+should, should reside in H low, and the
+largest ten should reside in H high. If
+
+167
+00:12:26,087 --> 00:12:31,012
+you've seen an odd number, either one can
+be bigger, it doesn't matter. So if you
+
+168
+00:12:31,012 --> 00:12:35,033
+have 21 you have the smallest ten in the
+one and the biggest eleven in the other,
+
+169
+00:12:35,033 --> 00:12:39,069
+or vice-versa. It's not, not important.
+Now given this key idea of splitting the
+
+170
+00:12:39,069 --> 00:12:44,022
+elements in half, according to the two
+heaps. You need two realizations, which
+
+171
+00:12:44,022 --> 00:12:49,090
+I'll leave for you to check. So first of
+all, you have to prove you can actually
+
+172
+00:12:49,090 --> 00:12:54,089
+maintain this invariant with only O of log
+I work in step I. Second of all, you have
+
+173
+00:12:54,089 --> 00:12:59,068
+to realize this invariant allows you to
+solve the desired problem. So let me just
+
+174
+00:12:59,068 --> 00:13:04,014
+quickly talk through both of these points,
+and then you can think about it in more
+
+175
+00:13:04,014 --> 00:13:08,054
+detail, on your own time. So let's start
+with the first one. How can we maintain
+
+176
+00:13:08,054 --> 00:13:13,010
+this invariant, using only log I work and
+time step I, and this is a little tricky.
+
+177
+00:13:13,010 --> 00:13:17,062
+So let's suppose we've already processed
+the first twenty numbers, and the smallest
+
+178
+00:13:17,062 --> 00:13:22,002
+ten of them we've all worked hard to, to
+put only in H low. And the biggest ten of
+
+179
+00:13:22,002 --> 00:13:25,082
+th ''em we've worked hard to put only in H
+high. Now, here's a preliminary
+
+180
+00:13:25,082 --> 00:13:30,011
+observation. What's true, so what do we
+know about the maximum element in h low?
+
+181
+00:13:30,011 --> 00:13:34,080
+Well these are the tenth smallest overall
+and the maximum then is the biggest of the
+
+182
+00:13:34,080 --> 00:13:38,093
+tenth smallest. So that would be a tenth
+order statistic, so the tenth order
+
+183
+00:13:38,093 --> 00:13:43,023
+overall. Now what about in the, the hi
+key? What s its minimum value? Well those
+
+184
+00:13:43,023 --> 00:13:47,086
+are the biggest ten values. So the minimum
+of, of the ten biggest values would be the
+
+185
+00:13:47,086 --> 00:13:52,077
+eleventh order statistic. Okay, so the
+maximum of H low is the tenth order
+
+186
+00:13:52,077 --> 00:13:57,022
+statistic. The minimum of H high Is the
+[inaudible] statistic, they're right next
+
+187
+00:13:57,022 --> 00:14:02,017
+to each other; these are in fact the two
+medians Right now So When this new element
+
+188
+00:14:02,017 --> 00:14:05,087
+comes in, the twenty-first element comes
+in, we need to know which heap to insert
+
+189
+00:14:05,087 --> 00:14:09,065
+it into and well it just, if it's smaller
+than the tenth order statistic then it's
+
+190
+00:14:09,065 --> 00:14:13,053
+still gonna be in the bottom, then it's in
+the bottom half of the elements and needs
+
+191
+00:14:13,053 --> 00:14:17,018
+to go in the low heap. If it's bigger than
+the eleventh order statistic, if it's
+
+192
+00:14:17,018 --> 00:14:21,015
+bigger than the minimum value of the high
+heap then that's where it belongs, in the
+
+193
+00:14:21,015 --> 00:14:25,024
+high heap. If it's wedged in between the
+tenth and eleventh order of statistics, it
+
+194
+00:14:25,024 --> 00:14:29,017
+doesn't matter. We can put it in either
+one. This is the new median anyways. Now,
+
+195
+00:14:29,017 --> 00:14:33,030
+we're not done yet with this first point,
+because there's a problem with potential
+
+196
+00:14:33,030 --> 00:14:36,078
+imbalance. So imagine that the
+twenty-first element comes up and it's
+
+197
+00:14:36,078 --> 00:14:40,091
+less than the maximum of the low heap, so
+we stick it in the low heap and now that
+
+198
+00:14:40,091 --> 00:14:44,078
+has a population of eleven. And now
+imagine the twenty-second number comes up
+
+199
+00:14:44,078 --> 00:14:48,087
+and that again is less than the maximum
+element in the low heap, so again we have
+
+200
+00:14:48,087 --> 00:14:52,089
+to insert it in the low heap. Now we have
+twelve elements in the low heap, but we
+
+201
+00:14:52,089 --> 00:14:56,082
+only have ten in the right heap. So we
+don't have a 50. 50, 50 split of the
+
+202
+00:14:56,082 --> 00:15:02,020
+numbers but we could easily re-balance we
+just extract the max from the low heap and
+
+203
+00:15:02,020 --> 00:15:06,093
+we insert it into the high heap. And boom.
+Now they both have eleven, and the low
+
+204
+00:15:06,093 --> 00:15:11,013
+heap has the smallest el even, and the
+high heap has the biggest eleven. So
+
+205
+00:15:11,013 --> 00:15:15,096
+that's how you maintain, the invariant
+that you have this 50/50 split in terms of
+
+206
+00:15:15,096 --> 00:15:20,019
+the small and the high, and between the
+two heaps. You check Where it lies with
+
+207
+00:15:20,019 --> 00:15:23,081
+respect to the max of the low heap and the
+mid of the high heap. You put it in the
+
+208
+00:15:23,081 --> 00:15:27,016
+appropriate place. And whenever you need
+to do some re-balancing, you do some
+
+209
+00:15:27,016 --> 00:15:30,052
+re-balancing. Now, this uses only a
+constant number of heap operations when a
+
+210
+00:15:30,052 --> 00:15:34,064
+new number shows up. So that's log I work.
+So now given this discussion, it's easy to
+
+211
+00:15:34,064 --> 00:15:38,089
+see the second point given that this
+invariant is true at each time step. How
+
+212
+00:15:38,089 --> 00:15:43,041
+do we compute the median? Well, it's going
+to be either the maximum of the low heap
+
+213
+00:15:43,041 --> 00:15:47,083
+and/or the minimum of the high heap
+depending on whether I is even or odd. If
+
+214
+00:15:47,083 --> 00:15:52,035
+it's even, both of those are medians. If I
+is odd, then it's just whichever heap has
+
+215
+00:15:52,035 --> 00:15:56,067
+one more element than the other one. So
+the final application we'll talk about in
+
+216
+00:15:56,067 --> 00:16:00,037
+detail in a different video. A video
+concerned with the running time of
+
+217
+00:16:00,037 --> 00:16:04,058
+Dijkstra's shortest path algorithm. But I
+do wanna mention it here as well just to
+
+218
+00:16:04,058 --> 00:16:08,085
+reiterate the point of how careful use of
+data structures can speed up algorithms.
+
+219
+00:16:09,000 --> 00:16:13,027
+Especially when you're doing things like
+minimum computations in an inner loop. So
+
+220
+00:16:13,027 --> 00:16:17,010
+Dijkstra's shortest path algorithm,
+hopefully, many of you have watched that
+
+221
+00:16:17,010 --> 00:16:21,019
+video at this point. But basically, what
+it does is it has a central wild loop. And
+
+222
+00:16:21,019 --> 00:16:25,017
+so it operates once per vertex of the
+graph. And at least naively, it seems like
+
+223
+00:16:25,017 --> 00:16:29,041
+what each iteration of the wild loop does
+is an exhaustive search through the edges
+
+224
+00:16:29,041 --> 00:16:33,061
+of the graph, computing a minimum. So if
+we think about the work performed in this
+
+225
+00:16:33,061 --> 00:16:38,016
+naive implementation, it's exactly in the
+wheel-house of a heap, right. So what we
+
+226
+00:16:38,016 --> 00:16:42,055
+do in each of these loop iterations is do
+an exhaustive search computing a minimum.
+
+227
+00:16:42,055 --> 00:16:46,078
+You see repeated minimum computations, a
+light bulb should go off and you should
+
+228
+00:16:46,078 --> 00:16:50,096
+think maybe a heap can help. And a heap
+can help in Dijkstra's algorithm. The
+
+229
+00:16:50,096 --> 00:16:54,093
+details are a bit subtle, and they're
+discussed i n a separate video, but the
+
+230
+00:16:54,093 --> 00:16:59,037
+upshot is, we get a tremendous improvement
+in the running time. So we're calling that
+
+231
+00:16:59,037 --> 00:17:04,033
+M denotes the number of edges. And N
+denotes the number of vertices of a graph.
+
+232
+00:17:04,033 --> 00:17:09,074
+With a careful deployment of heaps in
+Dijkstra's algorithm, the run time drops
+
+233
+00:17:09,074 --> 00:17:15,057
+from this really rather large polynomial.
+The product of the number of vertices and
+
+234
+00:17:15,057 --> 00:17:22,098
+the number of edges. Down to something
+which is almost linear time. Anyway, o of
+
+235
+00:17:22,098 --> 00:17:27,053
+m log n. Where m is the number of edges
+and n is the number of vertices. So the
+
+236
+00:17:27,053 --> 00:17:32,021
+linear time here would be o of m. The
+liner of the number of edges we're picking
+
+237
+00:17:32,021 --> 00:17:37,005
+up an extra log factor but still this is
+basically as good as sorting. So this is a
+
+238
+00:17:37,005 --> 00:17:41,049
+fantastically fast shortest path
+algorithm. Certainly, way, way better that
+
+239
+00:17:41,049 --> 00:17:46,046
+what you get if you don't use heaps and do
+just repeated exhaustive searches for the
+
+240
+00:17:46,046 --> 00:17:50,054
+minimum. So that, that's wraps up our
+discussion of what I think you really want
+
+241
+00:17:50,054 --> 00:17:54,045
+to know about heaps. Namely, what are the
+key operations that it supports? What is
+
+242
+00:17:54,045 --> 00:17:58,060
+the running time you can expect from those
+operations? What are the types of problems
+
+243
+00:17:58,060 --> 00:18:02,056
+that the data structure will yield speed
+ups for? And a suite of applications. For
+
+244
+00:18:02,056 --> 00:18:06,061
+those of you that want to take it to the
+next level and see a little bit about the
+
+245
+00:18:06,061 --> 00:18:10,062
+guts of the implementation, there is a
+separate optional video that talks a bit
+
+246
+00:18:10,062 --> 00:18:11,016
+about that.

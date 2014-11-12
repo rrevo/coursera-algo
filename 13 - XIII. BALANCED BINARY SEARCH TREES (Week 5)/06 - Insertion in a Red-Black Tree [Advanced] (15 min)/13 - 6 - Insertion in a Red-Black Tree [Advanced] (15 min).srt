@@ -1,0 +1,1055 @@
+1
+00:00:00,012 --> 00:00:03,162
+For this final video on binary search 
+trees I want to talk a little bit about 
+
+2
+00:00:03,162 --> 00:00:06,912
+implementation, implementation details 
+for the red black tree data structure in 
+
+3
+00:00:06,912 --> 00:00:10,187
+particular the insertion operation. 
+As I've said in the past it really 
+
+4
+00:00:10,187 --> 00:00:13,812
+doesn't make sense for me to spell off 
+all of the gory details about how this is 
+
+5
+00:00:13,812 --> 00:00:16,137
+implemented. 
+If you want to understand them in full 
+
+6
+00:00:16,137 --> 00:00:18,712
+detail. 
+Detail You should check out various 
+
+7
+00:00:18,712 --> 00:00:23,550
+demonstrations readily available on the 
+web, or a comprehensive textbook, or an 
+
+8
+00:00:23,550 --> 00:00:28,536
+open source implementation. 
+Red black trees, you'll recall satisfy 
+
+9
+00:00:28,536 --> 00:00:32,994
+four invariants and the final two 
+invariants in particular ensure that the 
+
+10
+00:00:32,994 --> 00:00:37,762
+red black tree Always has logarithmic 
+height and therefore all of the supported 
+
+11
+00:00:37,762 --> 00:00:41,770
+operations run in logarithmic time. 
+The problem is we've got to pay the 
+
+12
+00:00:41,770 --> 00:00:44,078
+piper. 
+Whenever we have a operation that 
+
+13
+00:00:44,078 --> 00:00:48,123
+modifies the data structure, it 
+potentially destroys one or more of the 
+
+14
+00:00:48,123 --> 00:00:51,352
+invariants, and we have to then restore 
+that invariant. 
+
+15
+00:00:51,352 --> 00:00:55,222
+Without doing too much work. 
+Now amongst all of the supported 
+
+16
+00:00:55,222 --> 00:00:59,932
+operations there are only two that modify 
+the data structure insertion and 
+
+17
+00:00:59,932 --> 00:01:03,307
+deletions. 
+So from thirty thousand feet the approach 
+
+18
+00:01:03,307 --> 00:01:08,232
+to implementing insert and delete is to 
+just implement them as if it's a normal 
+
+19
+00:01:08,232 --> 00:01:13,227
+binary search tree as if we didn't have 
+to worry about these invariants and then 
+
+20
+00:01:13,227 --> 00:01:18,062
+if an invariant is broken we try to fix 
+it with minimal work and two tools that 
+
+21
+00:01:18,062 --> 00:01:22,482
+we have our disposal to try to restore an 
+invariant are first of all. 
+
+22
+00:01:22,482 --> 00:01:27,238
+Recoloring, flipping the color of nodes 
+from to black and second of all left and 
+
+23
+00:01:27,238 --> 00:01:30,235
+right rotations as covered in the 
+previous video. 
+
+24
+00:01:30,235 --> 00:01:34,545
+My plan is to discuss the insertion 
+operation not in full detail but I'll 
+
+25
+00:01:34,545 --> 00:01:38,905
+tell you about all of the key ideas. 
+Now deletion you got to remember that 
+
+26
+00:01:38,905 --> 00:01:43,463
+even in a regular binary search tree 
+deletion is not that trivial and in a red 
+
+27
+00:01:43,463 --> 00:01:47,732
+black tree its down right painful. 
+So, that I'm not going to discuss onto 
+
+28
+00:01:47,732 --> 00:01:52,547
+for you to text books or online resources 
+to learn more about deletion. 
+
+29
+00:01:52,547 --> 00:01:56,812
+So here's how insert is going to work. 
+So suppose we have some new node with the 
+
+30
+00:01:56,812 --> 00:01:59,152
+key x. 
+And we're inserting it into a red black 
+
+31
+00:01:59,152 --> 00:02:01,137
+tree. 
+So we first just forget about the 
+
+32
+00:02:01,137 --> 00:02:04,537
+invariance, and we insert it as usual. 
+And remember, that's easy. 
+
+33
+00:02:04,537 --> 00:02:09,302
+all we do is follow left and right shot 
+pointers, until we fall off the end of 
+
+34
+00:02:09,302 --> 00:02:14,922
+the tree until we get to a null pointer, 
+and we install this new node with key x, 
+
+35
+00:02:14,922 --> 00:02:19,722
+where we fell off the tree. 
+That makes x a leaf in this binary search 
+
+36
+00:02:19,722 --> 00:02:22,957
+tree. 
+Let's let y denote x's parent, after it 
+
+37
+00:02:22,957 --> 00:02:26,651
+gets inserted. 
+Now in a red-black tree every node has a 
+
+38
+00:02:26,651 --> 00:02:28,795
+color. 
+It's either red or black. 
+
+39
+00:02:28,795 --> 00:02:33,108
+So we have a decision to make. 
+We just added this new node with key x 
+
+40
+00:02:33,108 --> 00:02:35,803
+and we gotta make Get either red or 
+black. 
+
+41
+00:02:36,873 --> 00:02:41,931
+And we're sort of between a rock and a 
+hard place, whichever color we make it we 
+
+42
+00:02:41,931 --> 00:02:45,565
+have the potential of destroying one of 
+the invariants. 
+
+43
+00:02:45,565 --> 00:02:50,667
+Specifically, suppose we color it red. 
+Well remember what the third invariant 
+
+44
+00:02:50,667 --> 00:02:53,942
+says, it says you cannot have two reds in 
+a row. 
+
+45
+00:02:53,942 --> 00:02:59,080
+So if Y, X's new parent is already red, 
+then when we color X red, we have 2 reds 
+
+46
+00:02:59,080 --> 00:03:02,167
+in a row. 
+And we've broken invariant number 3. 
+
+47
+00:03:02,167 --> 00:03:07,329
+On the other hand, if we color this new 
+node, X, black, we've introduced a new 
+
+48
+00:03:07,329 --> 00:03:10,712
+black node to certain root null paths in 
+this tree. 
+
+49
+00:03:10,712 --> 00:03:16,218
+And remember, the 4th invariant insists, 
+that all the root null paths have exactly 
+
+50
+00:03:16,218 --> 00:03:20,428
+the same number of black. 
+Notes, so by adding a black note to some 
+
+51
+00:03:20,428 --> 00:03:25,137
+but not all of the paths, we're in 
+general, going to destroy that invariant, 
+
+52
+00:03:25,137 --> 00:03:28,343
+if we color x black. 
+So what we're going to do is, we're going 
+
+53
+00:03:28,343 --> 00:03:33,485
+to choose the lesser of two evils, and in 
+this context the lesser of the two evils 
+
+54
+00:03:33,485 --> 00:03:36,666
+is to color x red. 
+Again, we might destroy the third 
+
+55
+00:03:36,666 --> 00:03:40,232
+invariant, we'll just deal with the 
+consequences later. 
+
+56
+00:03:40,232 --> 00:03:45,492
+So why you ask, is coloring x red and 
+destroying the third invariant, the 
+
+57
+00:03:45,492 --> 00:03:51,456
+lesser of two evils? Well, intuitively, 
+it's because this invariant violation is 
+
+58
+00:03:51,456 --> 00:03:54,865
+local. 
+The flaw in our not quite red black tree 
+
+59
+00:03:54,865 --> 00:04:00,481
+is small and manageable, it's just a 
+single double red and we know exactly The 
+
+60
+00:04:00,481 --> 00:04:04,256
+word is it's x and y. 
+So.this sort of more hope in squashing it 
+
+61
+00:04:04,256 --> 00:04:07,777
+with minimal work. 
+I can't trust if we coated x black then 
+
+62
+00:04:07,777 --> 00:04:12,751
+we violated this much more global type of 
+property involving all of the route in 
+
+63
+00:04:12,751 --> 00:04:16,451
+all paths and that's a much more 
+intimidating violation to try to fix. 
+
+64
+00:04:16,451 --> 00:04:20,690
+Then just as local one of having a double 
+red between x and it's parent. 
+
+65
+00:04:21,888 --> 00:04:26,467
+Indeed some of the time we'll just get 
+lucky and it will just so happen that x 
+
+66
+00:04:26,467 --> 00:04:29,556
+is parent y is colored black and then 
+we're golden. 
+
+67
+00:04:29,556 --> 00:04:34,269
+This new node x that's colored red, it 
+doesn't create a double red, there's no 
+
+68
+00:04:34,269 --> 00:04:39,024
+other violations of the other invariants 
+and so boom, we've got a new red black 
+
+69
+00:04:39,024 --> 00:04:42,932
+tree and we can stop. 
+So, the tricky case then is when x's 
+
+70
+00:04:42,932 --> 00:04:48,072
+parent y is also red in this case we do 
+not have a red, black tree we have a 
+
+71
+00:04:48,072 --> 00:04:52,077
+double red and we have to do some more 
+work to restore the third invariant. 
+
+72
+00:04:53,172 --> 00:04:57,043
+So suppose y is red. 
+What do we then know? Well remember, 
+
+73
+00:04:57,043 --> 00:05:02,053
+before we inserted x, we had a red black 
+tree, all 4 of the invariants were 
+
+74
+00:05:02,053 --> 00:05:05,545
+satisfied. 
+So therefore Y, by virtue of being red, 
+
+75
+00:05:05,545 --> 00:05:09,212
+it could not have been the root. 
+It has to have a parent. 
+
+76
+00:05:09,212 --> 00:05:13,737
+Let's call that parent W. 
+Moreover by the third invariant there was 
+
+77
+00:05:13,737 --> 00:05:18,687
+no double red in this tree before we 
+inserted X so by virtue of Y being red, 
+
+78
+00:05:18,687 --> 00:05:24,334
+it's parent W must have been black. 
+So, now the insertion operation branches 
+
+79
+00:05:24,334 --> 00:05:30,303
+into 2 different cases and it depends on 
+the color, on the status of w's other 
+
+80
+00:05:30,303 --> 00:05:33,545
+child. 
+So in the first case we're going to 
+
+81
+00:05:33,545 --> 00:05:39,539
+assume that w's other child that is not y 
+but the other child of w exists in its 
+
+82
+00:05:39,539 --> 00:05:43,033
+colored red. 
+In the second case, we're going to treat 
+
+83
+00:05:43,033 --> 00:05:45,743
+when w either doesn't have a second 
+child. 
+
+84
+00:05:45,743 --> 00:05:49,764
+Y is its only child or when its other 
+child is colored black. 
+
+85
+00:05:49,764 --> 00:05:54,591
+So let's recap where things stand. 
+So we just inserted this new node, and it 
+
+86
+00:05:54,591 --> 00:05:58,111
+has the key x. 
+And our algorithm colored this node red. 
+
+87
+00:05:58,111 --> 00:06:01,848
+So x is definitely red. 
+Now, if it's parent y was black, we 
+
+88
+00:06:01,848 --> 00:06:05,389
+already halted. 
+So we've already dealt with that case. 
+
+89
+00:06:05,389 --> 00:06:10,349
+So now, we're assuming that y. 
+X's parent is also red, that's what's 
+
+90
+00:06:10,349 --> 00:06:14,216
+interesting. 
+Now by virtue of y being red, we know 
+
+91
+00:06:14,216 --> 00:06:19,488
+that y's parent, that is x's grandparent 
+w, has to be colored black. 
+
+92
+00:06:19,488 --> 00:06:25,531
+And, for case two of insertion, we are 
+assuming that w has a second child, call 
+
+93
+00:06:25,531 --> 00:06:30,341
+it z, and that z is colored red. 
+So, how are we going to quash this double 
+
+94
+00:06:30,341 --> 00:06:33,526
+red problem? We again, we have 2 tools at 
+our disposal. 
+
+95
+00:06:33,526 --> 00:06:36,749
+One is to re-color nodes. 
+The second is to do rotations. 
+
+96
+00:06:36,749 --> 00:06:40,589
+So for case 1, we're only going to 
+actually have to do re-coloring. 
+
+97
+00:06:40,589 --> 00:06:44,160
+We're not even going to have to bust out 
+per rotations. 
+
+98
+00:06:45,412 --> 00:06:51,387
+In particular what we're going to do is, 
+we're going to recolor z and y black and 
+
+99
+00:06:51,387 --> 00:06:56,377
+we're going to recolor w red. 
+So, in some sense we take the reds that 
+
+100
+00:06:56,377 --> 00:06:59,722
+are at z and y and we consolidate them at 
+w. 
+
+101
+00:06:59,722 --> 00:07:04,102
+The important property of this recovering 
+is that it does not break the fourth 
+
+102
+00:07:04,102 --> 00:07:08,606
+invariant, remember the forth invariant 
+says that no matter which path you take 
+
+103
+00:07:08,606 --> 00:07:12,875
+from the root to a no pointer you see 
+exactly the same number of black nodes. 
+
+104
+00:07:12,875 --> 00:07:17,305
+So why is invariance still true after 
+this recoloring, well for any path from a 
+
+105
+00:07:17,305 --> 00:07:21,400
+route to a no pointer which doesn't go 
+through the vertex w its relevant. 
+
+106
+00:07:21,400 --> 00:07:25,818
+None of these nodes are on that path, so 
+the number of black dots is exactly the 
+
+107
+00:07:25,818 --> 00:07:29,000
+same. 
+So think about a path which does go 
+
+108
+00:07:29,000 --> 00:07:32,509
+through w. 
+Well if it goes through w to get to a no 
+
+109
+00:07:32,509 --> 00:07:35,887
+pointer has to go through exactly one of 
+z or y. 
+
+110
+00:07:35,887 --> 00:07:41,521
+So before we did the recoloring this path 
+picked up a black node via w and it did 
+
+111
+00:07:41,521 --> 00:07:45,566
+not pick up a black node via z or y both 
+of those were red. 
+
+112
+00:07:45,566 --> 00:07:50,795
+Now any such path does not pick up a 
+black node w that's now red but it does 
+
+113
+00:07:50,795 --> 00:07:54,222
+pick up exactly one black node either z 
+or y. 
+
+114
+00:07:54,222 --> 00:07:59,216
+So, for every single path in the tree, 
+the number of black nodes it contains is 
+
+115
+00:07:59,216 --> 00:08:04,156
+exactly the same before or after this 
+recoloring, therefore since the fourth 
+
+116
+00:08:04,156 --> 00:08:08,402
+invariant held previously, it also holds 
+after this recoloring. 
+
+117
+00:08:08,402 --> 00:08:12,869
+The other great thing is that it seems 
+like we've made progress on restoring the 
+
+118
+00:08:12,869 --> 00:08:15,847
+third invariant. 
+The property that we don't want any 
+
+119
+00:08:15,847 --> 00:08:20,401
+double-reds at all in the entire tree. 
+Remember, before we did this recoloring, 
+
+120
+00:08:20,401 --> 00:08:23,392
+we only had a single double-red. 
+It involved x and y. 
+
+121
+00:08:23,392 --> 00:08:28,100
+We just recoded y from red to black. 
+So certainly we no longer have a double 
+
+122
+00:08:28,100 --> 00:08:31,953
+reded walling x and y and that was the 
+only one in the tree. 
+
+123
+00:08:31,953 --> 00:08:37,337
+So are we done, do we now have a bonafied 
+red black tree? Well the answer depends, 
+
+124
+00:08:37,337 --> 00:08:42,498
+and it depends on the core of W's parent. 
+So remember W just got recolored from 
+
+125
+00:08:42,498 --> 00:08:46,128
+black to red. 
+So there's now a possibility that W being 
+
+126
+00:08:46,128 --> 00:08:50,602
+this new red node participates in some 
+new double red violation . 
+
+127
+00:08:50,602 --> 00:08:55,429
+Now w's children, z and y, are black. 
+So those certainly can't be double reds. 
+
+128
+00:08:55,429 --> 00:09:00,077
+But w also has some parent, and if w's 
+parent is red, then we get a double red 
+
+129
+00:09:00,077 --> 00:09:04,285
+involving w and its parent. 
+Of course, if w's parent was black, then 
+
+130
+00:09:04,285 --> 00:09:07,738
+we're good to go. 
+We don't get a double red by recoloring 
+
+131
+00:09:07,738 --> 00:09:10,987
+double. 
+W red, so we have no w reds in the tree, 
+
+132
+00:09:10,987 --> 00:09:15,214
+and we can just stop. 
+Summarizing, this recoloring preserves 
+
+133
+00:09:15,214 --> 00:09:20,301
+the fourth invariant, and either it 
+restores the third invariant, or if it 
+
+134
+00:09:20,301 --> 00:09:25,439
+fails to restore the third invariant, at 
+least it propagates the double red 
+
+135
+00:09:25,439 --> 00:09:29,300
+violation upward into the tree, closer to 
+To the root.. 
+
+136
+00:09:29,300 --> 00:09:34,360
+We're perfectly happy with the progress 
+represented by propagating the double red 
+
+137
+00:09:34,360 --> 00:09:37,287
+upward. 
+Why? Well, before we inserted this new 
+
+138
+00:09:37,287 --> 00:09:41,402
+object x, we had a red black tree. 
+And we know red black trees have 
+
+139
+00:09:41,402 --> 00:09:44,805
+logarithmic height. 
+So the number of times that you can 
+
+140
+00:09:44,805 --> 00:09:49,464
+propagate this double red upward is 
+bounded above by the height of the tree, 
+
+141
+00:09:49,464 --> 00:09:53,622
+which is only logarithmic. 
+So we can only visit case 1 a logarithmic 
+
+142
+00:09:53,622 --> 00:09:58,197
+number of times before this W is 
+propagated all the way to the top of the 
+
+143
+00:09:58,197 --> 00:10:02,302
+tree, all the way of the root. 
+So we are not quite done, the one final 
+
+144
+00:10:02,302 --> 00:10:06,644
+detail is what happens when this 
+recoloring procedure actually recolors 
+
+145
+00:10:06,644 --> 00:10:09,518
+the root. 
+So, you could for example look at this 
+
+146
+00:10:09,518 --> 00:10:14,126
+green picture on the right side and ask, 
+well what if w is actually the root of 
+
+147
+00:10:14,126 --> 00:10:18,750
+this red black tree and we just recolored 
+it red? Now notice in that situation 
+
+148
+00:10:18,750 --> 00:10:23,226
+where the, we are dealing with the root 
+of the tree we're not going to have a 
+
+149
+00:10:23,226 --> 00:10:26,882
+double red problem. 
+So invariant three is indeed restored 
+
+150
+00:10:26,882 --> 00:10:31,427
+when we get to the top of the tree, but 
+we have a violation of invariant number 
+
+151
+00:10:31,427 --> 00:10:34,497
+two which states that the root must 
+always be black. 
+
+152
+00:10:34,497 --> 00:10:38,592
+Well if we find ourselves in this 
+situation, there's actually a super 
+
+153
+00:10:38,592 --> 00:10:42,127
+simple fix which is this red root, we 
+just recolor it black. 
+
+154
+00:10:42,127 --> 00:10:45,652
+Now clearly that's not going to introduce 
+any new double reds. 
+
+155
+00:10:45,652 --> 00:10:48,697
+The worry instead is that it breaks 
+invariant four. 
+
+156
+00:10:48,697 --> 00:10:53,347
+But, the special property of the root for 
+text is that it A lies exactly once on 
+
+157
+00:10:53,347 --> 00:10:56,897
+every route on all path. 
+So if we flip the color of the roof from 
+
+158
+00:10:56,897 --> 00:11:01,624
+red to black it increases the number of 
+black nodes on every single routinal path 
+
+159
+00:11:01,624 --> 00:11:04,573
+by exactly 1. 
+So if they all have the same number of 
+
+160
+00:11:04,573 --> 00:11:09,133
+black nodes before, they'll have the same 
+number of black nodes now, after the 
+
+161
+00:11:09,133 --> 00:11:12,060
+recoloring. 
+That completes case 1 of how insertion 
+
+162
+00:11:12,060 --> 00:11:14,721
+works. 
+Let's move on to case 2. 
+
+163
+00:11:14,721 --> 00:11:21,098
+So case 2 gets triggered when we have a 
+double red and the deeper node of this 
+
+164
+00:11:21,098 --> 00:11:27,767
+double red pair, call it X, its uncle, 
+that is if it has grandparent W, parent Y 
+
+165
+00:11:27,767 --> 00:11:33,337
+and W's other child, other than Y either. 
+Doesn't exist or if it exists it's 
+
+166
+00:11:33,337 --> 00:11:35,927
+labeled it's colored black. 
+That is case 2. 
+
+167
+00:11:35,927 --> 00:11:40,137
+I want to emphasize you might find 
+yourself in case 2 right away when you 
+
+168
+00:11:40,137 --> 00:11:44,932
+insert this new object x it might be 
+there immediately it has some uncle which 
+
+169
+00:11:44,932 --> 00:11:49,192
+is covered x or it might be that if 
+already visited case 1 a bunch of times 
+
+170
+00:11:49,192 --> 00:11:53,036
+propagating this double red up the tree 
+and now at some Point. 
+
+171
+00:11:53,036 --> 00:11:58,671
+The deeper red node X has a black uncle. 
+Either way, as soon as that happens, you 
+
+172
+00:11:58,671 --> 00:12:02,601
+trigger case 2. 
+Well it turns out, case 2 is great in the 
+
+173
+00:12:02,601 --> 00:12:08,136
+sense that, with nearly constant work, 
+you can restore in variant number 3 and 
+
+174
+00:12:08,136 --> 00:12:13,147
+get rid of the double red without 
+breaking any of the other invariants. 
+
+175
+00:12:13,147 --> 00:12:18,222
+You do have to put to use both of the 
+tools we have available in general. 
+
+176
+00:12:18,222 --> 00:12:23,085
+Both recolorings and rotations, left and 
+right rotations, as we discussed in the 
+
+177
+00:12:23,085 --> 00:12:26,446
+previous video. 
+But, if you do just a constant number of 
+
+178
+00:12:26,446 --> 00:12:30,756
+each, recolorings and rotations, you can 
+get all four of the invariants 
+
+179
+00:12:30,756 --> 00:12:34,142
+simultaneously. 
+There are unfortunately a couple of sub 
+
+180
+00:12:34,142 --> 00:12:38,247
+cases depending on exactly the 
+relationships between x, y, z, and w. 
+
+181
+00:12:38,247 --> 00:12:42,482
+For that reason I'm not going to spell 
+out all the details here, check out a 
+
+182
+00:12:42,482 --> 00:12:46,912
+textbook if you're interested, or, even 
+better, work it out for yourself. 
+
+183
+00:12:46,912 --> 00:12:51,707
+Now that I've told you that two to three 
+rotations plus some recolorings is always 
+
+184
+00:12:51,707 --> 00:12:56,255
+sufficient in case two to restore all of 
+the In variance, follow your nose and 
+
+185
+00:12:56,255 --> 00:13:00,204
+figure out how it can be done. 
+So let's summarize everything that we've 
+
+186
+00:13:00,204 --> 00:13:03,077
+said about how insertion works in a red 
+black tree. 
+
+187
+00:13:03,077 --> 00:13:06,491
+So, you have your new node with key x, 
+you insert it as usual. 
+
+188
+00:13:06,491 --> 00:13:09,378
+So you make it a leaf, you tentatively 
+color it red. 
+
+189
+00:13:09,378 --> 00:13:13,488
+If it's parent is black, your done. 
+You have a red black tree, and you can 
+
+190
+00:13:13,488 --> 00:13:16,117
+stop. 
+In general, the interesting case is this 
+
+191
+00:13:16,117 --> 00:13:18,615
+new. 
+And you know that x's parent is red. 
+
+192
+00:13:18,615 --> 00:13:22,052
+That gives you a double-red of violation 
+of invariant three. 
+
+193
+00:13:22,052 --> 00:13:26,519
+Now, what happens is you visit this case 
+1, propagating this double red upward 
+
+194
+00:13:26,519 --> 00:13:29,261
+imagery. 
+This upward propagation process can 
+
+195
+00:13:29,261 --> 00:13:33,282
+terminate in one of three ways. 
+First of all, you might get lucky and at 
+
+196
+00:13:33,282 --> 00:13:37,513
+some point the double-red doesn't 
+propagate, you do the recoloring in case 
+
+197
+00:13:37,513 --> 00:13:39,627
+1. 
+And it just so happens you don't get a 
+
+198
+00:13:39,627 --> 00:13:42,312
+new double red. 
+At that point you have a red black tree 
+
+199
+00:13:42,312 --> 00:13:45,075
+and you can stop. 
+The second thing that can happen is the 
+
+200
+00:13:45,075 --> 00:13:48,945
+double-red propagation can make it all 
+the way to the root of the tree, then you 
+
+201
+00:13:48,945 --> 00:13:52,553
+can just recolor the root black and you 
+can stop with all of the invariants 
+
+202
+00:13:52,553 --> 00:13:55,085
+satisfied. 
+Alternatively at some point when you're 
+
+203
+00:13:55,085 --> 00:13:59,512
+doing this upward propagation you might 
+find yourself in case 2 as was discussed 
+
+204
+00:13:59,512 --> 00:14:02,951
+on this slide. 
+Where the lower red node on the double 
+
+205
+00:14:02,951 --> 00:14:06,098
+red pair x has a black or non-existent 
+uncle, Z. 
+
+206
+00:14:06,098 --> 00:14:11,268
+In that case, with constant time, you can 
+restore all of the Fourier theories. 
+
+207
+00:14:11,268 --> 00:14:16,906
+So the work done overall is dominated by 
+the number of double red propagations you 
+
+208
+00:14:16,906 --> 00:14:21,687
+might have to do, that's bounded by the 
+height of this tree and that's bounded by 
+
+209
+00:14:21,687 --> 00:14:24,636
+O of log n. 
+So in all of the cases you restore all 4 
+
+210
+00:14:24,636 --> 00:14:28,996
+invariants, you do only a logarithmic 
+amount of work, so that gives you a 
+
+211
+00:14:28,996 --> 00:14:32,930
+logarithmic insertion operation for red 
+black trees, as promised. 
+

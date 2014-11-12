@@ -1,0 +1,1739 @@
+1
+00:00:00,000 --> 00:00:04,003
+In this video we'll discuss how we
+actually implement Dijkstra's shortest
+
+2
+00:00:04,003 --> 00:00:08,018
+path algorithm. And in particular, using
+the heap data structure, we'll give a
+
+3
+00:00:08,018 --> 00:00:12,026
+blazingly fast implementation, almost
+linear time. Let me just briefly remind
+
+4
+00:00:12,026 --> 00:00:16,049
+you of the problem we're solving. It's the
+single source, shortest path problem. So
+
+5
+00:00:16,049 --> 00:00:20,046
+we're given the directed graph and a
+source vertex, S. We're assuming that
+
+6
+00:00:20,046 --> 00:00:24,038
+there's a path from S to every other
+vertex, V. If that's not true, we can
+
+7
+00:00:24,038 --> 00:00:28,055
+detect it with an easy pre-processing
+step, so our task then is just to find the
+
+8
+00:00:28,055 --> 00:00:32,052
+shortest path amongst all of them from the
+source vertex, S to each possible
+
+9
+00:00:32,052 --> 00:00:36,060
+destination, V. Moreover, every edge of
+the graph has a non-negative edge length
+
+10
+00:00:36,060 --> 00:00:41,003
+which we're denoting, else of V. So recall
+that Dijkstra's algorithm is driven by a
+
+11
+00:00:41,003 --> 00:00:45,028
+single Y loop. So we're going to add one
+additional vertex to an evolving set
+
+12
+00:00:45,028 --> 00:00:49,081
+capital X as the algorithm proceeds. So X
+is the vertices that have been processed
+
+13
+00:00:49,081 --> 00:00:54,050
+so far. We maintain the invariant that for
+every processed vertex we've computed what
+
+14
+00:00:54,050 --> 00:00:59,013
+we think the shortest path distance is to
+that vertex. So initially X is just the
+
+15
+00:00:59,013 --> 00:01:03,044
+source vertex S. Of course, the shortest
+path distance from S to itself is zero.
+
+16
+00:01:03,044 --> 00:01:07,074
+And then the cleverness of Dijkstra's
+algorithm is in how we figure out which
+
+17
+00:01:07,074 --> 00:01:12,021
+vertex to add to the set capital X each
+iteration. So the first thing we do is we.
+
+18
+00:01:12,021 --> 00:01:16,077
+Focus only on edges that cross the
+frontier edges that have their tail in
+
+19
+00:01:16,077 --> 00:01:21,006
+capital X and their head outside of
+capital X. Now, of course, there may be
+
+20
+00:01:21,006 --> 00:01:25,012
+many such edges, Edges that cross this
+frontier and we use Dijkstra's Grady
+
+21
+00:01:25,012 --> 00:01:29,044
+criterion to select one of them. So for
+each crossing edge, each edge with a tail
+
+22
+00:01:29,044 --> 00:01:33,077
+and X and head outside X, we compute the
+Dijkstra Grady score that is defined as
+
+23
+00:01:33,077 --> 00:01:38,004
+the previously computed shortest path
+distance to the tail of the arc plus the
+
+24
+00:01:38,004 --> 00:01:42,042
+length of the arc. So we compute that for
+each crossing edge and then the minimum
+
+25
+00:01:42,042 --> 00:01:46,096
+edge we're calling it V star W star. That
+determines how we proceed. So we add the
+
+26
+00:01:46,096 --> 00:01:51,044
+head of that arc W star to the set capital
+X and then w e compute the shortest path
+
+27
+00:01:51,044 --> 00:01:56,020
+distance to W star to give the previous.
+See computed shortest fast distance to V
+
+28
+00:01:56,020 --> 00:02:00,080
+Star plus the length of this extra
+[inaudible] V Star, W Star. Now back when
+
+29
+00:02:00,080 --> 00:02:04,095
+I explained this algorithm I did it using
+two arrays, array capital A and array
+
+30
+00:02:04,095 --> 00:02:08,095
+capital BA Is what computed the shortest
+path distances, and remember that's what
+
+31
+00:02:08,095 --> 00:02:12,056
+the problem asks us to compute. And for
+clarity I also filled up this array
+
+32
+00:02:12,056 --> 00:02:16,031
+capital B just to keep track of the
+shortest paths themselves. Now if you look
+
+33
+00:02:16,031 --> 00:02:20,001
+at the code of this algorithm, we don't
+actually need the array capital B for
+
+34
+00:02:20,001 --> 00:02:23,066
+anything. When we fill in the array
+capital A, we don't actually refer to the
+
+35
+00:02:23,066 --> 00:02:27,051
+B array. And so now that we're gonna talk
+about real implementations of Dijkstra;
+
+36
+00:02:27,051 --> 00:02:31,026
+I'm actually gonna cross out all of the
+instructions that correspond to the B
+
+37
+00:02:31,026 --> 00:02:34,082
+array. Okay? Because you would not, as I
+told you earlier, use this in a real
+
+38
+00:02:34,082 --> 00:02:38,057
+implementation of Dijkstra. You would just
+fill in the shortest path distances
+
+39
+00:02:38,057 --> 00:02:43,057
+themselves. So in the next quiz, what I
+want you to think about is the running
+
+40
+00:02:43,057 --> 00:02:48,015
+time of this algorithm if we implemented
+it more or less as is, according to the
+
+41
+00:02:48,015 --> 00:02:52,033
+pseudo code on this slide without any
+special data structures. And in the
+
+42
+00:02:52,033 --> 00:02:56,084
+answers to the quiz, we're going to be
+using the usual notation where M denotes
+
+43
+00:02:56,084 --> 00:03:01,025
+the number of edges in the graph, and N
+denotes the number of vertices of the
+
+44
+00:03:01,025 --> 00:03:07,012
+graph. So the correct answer to this quiz
+is the fourth one that the straightforward
+
+45
+00:03:07,012 --> 00:03:11,006
+implementation of Dijkstra's algorithm
+would give you a running time proportional
+
+46
+00:03:11,006 --> 00:03:15,009
+to the product of the number of edges and
+the number of vertices. And the way to see
+
+47
+00:03:15,009 --> 00:03:18,065
+that is to just look at the main while
+loop and look at how many times it
+
+48
+00:03:18,065 --> 00:03:22,029
+executes and then how much work we do per
+iteration of the while loop if we
+
+49
+00:03:22,029 --> 00:03:26,028
+implemented it in a straightforward way.
+So there's gonna be N minus one iterations
+
+50
+00:03:26,028 --> 00:03:30,026
+of the while loop. And the reason is, is
+that the algorithm terminates once every
+
+51
+00:03:30,026 --> 00:03:34,044
+single vertex has been added to capital X.
+Their end vertices, initially there's one
+
+52
+00:03:34,044 --> 00:03:38,006
+vertex in X. So after N m inus one
+iterations, we'll have sucked up all of
+
+53
+00:03:38,006 --> 00:03:41,093
+the vertices. Now what's the work done in
+each wild loop? Well basically, we do
+
+54
+00:03:41,093 --> 00:03:45,096
+naively a linear scan through all of the
+edges. We go through the edges. We check
+
+55
+00:03:45,096 --> 00:03:50,018
+if it's an eligible edge, that is if its
+tail is in X and its head is outside of X.
+
+56
+00:03:50,018 --> 00:03:54,020
+We can keep track of that just by having
+an auxiliary bullion variable for each
+
+57
+00:03:54,020 --> 00:03:58,033
+vertex. Remembering whether it's an X or
+not. And then amongst all of the illegible
+
+58
+00:03:58,033 --> 00:04:02,040
+edges, those crossing the frontier, we
+just, by exhaustive. Search remember which
+
+59
+00:04:02,040 --> 00:04:07,001
+edge has the smallest Dijkstra store- score,
+now we can compute the Dijkstra score in
+
+60
+00:04:07,001 --> 00:04:13,002
+constant time for each of the edges. So
+that's a reasonable algorithm. We might be
+
+61
+00:04:13,002 --> 00:04:17,019
+able to get away with graphs that have say
+hundreds or thousands of vertices using
+
+62
+00:04:17,019 --> 00:04:21,002
+the straight forward of implementation,
+but of course, we'd like to do better.
+
+63
+00:04:21,002 --> 00:04:24,079
+We'd like the algorithm to scale up to
+much larger graphs, even graphs with
+
+64
+00:04:24,079 --> 00:04:28,099
+potentially say a million vertices So the
+answer is yes, we can do better. Not by
+
+65
+00:04:28,099 --> 00:04:33,005
+changing the algorithm, but, rather,
+changing how we organize the data as the
+
+66
+00:04:33,005 --> 00:04:37,032
+algorithm proceeds. So this will be the
+first time in the course where we use a
+
+67
+00:04:37,032 --> 00:04:41,033
+data structure to get an algorithmic
+speed-up. So we're gonna see a really
+
+68
+00:04:41,033 --> 00:04:45,066
+lovely interplay between, on the one hand,
+algorithm design and, on the other hand,
+
+69
+00:04:45,066 --> 00:04:50,033
+data structure design in this
+implementation of Dijkstra's algorithm. So
+
+70
+00:04:50,033 --> 00:04:55,002
+you might well ask what's the clue that
+indicates that a data structure might be
+
+71
+00:04:55,002 --> 00:04:59,035
+useful in speeding up Dijkstra's shortest
+path algorithm. And the way you'd figure
+
+72
+00:04:59,035 --> 00:05:03,006
+this out is you'd say, well, where is all
+this work coming from? Why are we doing a
+
+73
+00:05:03,006 --> 00:05:06,081
+linear amount of work in the edges for a
+linear number in the vertices iterations?
+
+74
+00:05:06,081 --> 00:05:10,016
+Well, at each iteration of this while
+loop, what we're doing is, we're just
+
+75
+00:05:10,016 --> 00:05:13,086
+doing an exhaustive search to compute a
+minimum. We look at every edge, we look at
+
+76
+00:05:13,086 --> 00:05:17,044
+those that cross the frontier, and we
+compute the one with the minimum Dijkstra
+
+77
+00:05:17,044 --> 00:05:21,010
+score. So we could ask ourselves, oh, if
+we're doing minimum comp utations over and
+
+78
+00:05:21,010 --> 00:05:25,030
+over and over again, Is there some data
+structure which, whose raison d??tre,
+
+79
+00:05:25,030 --> 00:05:29,097
+whose reason for being is in fact to
+perform fast minimum computations? And in
+
+80
+00:05:29,097 --> 00:05:35,033
+fact there is such a data structure. It's
+the heap data structure. So in the
+
+81
+00:05:35,033 --> 00:05:39,008
+following description of a fast
+implementation of Dijkstra's algorithm, I'm
+
+82
+00:05:39,008 --> 00:05:43,035
+going to assume you're familiar with this
+heap data structure. For example, that you
+
+83
+00:05:43,035 --> 00:05:48,093
+watched the review video elsewhere on the
+course site that explains it. So let me
+
+84
+00:05:48,093 --> 00:05:53,017
+just remind you with a lightning-quick
+review of what we learned in that video,
+
+85
+00:05:53,017 --> 00:05:57,057
+So heaps are generally logically thought
+of as a complete binary tree, even though
+
+86
+00:05:57,057 --> 00:06:02,043
+they are usually implemented as a laid-out
+linear array. And the key property that
+
+87
+00:06:02,043 --> 00:06:07,000
+you get to leverage but that you also have
+to maintain in a heap is the heap property
+
+88
+00:06:07,000 --> 00:06:11,020
+that at every node the key at that node
+has to be at least as small as that of
+
+89
+00:06:11,020 --> 00:06:15,037
+both of the children. This property
+ensures that the smallest key of them all
+
+90
+00:06:15,037 --> 00:06:19,074
+has to be at the root of this tree. To
+implement extract menu, just pluck off the
+
+91
+00:06:19,074 --> 00:06:24,017
+roots. That's what you return. That's the
+minimum element. And then you swap up the,
+
+92
+00:06:24,033 --> 00:06:28,043
+bottommost rightmost leaf. The last
+element, Make that the new root, And then
+
+93
+00:06:28,043 --> 00:06:32,053
+you bubble that down as necessary to
+restore the heap property. When you do
+
+94
+00:06:32,053 --> 00:06:36,084
+insertion, you just make the new element
+the new last leaf, bottommost rightmost
+
+95
+00:06:36,084 --> 00:06:41,037
+leaf, and then you swap up as needed to
+restore the heap property. When we use
+
+96
+00:06:41,037 --> 00:06:45,015
+heaps in Dijkstra's algorithm we're also
+going to need the ability to delete an
+
+97
+00:06:45,015 --> 00:06:49,008
+element from the middle of the heap. But
+again you can do that just by swapping
+
+98
+00:06:49,008 --> 00:06:52,096
+things and doubling up or down as needed.
+I'll leave it as an exercise for you to
+
+99
+00:06:52,096 --> 00:06:56,045
+think through carefully, how to delete
+elements from the middle of a heap.
+
+100
+00:07:00,007 --> 00:07:04,039
+Because you're maintaining the heap as an
+essentially perfectly balanced binary
+
+101
+00:07:04,039 --> 00:07:08,048
+tree, the height of the tree is roughly
+the log base two of N, where N is the
+
+102
+00:07:08,048 --> 00:07:14,024
+number of elements in the heap. And
+because for every operation, you implement
+
+103
+00:07:14,024 --> 00:07:18,027
+it just by doing a constant amo unt work
+at each level of the tree, all of these
+
+104
+00:07:18,027 --> 00:07:22,035
+operations run in O of log N time, where N
+is the number of items that are being
+
+105
+00:07:22,035 --> 00:07:26,081
+stored in the heap. As far as the
+intuitive connection between the heap data
+
+106
+00:07:26,081 --> 00:07:30,093
+structure and Dijkstra's Algorithm. In the
+main wild loop of Dijkstra's Algorithm,
+
+107
+00:07:30,093 --> 00:07:34,075
+we're responsible for finding a minimum,
+every single iteration. What are heaps
+
+108
+00:07:34,075 --> 00:07:38,042
+good for? They're good for finding
+minimums in logarithmic time. That sounds
+
+109
+00:07:38,042 --> 00:07:42,035
+a lot better than the linear time we're
+spending in the naive implementation of
+
+110
+00:07:42,035 --> 00:07:47,072
+Dijkstra's Algorithm. So let's now see how
+to use heaps to speed up Dijkstra's
+
+111
+00:07:47,072 --> 00:07:52,067
+shortest path algorithm. Now because every
+iteration of the wild loop is responsible
+
+112
+00:07:52,067 --> 00:07:57,030
+for picking an edge, you might expect that
+we're going to store edges in the heap. So
+
+113
+00:07:57,030 --> 00:08:01,082
+the first subtle but really good idea is
+to actually use a heap to store vertices
+
+114
+00:08:01,082 --> 00:08:05,067
+rather than edges. Going back to the
+pseudo-code [inaudible] algorithm,
+
+115
+00:08:05,067 --> 00:08:10,002
+remember that the only reason that we
+focused on an edge. Well so that we can
+
+116
+00:08:10,002 --> 00:08:14,094
+then deduce which vertex, namely the head
+of that edge, to add to our set capital X.
+
+117
+00:08:14,094 --> 00:08:19,087
+So we're just going to cut to the chase,
+we're just going to keep vertices not yet
+
+118
+00:08:19,087 --> 00:08:24,091
+in X and then when we extract them in from
+the heap, it'll tell us which is the next
+
+119
+00:08:24,091 --> 00:08:29,088
+vertex to add into the set capital X. So
+the picture we're going to wanna have in
+
+120
+00:08:29,088 --> 00:08:33,089
+mind is Dijkstra's choice path algorithm
+at some intermediate iteration. So
+
+121
+00:08:33,089 --> 00:08:38,005
+there'll be a bunch of vertices in the,
+the set capital X source vertex plus a
+
+122
+00:08:38,005 --> 00:08:42,032
+bunch of other stuff that we've sucked
+into the set so far. And then there'll be
+
+123
+00:08:42,032 --> 00:08:46,075
+all the vertices we haven't processed yet.
+A big group V minus X. Then there's gonna
+
+124
+00:08:46,075 --> 00:08:50,075
+be edges crossing this cut in both
+directions from X to V minus X and vice
+
+125
+00:08:50,075 --> 00:08:55,019
+versa. Now before I explain the second
+invariant, let's just recall what the
+
+126
+00:08:55,019 --> 00:08:59,055
+straightforward implementation of Dijkstra's
+Algorithm needs to do. What it would do is
+
+127
+00:08:59,055 --> 00:09:03,070
+search through all the edges and it would
+look for any eligible edges. Those with
+
+128
+00:09:03,070 --> 00:09:07,075
+tail and X, and head and V minus X. So in
+this picture, there w ould be three such
+
+129
+00:09:07,075 --> 00:09:13,021
+edges. I've drawn the example so that two
+of the edges, the top two edges, both
+
+130
+00:09:13,021 --> 00:09:18,049
+share a common head vertex whereas the
+third edge has its own head vertex. The
+
+131
+00:09:18,049 --> 00:09:22,086
+straightforward of limitation of Dysktra's
+Algorithm we?d compute Dystra's greedy
+
+132
+00:09:22,086 --> 00:09:27,055
+score for each of these three edges And
+remember, by definition, that's the
+
+133
+00:09:27,055 --> 00:09:32,061
+previously computed shortest path distance
+to the tail of the arc V, plus the length
+
+134
+00:09:32,061 --> 00:09:37,038
+of the arc VW. So the straightforward
+implementation just computes this. In this
+
+135
+00:09:37,038 --> 00:09:42,039
+case, it would compute it for three edges.
+And whichever the three edges won had the
+
+136
+00:09:42,039 --> 00:09:47,009
+smallest score. The head of that edge
+would be the next vertex that gets added
+
+137
+00:09:47,009 --> 00:09:51,087
+to X. So let me specify the second
+invariant, and then I'll tell you how to
+
+138
+00:09:51,087 --> 00:09:57,055
+think about it. So, because we're storing
+vertices rather than edges in the heap,
+
+139
+00:09:57,055 --> 00:10:03,017
+we're going to have to be fairly clever
+with the way we define the key of a vertex
+
+140
+00:10:03,017 --> 00:10:08,038
+that's in this heap. [sound] So we're
+going to maintain the property that the
+
+141
+00:10:08,038 --> 00:10:13,094
+key of a vertex V is the smallest greedy
+Dijkstra score of any ver, any edge which
+
+142
+00:10:13,094 --> 00:10:19,053
+has that vertex as its head. So let me
+show you what I mean in terms of our
+
+143
+00:10:19,053 --> 00:10:24,039
+example, where we have three crossing
+edges. Suppose for these three edges in
+
+144
+00:10:24,039 --> 00:10:29,024
+the upper right that happen to have of
+Dijkstra [inaudible] scores of seven,
+
+145
+00:10:29,024 --> 00:10:34,075
+three, and five. Let's look at what the
+key should be for each of these three
+
+146
+00:10:34,075 --> 00:10:39,094
+vertices I've drawn in V minus X. Now for
+the timeline vertex this is pretty
+
+147
+00:10:39,094 --> 00:10:45,055
+interesting. There are two different edges
+whose tail is in X, and have this vertex
+
+148
+00:10:45,055 --> 00:10:50,005
+as their head. So what should the key of
+this vertex be? Well, it should be the
+
+149
+00:10:50,005 --> 00:10:54,078
+smallest Dijkstra greedy score of any of
+the edges whose tail lies on the left-hand
+
+150
+00:10:54,078 --> 00:10:58,095
+side that terminate at this vertex. So
+there's two candidate edges. One has
+
+151
+00:10:58,095 --> 00:11:03,017
+Dijkstra greedy score three. One has
+Dijkstra greedy score seven. So the key
+
+152
+00:11:03,017 --> 00:11:08,000
+value should be three, the smaller of
+those two. Now, the second vertex, there's
+
+153
+00:11:08,000 --> 00:11:13,041
+only a single edge that has tail in X and
+that terminates at this vertex. So the key
+
+154
+00:11:13,041 --> 00:11:18,050
+for this vertex should jus t be the score
+at that weak edge. So in this case that's
+
+155
+00:11:18,050 --> 00:11:24,053
+gonna be five. And then this poor third
+vertex, there's actually no edges at all,
+
+156
+00:11:24,053 --> 00:11:29,027
+that, started X and terminated at this
+vertex. There's only one arc going the
+
+157
+00:11:29,027 --> 00:11:34,001
+wrong direction. So for any edge, sorry,
+for any vertex outside of X that doesn't
+
+158
+00:11:34,001 --> 00:11:38,058
+have any eligible edges terminating at it,
+we think of the key as being plus
+
+159
+00:11:38,058 --> 00:11:44,096
+infinity. So the way I recommend thinking
+about these heap keys is that we've taken
+
+160
+00:11:44,096 --> 00:11:49,063
+what used to be one round tournament,
+winner takes all And we've turned it into
+
+161
+00:11:49,063 --> 00:11:53,040
+a two round knockout tournament. So in our
+straightforward implementation of
+
+162
+00:11:53,040 --> 00:11:57,023
+Dijkstra's algorithm, we did a single
+linear search through all the edges, and
+
+163
+00:11:57,023 --> 00:12:01,000
+we just computed the [inaudible]
+Dijkstra's score for each and we picked
+
+164
+00:12:01,000 --> 00:12:04,093
+the best. So in this example we would have
+discovered these three edges in some
+
+165
+00:12:04,093 --> 00:12:08,076
+order. Their scores are three, five, and
+seven. And we would have remembered the
+
+166
+00:12:08,076 --> 00:12:12,088
+edge with score three as being the best.
+That would have been our winner of this
+
+167
+00:12:12,088 --> 00:12:16,081
+winner take all tournament. Now when we
+use the heap, it, we're factoring it into
+
+168
+00:12:16,081 --> 00:12:20,081
+two rounds. So first, each vertex in V
+minus X runs a local tournament. To elect
+
+169
+00:12:20,081 --> 00:12:25,094
+a local winner, so each of these vertices
+in V minus X. Says, well let me look at
+
+170
+00:12:25,094 --> 00:12:30,042
+all of the edges. For whom I'm the head
+and also the tail of that edge is in X.
+
+171
+00:12:30,042 --> 00:12:34,078
+And amongst all of those edges that start
+in X and terminate at me, I'm going to
+
+172
+00:12:34,078 --> 00:12:39,014
+remember the best of those. So that's the
+winners of the local tournament of the
+
+173
+00:12:39,014 --> 00:12:43,045
+first round. And now the heap is only
+going to remember this set of first round
+
+174
+00:12:43,045 --> 00:12:47,042
+winners. Right, there's no point in
+remembering the existence of edges who
+
+175
+00:12:47,042 --> 00:12:51,051
+aren't even the smallest score that
+terminate at a given vertex, because we
+
+176
+00:12:51,051 --> 00:12:55,062
+only care about the smallest score
+overall. Now when you extract min from the
+
+177
+00:12:55,062 --> 00:12:59,068
+heap, that's in effect. Executing the
+second and final round of this knockout
+
+178
+00:12:59,068 --> 00:13:04,000
+tournament. So each of the vertices of V
+minus X has proposed their local winner.
+
+179
+00:13:04,000 --> 00:13:08,033
+And then the heat in an extract min just
+chooses the best of all of those local
+
+180
+00:13:08,033 --> 00:13:13,017
+winners. So that's the final proposed
+vertex that comes out of the heap. So the
+
+181
+00:13:13,017 --> 00:13:17,052
+point is that if we can successfully
+maintain these two invariants, then, when
+
+182
+00:13:17,052 --> 00:13:21,098
+we extract min from this heap, we'll get
+exactly the correct vertex, W star, that
+
+183
+00:13:21,098 --> 00:13:26,066
+we're supposed to add to the set capital X
+next. That is, the heap will just hand to
+
+184
+00:13:26,066 --> 00:13:30,089
+us on a silver platter exactly the same
+choice of vertex that our previous
+
+185
+00:13:30,089 --> 00:13:35,018
+exhaustive search through the edges
+would've computed. The exhaustive search
+
+186
+00:13:35,018 --> 00:13:39,070
+was just computing the minimum in a brute
+force way, in a single winner take all
+
+187
+00:13:39,070 --> 00:13:44,033
+tournament. The heap implemented in this
+way chooses exactly the same winner. It
+
+188
+00:13:44,033 --> 00:13:48,047
+just does it in this 2-round process. Now,
+in Dijkstra's algorithm, we weren't
+
+189
+00:13:48,047 --> 00:13:52,080
+supposed to merely just find the vertex W
+star to add to X. We also had to compute
+
+190
+00:13:52,080 --> 00:13:57,012
+its shortest path distance. But remember,
+we computed the shortest path distance as
+
+191
+00:13:57,012 --> 00:14:01,061
+simply the Dijkstra greedy score. And here
+the Dijkstra greedy score is just going to
+
+192
+00:14:01,061 --> 00:14:06,032
+be the key for this heap that's immediate
+from invariant number two. So we're using
+
+193
+00:14:06,032 --> 00:14:11,054
+the fact here that our keys are, by
+definition, just. The smallest greedy
+
+194
+00:14:11,054 --> 00:14:16,027
+scores are edges that stick into that
+vertex W STAR so again exactly
+
+195
+00:14:16,027 --> 00:14:20,047
+replicating. The computation that we would
+have done in the straightforward
+
+196
+00:14:20,047 --> 00:14:24,054
+implementation, just in a much slicker
+way. Okay? But we're adding exactly the
+
+197
+00:14:24,054 --> 00:14:28,067
+same vortices, in exactly the same order,
+and we're computing exactly the same
+
+198
+00:14:28,067 --> 00:14:32,091
+shortest path distances in this heap of
+notation, provided of course that we do
+
+199
+00:14:32,091 --> 00:14:37,046
+successfully maintain these two invariants
+throughout the course of the algorithm. So
+
+200
+00:14:37,046 --> 00:14:41,096
+that is now what I owe you. We have to pay
+the piper. We've shown that if we can have
+
+201
+00:14:41,096 --> 00:14:46,096
+a data structure with these properties.
+Then we can simulate the straight forward
+
+202
+00:14:46,096 --> 00:14:52,045
+implementation now I have to show you how
+we maintain these invariants without doing
+
+203
+00:14:52,045 --> 00:14:56,035
+too much work. All right. So maintaining
+invariant number one will really take care
+
+204
+00:14:56,035 --> 00:15:00,004
+of itself. Really sort of by definition
+the vertices which remain in the heap are
+
+205
+00:15:00,004 --> 00:15:03,052
+those that we haven't process ed yet, and
+those are the ones that are outside of
+
+206
+00:15:03,052 --> 00:15:06,095
+capital X. So really the trick is, how do
+we maintain invariant number two? Now
+
+207
+00:15:06,095 --> 00:15:11,014
+before I explain this let me point out,
+that this is a tricky problem. There is
+
+208
+00:15:11,014 --> 00:15:16,052
+something subtle going on. So as usual, I
+want you to think about this shortest path
+
+209
+00:15:16,052 --> 00:15:21,017
+algorithm at some intermediate iteration.
+Okay? So take a, take a snapshot. A bunch
+
+210
+00:15:21,017 --> 00:15:25,099
+of vortices have already been added to X.
+A bunch of vortices are still hanging out
+
+211
+00:15:25,099 --> 00:15:30,052
+in the heap. They haven't been added to X.
+There's some frontier, there's a, just
+
+212
+00:15:30,052 --> 00:15:35,034
+crossing, possibly in both directions. And
+suppose at the end of a current iteration
+
+213
+00:15:35,034 --> 00:15:39,052
+we identify the vortex W, which we're
+going to extract from the heap and
+
+214
+00:15:39,052 --> 00:15:44,016
+conceptually add to the set X. Now the
+reason things complicated is when we move
+
+215
+00:15:44,016 --> 00:15:51,025
+a vortex from outside X to inside X. The
+frontier between X and V minus X changes.
+
+216
+00:15:51,025 --> 00:15:57,093
+So in this picture, the old black X
+becomes this new blue X. And what's really
+
+217
+00:15:57,093 --> 00:16:02,041
+interesting about the frontier changing is
+that then the edges which cross the
+
+218
+00:16:02,041 --> 00:16:06,072
+frontier change. Now, there might be,
+there are some edges which used to cross
+
+219
+00:16:06,072 --> 00:16:11,030
+the frontier and now don't. Those are the
+ones that are coming into W. Those we're
+
+220
+00:16:11,030 --> 00:16:16,001
+not so concerned with. Those don't really
+play any role. What makes things tricky is
+
+221
+00:16:16,001 --> 00:16:20,060
+that there are edges which used to not be
+crossing the frontier but now they are
+
+222
+00:16:20,060 --> 00:16:24,096
+crossing the frontier. And those are
+precisely the edges sticking out of W. So
+
+223
+00:16:24,096 --> 00:16:30,017
+in this picture there are three such edges
+which I will highlight here in pink. To
+
+224
+00:16:30,017 --> 00:16:34,095
+see why it's tricky when new edges all the
+sudden are crossing a frontier let's
+
+225
+00:16:34,095 --> 00:16:39,072
+remember what invariant number two says.
+It says that for every vertex which is
+
+226
+00:16:39,072 --> 00:16:44,054
+still in the heap, which is not yet in X,
+the key for that vertex better be The
+
+227
+00:16:44,054 --> 00:16:50,061
+smallest Dijkstra Grady score of any edge
+which comes from capital X and sticks into
+
+228
+00:16:50,061 --> 00:16:56,033
+this vertex of V. Now in moving one vertex
+into X, namely this vertex W, now there
+
+229
+00:16:56,033 --> 00:17:02,012
+can be new edges sticking into vertices
+which were still on the heap. As a result,
+
+230
+00:17:02,012 --> 00:17:08,004
+the appropriate key value for vertices i n
+the heap might be smaller. Now the W has
+
+231
+00:17:08,004 --> 00:17:14,035
+been moved into X. And the candidates for
+the vertices in the heap whose keys might
+
+232
+00:17:14,035 --> 00:17:20,074
+have dropped are precisely those vertices
+on the other end of edges sticking out of
+
+233
+00:17:20,074 --> 00:17:25,024
+W. So summarizing, the fact that we'd
+added a new vertex to capital X and
+
+234
+00:17:25,024 --> 00:17:29,096
+extracting something from the heap, it's
+potentially increased the number of
+
+235
+00:17:29,096 --> 00:17:34,043
+crossing edges across the frontier,
+because the frontier has changed. And
+
+236
+00:17:34,043 --> 00:17:39,064
+therefore, for vertices that remain in the
+heap, the smallest greedy score of an edge
+
+237
+00:17:39,064 --> 00:17:44,079
+that sticks into them from the set X might
+have dropped. So we need to update those
+
+238
+00:17:44,079 --> 00:17:49,065
+keys to maintain invariant number two.
+Now, that's the hard part. Here's what we
+
+239
+00:17:49,065 --> 00:17:54,076
+have going for us. We've damaged the keys
+perhaps by changing the frontier, but the
+
+240
+00:17:54,076 --> 00:17:59,063
+damage is local. We can understand exactly
+whose keys might have dropped, so as
+
+241
+00:17:59,063 --> 00:18:04,068
+suggested by the picture, the vertices
+whose keys we need to update are precisely
+
+242
+00:18:04,068 --> 00:18:09,067
+those at the head of edges that stick out
+of W. So for each outgoing edge from W,
+
+243
+00:18:09,067 --> 00:18:14,047
+the vertex we just extracted from the
+heap, we need to go to the other end of
+
+244
+00:18:14,047 --> 00:18:19,049
+the edge and check if that vertex needs
+its key to be decreased. So here's the
+
+245
+00:18:19,049 --> 00:18:25,049
+pseudo code to do this. So when we extract
+the vertex W from the heap, that is when
+
+246
+00:18:25,049 --> 00:18:30,025
+we conceptually add a new vertex W. To the
+set X, thereby changing the frontier, we
+
+247
+00:18:30,025 --> 00:18:34,031
+say, well, you know, we know the only
+vertices that might have to have their key
+
+248
+00:18:34,031 --> 00:18:38,042
+changed, they're the ones on the other
+side of these outgoing arcs from W. So we
+
+249
+00:18:38,042 --> 00:18:42,048
+just have a simple iteration over the
+outgoing edges, W V, from the vertex V.
+
+250
+00:18:42,048 --> 00:18:46,080
+Now I haven't shown you any edges in the
+picture like this, but there might well be
+
+251
+00:18:46,080 --> 00:18:51,002
+some edges where the head of the arc V is
+also in the set X, is also already been
+
+252
+00:18:51,002 --> 00:18:55,034
+processes. But anything in X is not in the
+heap. Remember, the heap is only the stuff
+
+253
+00:18:55,034 --> 00:18:59,061
+outside of X. So we could care less about
+the stuff outside. Of the heat, for not
+
+254
+00:18:59,061 --> 00:19:05,017
+maintaining their keys. So we do an extra
+check. If the head of this edge is in fact
+
+255
+00:19:05,017 --> 00:19:10,028
+still in the heap, that is if it's not in
+X So i n the picture, for example, this
+
+256
+00:19:10,028 --> 00:19:14,036
+would be true for all three of the
+vertices that are on the other end of arcs
+
+257
+00:19:14,036 --> 00:19:18,059
+pointing out of W. And for each of these
+vertices V, we update its key. And the way
+
+258
+00:19:18,059 --> 00:19:22,077
+we're going to update its key is, we're
+just going to rip this vertex out of the
+
+259
+00:19:22,077 --> 00:19:26,096
+heap. We're going to recompute its key and
+constant time, and then we're going to
+
+260
+00:19:26,096 --> 00:19:31,003
+reinsert it into the heap. And since all
+heap operations take logarithmic time,
+
+261
+00:19:31,003 --> 00:19:35,043
+this key update will be logarithmic time.
+As an additional optimization, I wanna
+
+262
+00:19:35,043 --> 00:19:39,073
+point out that if one of these vertices
+V's key does change, it can only change in
+
+263
+00:19:39,073 --> 00:19:43,098
+one way. So remember, what is the key? The
+key is the smallest Grady Dijkstra score
+
+264
+00:19:43,098 --> 00:19:48,001
+of all of the edges that start next and
+stick into this vertex. So that's the
+
+265
+00:19:48,001 --> 00:19:52,010
+local tournament or the first round
+tournament happening at this vertex V. Now
+
+266
+00:19:52,010 --> 00:19:56,063
+the only thing which has changed. Before
+and after we added this vertex, W to X, is
+
+267
+00:19:56,063 --> 00:20:00,093
+that now one new edge is sticking into
+this vertex, V. All of the old edges
+
+268
+00:20:00,093 --> 00:20:05,041
+sticking into it from X are still sticking
+into it, and now there's one extra
+
+269
+00:20:05,041 --> 00:20:10,013
+candidate in its local tournament, namely
+this edge, WV. So either WV is the local
+
+270
+00:20:10,013 --> 00:20:14,024
+winner; either it has the smallest
+Dyxtra-Greedy score of them all. That
+
+271
+00:20:14,024 --> 00:20:18,064
+terminated this vertex, or it doesn't, in
+which case the previous winner is still
+
+272
+00:20:18,064 --> 00:20:22,088
+the new winner. So if that is, the new key
+value can only be one of two things.
+
+273
+00:20:22,088 --> 00:20:27,092
+Either it's the old key value--that's the
+case where this. Extra entrance, the edge
+
+274
+00:20:27,092 --> 00:20:33,071
+from W to V is irrelevant. Or, if it's
+changed, it has to have changed to the
+
+275
+00:20:33,071 --> 00:20:39,031
+[inaudible] score of this edge, W-V. And
+the formula for that is the shortest path
+
+276
+00:20:39,031 --> 00:20:45,048
+distance. That we just computed for W
+where W has been processed at this point
+
+277
+00:20:45,048 --> 00:20:51,049
+plus the link of the direct arch from W M
+V. And again conceptually this formula is
+
+278
+00:20:51,049 --> 00:20:56,072
+just a greedy Dijkstra score for the arc
+WV. The new entrance in V's local first
+
+279
+00:20:56,072 --> 00:21:02,018
+round tournament. So now, having updated
+V's key appropriately, so that invariant
+
+280
+00:21:02,018 --> 00:21:07,083
+#two is restored. And once again, the key
+of every vertex does reflect the sma llest
+
+281
+00:21:07,084 --> 00:21:13,043
+greedy, Dijkstra greedy score of any edge
+sticking into it from the set X. We can
+
+282
+00:21:13,043 --> 00:21:18,074
+safely reinsert this node back into the
+heap with its new key value. And these
+
+283
+00:21:18,074 --> 00:21:23,036
+three lines together are just a key update
+in logarithmic time, for one of these
+
+284
+00:21:23,036 --> 00:21:27,085
+vertices that's at the other end of an arc
+sticking out of the vertex W. So let's
+
+285
+00:21:27,085 --> 00:21:32,001
+tally up the running time in this new
+implementation. One thing I want you to
+
+286
+00:21:32,001 --> 00:21:36,043
+check, and this will definitely help you
+understand this refined implementation of
+
+287
+00:21:36,043 --> 00:21:40,091
+Dijkstra's algorithm, is that essentially
+all the work done is through the heap API.
+
+288
+00:21:40,091 --> 00:21:45,034
+That is, all of the running time that we
+have to account for is in heap operations.
+
+289
+00:21:45,034 --> 00:21:49,090
+We don't really do nontrivial work outside
+of heap operations. And again recall that
+
+290
+00:21:49,090 --> 00:21:54,065
+the running time of any heap operation is
+logarithmic in the number of elements in
+
+291
+00:21:54,065 --> 00:21:59,002
+the heap. Our heap is storing vertices.
+It's never gonna have more than N things
+
+292
+00:21:59,002 --> 00:22:03,040
+in it. So the running time of every heap
+operation is big O of log N. So what are
+
+293
+00:22:03,040 --> 00:22:07,022
+the heap operations that we do. Well, we
+extract men and we do it once per
+
+294
+00:22:07,022 --> 00:22:11,029
+iteration of the wild loop. So there's N
+minus one iterations of the wild loop,
+
+295
+00:22:11,029 --> 00:22:15,069
+just like before, but now instead of doing
+an exhaustive search through the edges, we
+
+296
+00:22:15,069 --> 00:22:20,002
+just do a simple extract men from the heap
+and it gives us on a silver platter the
+
+297
+00:22:20,002 --> 00:22:24,035
+vortex we should add next. So what do we
+do beside extract mins? Well, we have to
+
+298
+00:22:24,035 --> 00:22:28,093
+do this work paying the piper. We have to
+maintain invariant #two. And every time we
+
+299
+00:22:28,093 --> 00:22:33,034
+extract a min, that then triggers some
+subsequent key updates. And remember, each
+
+300
+00:22:33,034 --> 00:22:37,087
+of these key updates is a deletion of an
+element, from the heap followed by an
+
+301
+00:22:37,087 --> 00:22:41,078
+insertion. So how many deletions and
+insertions do we do? Well, at first this
+
+302
+00:22:41,078 --> 00:22:46,017
+might seem a little bit scary. Right?
+Because we do a roughly linear number of
+
+303
+00:22:46,017 --> 00:22:50,090
+extract mins. And a vertex might have as
+many as N-1 outgoing arcs. So it seems
+
+304
+00:22:50,090 --> 00:22:55,045
+like a vertex could trigger as many as N-1
+key updates, which is theta of N
+
+305
+00:22:55,045 --> 00:23:00,054
+[inaudible] operations. And if we sum that
+up over the N iterations of the wild loop
+
+306
+00:23:00,054 --> 00:23:04,066
+that w ould give us N squared heap
+operations. So, and indeed, in dense
+
+307
+00:23:04,066 --> 00:23:09,027
+graphs, that can be the case. It is true
+that a single vertex might trigger a
+
+308
+00:23:09,027 --> 00:23:13,058
+linear in N [inaudible] number of
+[inaudible] operations. But that's the
+
+309
+00:23:13,058 --> 00:23:18,012
+wrong way to think about it. Rather than
+have this vertex-centric perspective on
+
+310
+00:23:18,012 --> 00:23:22,010
+what, who's responsible for heap
+operations, let's have an edge-centric
+
+311
+00:23:22,010 --> 00:23:26,075
+view. So for each edge at the graph, let's
+think about when can this be responsible
+
+312
+00:23:26,075 --> 00:23:31,052
+for some heap operations, in particular a
+decrease in key in the resulting insertion
+
+313
+00:23:31,052 --> 00:23:36,013
+and deletion. If you have an edge and it
+points from the vertex V to the vertex W.
+
+314
+00:23:36,013 --> 00:23:40,091
+There's actually only one situation in
+which this edge is going to be responsible
+
+315
+00:23:40,091 --> 00:23:45,034
+for a, a decrease in key. And that's in
+the case where the tail of the edge, V.
+
+316
+00:23:45,034 --> 00:23:50,011
+Gets sucked into the set X before the head
+W of this edge gets sucked into the set X.
+
+317
+00:23:50,011 --> 00:23:54,060
+If that happens, if V gets sucked into X
+and W is still outside of X, then indeed
+
+318
+00:23:54,060 --> 00:23:59,003
+we're gonna have to decrease the key of W,
+just like we did in the examples. But
+
+319
+00:23:59,003 --> 00:24:03,058
+that's all that's gonna happen: V can only
+get sucked into X once and never gonna
+
+320
+00:24:03,058 --> 00:24:08,007
+leave it. So it's only responsible for
+this single decrease in key of its head W.
+
+321
+00:24:08,007 --> 00:24:12,078
+And that's one insertion and one deletion.
+And in fact, if the endpoints of this edge
+
+322
+00:24:12,078 --> 00:24:17,027
+get sucked into X in the opposite order,
+if the tail of, excuse me, if the head of
+
+323
+00:24:17,027 --> 00:24:22,057
+this edge W gets sucked into X first. That
+doesn't even trigger a, a key decrease for
+
+324
+00:24:22,057 --> 00:24:28,007
+V, and V will never have its de key
+decreased, because of this particular arc,
+
+325
+00:24:28,007 --> 00:24:35,092
+from V to W. So the upshot is that each
+edge VW of the graph triggers at most one
+
+326
+00:24:35,092 --> 00:24:41,087
+insert delete combo. So what does this
+mean, this means that the number of heap
+
+327
+00:24:41,087 --> 00:24:48,050
+operations. Is big O of N, that's for the
+extract mins. Plus big O of M. That's for
+
+328
+00:24:48,050 --> 00:24:53,036
+the insert the leak combos triggered by
+edges during the decreased keys. Now just
+
+329
+00:24:53,036 --> 00:24:57,028
+to, I'm gonna write this in a, in a
+simplified way. This is just O of M, the
+
+330
+00:24:57,028 --> 00:25:01,063
+number of edges. And this is because of
+our assumption that's there's a path to s
+
+331
+00:25:01,063 --> 00:25:05,081
+from every other vertex. If yo u think
+about it that means that the graph is at
+
+332
+00:25:05,081 --> 00:25:10,022
+least weakly connected if you picked it up
+it would stay together in one piece. So
+
+333
+00:25:10,022 --> 00:25:14,051
+that means it at least contains a tree, at
+least an in an undirected sense, which
+
+334
+00:25:14,051 --> 00:25:18,059
+means it contains at least N minus one
+edges. So we're in the case of weakly
+
+335
+00:25:18,059 --> 00:25:23,005
+connected graphs where N dominates M. M is
+always as big as N at least up to a plus
+
+336
+00:25:23,005 --> 00:25:28,059
+one. So what that means is the running
+time of Dijkstra's algorithm, with this
+
+337
+00:25:28,059 --> 00:25:34,027
+heap implementation, is just a log factor
+larger. Remember, every heap operation
+
+338
+00:25:34,027 --> 00:25:40,032
+takes time logarithmic. So we do a linear
+in M number of operations; each takes time
+
+339
+00:25:40,032 --> 00:25:47,004
+logarithmic in N. So the running time is M
+log N. With, I should say, quite good
+
+340
+00:25:47,004 --> 00:25:52,019
+consistence. So this is a really, really
+impressively fast algorithm, for computer
+
+341
+00:25:52,019 --> 00:25:57,000
+such a useful problem as shortest paths.
+So we got a little bit spoiled in our
+
+342
+00:25:57,000 --> 00:26:01,008
+discussion of graph searching
+connectivity, where it seemed any problem
+
+343
+00:26:01,008 --> 00:26:05,073
+we cared about we could solve in linear
+time, over M plus N. So here we're picking
+
+344
+00:26:05,073 --> 00:26:10,009
+up this extra logarithmic factor, but I
+mean, come on, this is still awesome. A
+
+345
+00:26:10,009 --> 00:26:14,068
+running time of M log N is unbelievably
+faster than a running time of M times N,
+
+346
+00:26:14,068 --> 00:26:18,052
+which is what we had in the
+straightforward implementation. So this
+
+347
+00:26:18,052 --> 00:26:23,023
+deft use of the heap data structure has
+given us a truly blazingly fast algorithm
+
+348
+00:26:23,023 --> 00:26:26,096
+for an extremely well motivated problem,
+computing shortest paths.

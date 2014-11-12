@@ -1,0 +1,809 @@
+1
+00:00:00,000 --> 00:00:05,066
+So let's just see how it works on the same
+example we traced here earlier. So we
+
+2
+00:00:05,066 --> 00:00:11,021
+sorta have just by initializing things in
+the obvious way. So, the shortest path
+
+3
+00:00:11,021 --> 00:00:17,088
+distance from S to itself is zero. And the
+shortest path from S to itself is just the
+
+4
+00:00:17,088 --> 00:00:24,056
+empty path. And initially X is going to be
+just the source vertex itself. So now we
+
+5
+00:00:24,056 --> 00:00:29,085
+enter them in while loop. And so remember,
+in the while loop, we say, well, let's scan
+
+6
+00:00:29,085 --> 00:00:34,095
+all of the edges whose tail is in the
+vertices we've already looked at. Whose
+
+7
+00:00:34,095 --> 00:00:40,039
+tail is in X, and whose head is outside of
+X. Now in this first iteration, there are
+
+8
+00:00:40,039 --> 00:00:45,057
+two such edges. There's the edge SV, and
+the edge SW. So how do we know which of
+
+9
+00:00:45,057 --> 00:00:49,087
+these two to use. Well we evaluate
+Dijkstra's greedy criterion. You guys
+
+10
+00:00:49,087 --> 00:00:54,091
+remember what that is. Dijkstra's greedy
+score for a given edge VW That's crossing
+
+11
+00:00:54,091 --> 00:00:59,078
+the frontier, is just the previously
+computed shortest path distance for the A
+
+12
+00:00:59,078 --> 00:01:05,067
+tail of the arc plus the length of the arc
+itself. So at this point SV has a greedy
+
+13
+00:01:05,067 --> 00:01:11,035
+score of zero plus one, which is one, and
+the arc S comma W has a greedy score of
+
+14
+00:01:11,035 --> 00:01:16,068
+zero plus four, which is four. So
+obviously SV is going to be the shorter of
+
+15
+00:01:16,068 --> 00:01:22,043
+those two, so we use the edge SV, this is
+playing the role of V star W star on the
+
+16
+00:01:22,043 --> 00:01:28,004
+previous slide, and the algorithm them
+suggests we should add V to our set X, so
+
+17
+00:01:28,004 --> 00:01:33,066
+we suck in V, and our new X consists of S
+and V. [sound]. And it also tells us how
+
+18
+00:01:33,066 --> 00:01:38,053
+to compute the shortest path distance and
+the shortest path from S to V, namely in
+
+19
+00:01:38,053 --> 00:01:43,023
+the A array, we just write down what was
+the greedy, the Dijkstra's greedy score
+
+20
+00:01:43,023 --> 00:01:47,074
+for this particular edge, and that was
+zero plus one, or one. It also tells us
+
+21
+00:01:47,074 --> 00:01:52,050
+how to compute the shortest path for v,
+namely we just inherit the shortest path
+
+22
+00:01:52,050 --> 00:01:57,013
+to the tail of the arc, which, in this
+case, was the empty path from S to itself,
+
+23
+00:01:57,013 --> 00:02:01,095
+and then we tack on the end, we append the
+arc we used to get here, the arc S to V.
+
+24
+00:02:01,095 --> 00:02:06,033
+So now we go to the next iteration of the
+while loop. So with our new set
+
+25
+00:02:06,033 --> 00:02:11,021
+[inaudible] consisting of S and v. Now
+again we wanna look at all edges which are
+
+26
+00:02:11,021 --> 00:02:16,025
+crossing the fr ontier. Edges that have
+tail in X and head outside x. And know we
+
+27
+00:02:16,025 --> 00:02:21,085
+see there is three such crossing edges.
+There is SW there is VW and there is VT
+
+28
+00:02:21,099 --> 00:02:27,059
+all of those have the tail in X and the
+head outside of X, so we need to compute
+
+29
+00:02:27,059 --> 00:02:33,040
+Dijkstra's greedy score for each of those
+three and then pick the minimum, so let's
+
+30
+00:02:33,040 --> 00:02:39,018
+go from bottom to top, so first of all we
+can look at the arc SVSW, excuse me. And
+
+31
+00:02:39,018 --> 00:02:44,059
+the greedy score here is the shortest path
+distance for the tail, so it's zero, plus
+
+32
+00:02:44,059 --> 00:02:49,054
+the length of the arc, which is four. So
+here we get a four in this iteration.
+
+33
+00:02:49,054 --> 00:02:54,087
+Then, if we do this crossbar edge, this VW
+edge, the Dijkstra greedy score is the a
+
+34
+00:02:54,087 --> 00:03:00,008
+value, or the shortest path distance value
+of the tail, and we computed that last
+
+35
+00:03:00,008 --> 00:03:05,029
+iteration. The a of V value is one. We add
+to that the length of the arc, which in
+
+36
+00:03:05,029 --> 00:03:10,030
+this case is two. So this edge three,
+[inaudible] this edge VW has a score of
+
+37
+00:03:10,030 --> 00:03:15,061
+three. Finally there's the arc VT, and
+here, we're gonna add one, which is the
+
+38
+00:03:15,061 --> 00:03:21,044
+shortest path distance of the tail of the
+arc, plus the edge length which is six. So
+
+39
+00:03:21,044 --> 00:03:27,013
+that has the worst score. So since the
+edge VW has the smallest score, that's the
+
+40
+00:03:27,013 --> 00:03:32,096
+one that guides how we supplement X, and
+how we compute the shortest path distances
+
+41
+00:03:32,096 --> 00:03:38,001
+in the shortest path for the newly
+acquired vertex W. So the changes are,
+
+42
+00:03:38,001 --> 00:03:43,011
+first of all, we enlarge X. So X is now
+everything but T. And then how do we
+
+43
+00:03:43,011 --> 00:03:48,005
+compute things for W? Well the shortest
+path, so our entry in A array is just
+
+44
+00:03:48,005 --> 00:03:53,012
+going to be Dijkstra's [inaudible] greedy
+score in the previous set of rations so
+
+45
+00:03:53,012 --> 00:03:58,032
+that was one plus two so that's going to
+be equal to three. And then what is the
+
+46
+00:03:58,032 --> 00:04:03,058
+shortest path, how do we fill up the array
+B? Well we inherit the shortest path to
+
+47
+00:04:03,058 --> 00:04:09,017
+the tail of the arc. Which in this case is
+the arc SV and then we append the arc that
+
+48
+00:04:09,017 --> 00:04:14,043
+we used to choose this new vertex W so
+that's the arc VW. So the new path is just
+
+49
+00:04:14,043 --> 00:04:19,036
+the SVW Path, okay? So [inaudible] we
+computed the shortest path from S to W in
+
+50
+00:04:19,036 --> 00:04:24,049
+this graph. So now we proceed to the final
+iteration of Dijkstra's algorithm. We know
+
+51
+00:04:24,049 --> 00:04:29,026
+what vertex we're going to bring into X.
+It's gonna be the vertex T. That's the
+
+52
+00:04:29,026 --> 00:04:33,085
+only one left. But we still have to
+compute by which edge we discover T and
+
+53
+00:04:33,085 --> 00:04:38,074
+bring it into the set X. So we have to
+compute the [inaudible] score for each of
+
+54
+00:04:38,074 --> 00:04:44,027
+the two crossing arcs... VT and WT. And in
+this final iteration the score for the arc
+
+55
+00:04:44,027 --> 00:04:49,000
+(V, T) is unchanged. So this is still
+gonna be the a value of its tail, one,
+
+56
+00:04:49,000 --> 00:04:54,006
+plus the length of the arc, six. So the
+score here is still seven. And now, for
+
+57
+00:04:54,006 --> 00:04:59,025
+the first time, WT is a crossing edge of
+the frontier, and when we compute its
+
+58
+00:04:59,025 --> 00:05:04,030
+score, it's the a value of its tail W,
+which is three, plus the length of this
+
+59
+00:05:04,030 --> 00:05:09,049
+arc, which is three, so we get a rescore
+of six. So by Dijkstra's greedy criterion,
+
+60
+00:05:09,049 --> 00:05:14,071
+we pick the edge wt instead of the edge
+VT, and of course, that doesn't matter who
+
+61
+00:05:14,071 --> 00:05:19,080
+gets brought into X, but it does matter
+how we compute the A and B values for T.
+
+62
+00:05:19,080 --> 00:05:24,089
+So in the final iration. We compute AT to
+be the Dijkstra greedy score of the edge
+
+63
+00:05:24,089 --> 00:05:29,069
+that we picked, which is the edge, WT and
+the score was six. So we compute the
+
+64
+00:05:29,069 --> 00:05:34,062
+shortest path distance from S to T to be
+six. And then what is the path itself?
+
+65
+00:05:34,062 --> 00:05:39,037
+Well, we inherit the shortest path from
+the tail of the arc that we used to
+
+66
+00:05:39,037 --> 00:05:44,055
+discover T. So that's the shortest path to
+W, which we previously computes as being
+
+67
+00:05:44,055 --> 00:05:49,074
+the path through V. And then we append the
+edge we used to discover T, so we append
+
+68
+00:05:49,074 --> 00:05:54,048
+the edge, WT. So the shortest path from S
+to T, we're going to compute as the
+
+69
+00:05:54,048 --> 00:06:01,014
+zig-zag path. S. Goes to V, goes to T,
+Sorry, Goes to W, goes to T. And then now
+
+70
+00:06:01,031 --> 00:06:05,066
+indeed X is all the vertices. We've
+computed it for everything. This is our
+
+71
+00:06:05,066 --> 00:06:09,082
+final output. The contents of the,
+especially the A array, this, the final
+
+72
+00:06:09,082 --> 00:06:14,069
+output. Shortest path distances from S to
+all of the four possible destinations. And
+
+73
+00:06:14,069 --> 00:06:19,039
+if you go back and compare this to the
+example you went through to the quiz, you
+
+74
+00:06:19,039 --> 00:06:23,081
+will see at least on this example, indeed.
+Dijkstra's algorithm corrects pa, the
+
+75
+00:06:23,081 --> 00:06:28,037
+shortest path distances. Now, I've said it
+before and I'll say it again. If someone
+
+76
+00:06:28,037 --> 00:06:32,017
+shows you their algorithm works just on
+some example, especia lly a pretty simple
+
+77
+00:06:32,017 --> 00:06:36,011
+four note example, you should not jump to
+the conclusion that this algorithm always
+
+78
+00:06:36,011 --> 00:06:40,005
+works. Sometimes the algorithms work fine
+on small examples, but break down once you
+
+79
+00:06:40,005 --> 00:06:43,066
+go to more interesting complicated
+examples. So I definitely owe you a proof
+
+80
+00:06:43,066 --> 00:06:47,037
+that Dijkstra's algorithm works not only
+in this network, but in any network. And
+
+81
+00:06:47,037 --> 00:06:51,022
+actually, it doesn't work in any network.
+It's only gonna work in any network with
+
+82
+00:06:51,022 --> 00:06:55,046
+non-negative edge lengths. So to help you
+appreciate that, Let's conclude this video
+
+83
+00:06:55,046 --> 00:07:00,005
+with a nonexample showing what goes wrong
+in Dijkstra's algorithm when you have
+
+84
+00:07:00,005 --> 00:07:04,021
+networks with negative edge lengths. So
+before I actually give you a, a real non
+
+85
+00:07:04,021 --> 00:07:08,000
+example let me just answer preliminary
+question which you might have and should
+
+86
+00:07:08,000 --> 00:07:12,003
+be have very good question if it something
+that's occurred to you. The question would
+
+87
+00:07:12,003 --> 00:07:15,049
+be well, ya why is it, why are these
+negative instance such a big deal. Why
+
+88
+00:07:15,049 --> 00:07:19,004
+can't we just reduce shortest path
+competition with negative edge links to
+
+89
+00:07:19,004 --> 00:07:22,073
+the problem of computing shortest paths
+with non negative edge links. Right so
+
+90
+00:07:22,073 --> 00:07:26,062
+whatever just clear things out we just add
+big number to all the edges that makes
+
+91
+00:07:26,062 --> 00:07:30,060
+them all non-negative and now we just run
+Dijkstra's algorithm and we're good to go.
+
+92
+00:07:30,060 --> 00:07:34,063
+So this is exactly the sort of question
+you should be looking to ask, if, as a
+
+93
+00:07:34,063 --> 00:07:38,052
+computer scientist, as a serious
+programmer. When confronted with a problem
+
+94
+00:07:38,052 --> 00:07:42,087
+you always want to look for ways to reduce
+it to simpler problems that you already
+
+95
+00:07:42,087 --> 00:07:47,002
+know how to solve. And this is a very
+natural idea of how to reduce a seemingly
+
+96
+00:07:47,002 --> 00:07:51,001
+harder sort of path problem to one we
+already know how to solve using dutch
+
+97
+00:07:51,001 --> 00:07:55,069
+[inaudible] algorithm. The only problem is
+it doesn't quite work. One isn't gonna
+
+98
+00:07:55,069 --> 00:07:59,066
+work. Well if you, Let's say you have a
+graph, and the most negative edge is -ten.
+
+99
+00:07:59,066 --> 00:08:03,026
+So all the edge lengths are negative ten
+and above. So then what you'd want to do
+
+100
+00:08:03,026 --> 00:08:07,020
+is add ten to every single edge in the
+network, and that insures that all of the
+
+101
+00:08:07,020 --> 00:08:10,086
+edge lengths are non negative, run
+Dijkstra's algorithm, get your shortest
+
+102
+00:08:10,086 --> 00:08:14,096
+path. The is sue is that different. Paths
+between a common origin and destination
+
+103
+00:08:14,096 --> 00:08:19,037
+have differing numbers of edges. So some
+might have five edges, Some might have two
+
+104
+00:08:19,037 --> 00:08:23,079
+edges. Now if you add ten to every single
+edge in the graph you're going to change
+
+105
+00:08:23,079 --> 00:08:28,004
+path lengths by different amounts. If a
+path has five edges, it's going to go up
+
+106
+00:08:28,004 --> 00:08:32,039
+by 50, when you add ten to every edge. If
+a path has only two edges, It's only going
+
+107
+00:08:32,039 --> 00:08:36,007
+to go up by twenty, when you add ten to
+every edge. So as soon as you start
+
+108
+00:08:36,007 --> 00:08:39,085
+changing the path lengths of different
+paths by different amounts, you might
+
+109
+00:08:39,085 --> 00:08:43,073
+actually screw up which path is the
+shortest. The path which is shortest under
+
+110
+00:08:43,073 --> 00:08:47,051
+the new edge lengths need not be the one
+that's shortest under the old edge
+
+111
+00:08:47,051 --> 00:08:52,033
+lengths. So that's why this reduction
+doesn't work. To be concrete, let's look
+
+112
+00:08:52,033 --> 00:08:57,055
+at this very simple three vertex graph
+with vertices s, v, and t and edge lengths
+
+113
+00:08:57,055 --> 00:09:02,071
+as shown. One minus five and minus two.
+Now what I hope is clear, is that in this
+
+114
+00:09:02,071 --> 00:09:07,093
+graph. The shortest path. The one with the
+minimum length is the two hot path Svt,
+
+115
+00:09:07,093 --> 00:09:13,041
+That has length minus four. The direct STR
+has length minus two which is bigger than
+
+116
+00:09:13,041 --> 00:09:18,024
+minus four. So the upper path is the
+shortest path. Now, suppose we tried to
+
+117
+00:09:18,024 --> 00:09:23,001
+massage this by adding a constant to every
+edge so all edge lengths were
+
+118
+00:09:23,001 --> 00:09:27,097
+non-negative. We'd have to add five to
+every edge because that's the biggest
+
+119
+00:09:27,097 --> 00:09:34,009
+negative number the VT edge. So that would
+give us new edge lengths of six. And zero
+
+120
+00:09:34,009 --> 00:09:39,029
+ends three. [sound]. And now the problem
+is, we've changed which path is the
+
+121
+00:09:39,029 --> 00:09:43,073
+shortest one. We added ten to the top path
+and only five to the bottom path and as a
+
+122
+00:09:43,073 --> 00:09:47,064
+result, they've reversed. So now the
+bottom path ST is actually the shorter
+
+123
+00:09:47,064 --> 00:09:51,097
+one. So if you run Dijkstra on this graph,
+it's going to come with the path ST even
+
+124
+00:09:51,097 --> 00:09:56,025
+though that's not in fact the shortest
+path in the original network, the one that
+
+125
+00:09:56,025 --> 00:10:00,037
+we actually care about. Okay, so that's
+why you can't just naively reduce shortest
+
+126
+00:10:00,037 --> 00:10:04,022
+path with negative edge lengths to
+shortest paths with non-negative edge
+
+127
+00:10:04,022 --> 00:10:08,029
+lengths. Moreover on this very same, super
+simple thre e node graph, You know, we can
+
+128
+00:10:08,029 --> 00:10:11,094
+try to run, running dikes for shortest
+path algorithm. It's perfectly well
+
+129
+00:10:11,094 --> 00:10:16,003
+defined. It will produce some output. But
+it's actually going to be wrong. It is not
+
+130
+00:10:16,003 --> 00:10:20,017
+going to compute shortest path distances,
+correctly in this graph. So let me show
+
+131
+00:10:20,017 --> 00:10:24,093
+you why. Unless of course initialization
+will work as it always does. So it's gonna
+
+132
+00:10:24,093 --> 00:10:29,093
+start by saying the shortest path distance
+from S to itself is zero via the empty
+
+133
+00:10:29,093 --> 00:10:34,062
+path. And then, what's it going to do
+next? It's going to say well we need to
+
+134
+00:10:34,062 --> 00:10:39,076
+enlarge the set capital X by one vertex
+and there are two crossing edges, it's the
+
+135
+00:10:39,076 --> 00:10:44,046
+XV edge and the ST edge. And what's it
+going to do. It's going to use the
+
+136
+00:10:44,046 --> 00:10:49,029
+Dijkstra Greedy score. So the score of
+this upper edge is going to be one, and
+
+137
+00:10:49,029 --> 00:10:55,086
+the score of this bottom edge. Is going to
+be negative two. 'Cause remember, you take
+
+138
+00:10:55,086 --> 00:10:59,090
+the previously computed shortest path
+[inaudible] of the tail, that's zero in
+
+139
+00:10:59,090 --> 00:11:03,095
+both cases. And then you add the edge
+lengths. So the edge lengths are one and
+
+140
+00:11:03,095 --> 00:11:07,099
+minus two, so the scores are one and minus
+two. Which of these is smaller? Well
+
+141
+00:11:07,099 --> 00:11:11,083
+evidently, the ST arc has the smaller
+score minus two. So what is Dijkstra's
+
+142
+00:11:11,083 --> 00:11:16,008
+algorithm gonna do? It's going to say yes,
+let's go for this edge ST. Let's bring T
+
+143
+00:11:16,008 --> 00:11:20,048
+into the set capital X. T is now part of
+the conquered territory. And of course as
+
+144
+00:11:20,048 --> 00:11:25,036
+soon as you bring a node into the set X,
+into the [inaudible] territory, you have
+
+145
+00:11:25,036 --> 00:11:30,049
+to commit or Dijkstra's algorithm chooses
+to commit to a shortest path distance and
+
+146
+00:11:30,049 --> 00:11:35,061
+a shortest path. What is the definition of
+its shortest path distance, as computed by
+
+147
+00:11:35,061 --> 00:11:40,049
+Djikstra? Well it's just a degree score.
+So it's going to assign the vertex t the
+
+148
+00:11:40,049 --> 00:11:45,044
+shortest path distance of minus two, and
+the path is going to be just the arc S t.
+
+149
+00:11:45,044 --> 00:11:51,044
+But notice that this is in fact wrong. The
+shortest path distance from S to t is not
+
+150
+00:11:51,044 --> 00:11:57,030
+minus two, in this graph. There is another
+path, namely the one that goes thorough V
+
+151
+00:11:57,030 --> 00:12:02,038
+that has length minus four, less than
+minus two. So, [inaudible] computes
+
+152
+00:12:02,038 --> 00:12:07,085
+incorrect shortest path distances on this
+trivial 3-note graph. So t o summarize the
+
+153
+00:12:07,085 --> 00:12:11,069
+story so far, We've described Dijkstra's
+algorithm. I've shown you that it works in
+
+154
+00:12:11,069 --> 00:12:15,052
+a very simple example that doesn't have
+negative edge lines and I've showed you
+
+155
+00:12:15,052 --> 00:12:19,027
+that it doesn't work in and even simpler
+example that does have negative edge
+
+156
+00:12:19,027 --> 00:12:22,092
+lines. So, I've both given you some
+plausibility that it might work generally
+
+157
+00:12:22,092 --> 00:12:27,014
+at least for non negative edges links. But
+I've also tried to sew some seeds of doubt
+
+158
+00:12:27,014 --> 00:12:30,079
+that it's not an all clear if at this
+point if Dijkstra's algorithm is always
+
+159
+00:12:30,079 --> 00:12:34,068
+clear correct or not even if you have
+non-negative edge lengths and certainly if
+
+160
+00:12:34,068 --> 00:12:38,052
+it is always correct there better be a
+fool proof argument to why. You should be
+
+161
+00:12:38,052 --> 00:12:42,055
+demanding and explanation of a claim If
+Dijkstra's is correct in any kind of
+
+162
+00:12:42,055 --> 00:12:45,039
+generality. That's the subject of the next
+video.
