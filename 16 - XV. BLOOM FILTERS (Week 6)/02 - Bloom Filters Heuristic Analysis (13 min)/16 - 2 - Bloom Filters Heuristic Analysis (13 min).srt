@@ -1,0 +1,858 @@
+1
+00:00:02,058 --> 00:00:06,113
+So, before we embark in the analysis, what
+are we hoping to understand? Well, it
+
+2
+00:00:06,113 --> 00:00:10,201
+seems intuitively clear is that there is
+going to be some trade off between the two
+
+3
+00:00:10,201 --> 00:00:13,512
+resources of the bloom filter. One
+resource is space consumption, the other
+
+4
+00:00:13,512 --> 00:00:18,383
+resource is essentially correctness so the
+more space we use, the larger number of
+
+5
+00:00:18,383 --> 00:00:21,675
+bits, we'd hope that we'd make fewer and
+fewer errors. And then as we compress the
+
+6
+00:00:21,675 --> 00:00:26,751
+table more and more, we use bits more and
+more for different objects then presumably
+
+7
+00:00:26,751 --> 00:00:31,838
+the error rate is going to increase. So,
+the goal of the analysis that we're about
+
+8
+00:00:31,838 --> 00:00:37,034
+to do is to understand this trade off
+precisely at qualitative level. Once we
+
+9
+00:00:37,034 --> 00:00:40,430
+understand the trade off occur between
+these two resources, then we can ask is
+
+10
+00:00:40,430 --> 00:00:44,484
+there is a sweet spot which gives us a
+useful data structure? Quite small space
+
+11
+00:00:44,484 --> 00:00:49,637
+and quite manageable error probability. So
+the way we're going to proceed with the
+
+12
+00:00:49,637 --> 00:00:53,045
+analysis, we'll be familiar to those of
+you who watched the open addressing video
+
+13
+00:00:53,045 --> 00:00:57,388
+about hash tables so to make the
+mathematical analysis tractable, I'm going
+
+14
+00:00:57,388 --> 00:01:00,554
+to make a heuristic assumption The strong
+assumption which is not really satisfied
+
+15
+00:01:00,554 --> 00:01:04,013
+by hash functions you would use in the
+practice. We're going to use that
+
+16
+00:01:04,013 --> 00:01:08,012
+assumption to derive a performance
+guarantee for bloom filters but as all as
+
+17
+00:01:08,012 --> 00:01:11,061
+any implementation you should check that
+your implementation actually is getting
+
+18
+00:01:11,061 --> 00:01:16,402
+performance comparable to what the
+idealizing analysis suggest. That said, if
+
+19
+00:01:16,402 --> 00:01:20,276
+you use a good hash function and if you
+have a non-pathological data, the hopes
+
+20
+00:01:20,276 --> 00:01:23,876
+and this is going out many empirical
+studies is that you will see performance
+
+21
+00:01:23,876 --> 00:01:28,681
+comparable to what this heuristic analysis
+will suggest. So, what is the heuristic
+
+22
+00:01:28,681 --> 00:01:31,548
+assumption? Well, it's going to be again
+familiar from my hashing discussions.
+
+23
+00:01:31,548 --> 00:01:34,855
+We're just going to assume that all the
+hashing is totally random. So, for each
+
+24
+00:01:34,855 --> 00:01:39,694
+choice of a hash function hi and for each
+possible object ax, the slots, the
+
+25
+00:01:39,694 --> 00:01:44,021
+position of the array which the hash
+functions gives for that object is
+
+26
+00:01:44,021 --> 00:01:49,013
+uniformly random and first of all and it's
+independen t from all other outputs of all
+
+27
+00:01:49,013 --> 00:01:55,753
+hash functions on all objects. So the set
+up then is we have n bits. We have a data
+
+28
+00:01:55,753 --> 00:02:03,117
+set, S which we have inserted into our
+bloom filter. Now our eventual goal is to
+
+29
+00:02:03,117 --> 00:02:06,041
+understand the error rate or the false
+positive probability. That is the chance
+
+30
+00:02:06,041 --> 00:02:10,008
+that an object which we haven't inserted
+into the bloom filter looks as if it has
+
+31
+00:02:10,008 --> 00:02:14,053
+been inserted into the bloom filter but as
+a preliminary step, I want to ask about
+
+32
+00:02:14,053 --> 00:02:19,683
+the population of 1s after we've inserted
+this data set S into the bloom filter. So,
+
+33
+00:02:19,683 --> 00:02:24,662
+specifically let's focus on a particular
+position of the array and by symmetry it
+
+34
+00:02:24,662 --> 00:02:28,690
+doesn't matter which one. And let's ask
+what is the probability that a given bit,
+
+35
+00:02:28,690 --> 00:02:33,621
+a given position on this array has been
+set to one after we've inserted this
+
+36
+00:02:33,621 --> 00:02:42,054
+entire data set S? Alright, so this, this
+is a somewhat difficult quiz question
+
+37
+00:02:42,054 --> 00:02:48,062
+actually. The correct answer is the second
+answer. It's one - quantity one - 1/n
+
+38
+00:02:48,062 --> 00:02:53,040
+raised to the number of hash functions k
+the number of objects cardinality of S,
+
+39
+00:02:53,040 --> 00:02:56,047
+that's the probability let's say the first
+bit of the bloom filter has been set to
+
+40
+00:02:56,047 --> 00:03:00,056
+one after the data set S has been
+inserted. So the, maybe the easiest way to
+
+41
+00:03:00,056 --> 00:03:04,059
+see this is to first focus on the first
+answer. So, the first answer is going to
+
+42
+00:03:04,059 --> 00:03:09,094
+be the probability I claim that the first
+bit is zero after the entire data set has
+
+43
+00:03:09,094 --> 00:03:13,061
+been inserted. Then of course it's
+probably it's a one, is just the one - its
+
+44
+00:03:13,061 --> 00:03:18,020
+quantity which is equal to the second
+answer. So we just seem to understand why
+
+45
+00:03:18,020 --> 00:03:21,178
+the first choice is probably the first bit
+= zero. Well, it's initially zero,
+
+46
+00:03:21,179 --> 00:03:25,026
+remember stuff is only set from zero to
+one. So we really need to analyze the
+
+47
+00:03:25,026 --> 00:03:29,063
+probability that this first bit survives
+all of these darts that are getting thrown
+
+48
+00:03:29,063 --> 00:03:34,069
+to the bloom filter over the course of
+this entire data set being inserted. So
+
+49
+00:03:34,069 --> 00:03:39,001
+there, the cardinality of these objects
+each get inserted on an insertion k darts
+
+50
+00:03:39,001 --> 00:03:43,028
+uniformly at random and independent from
+each other or effectively thrown at the
+
+51
+00:03:43,028 --> 00:03:47,013
+array at the bloom filter. Any position of
+the dart hits, gets set to one. Maybe it
+
+52
+00:03:47,013 --> 00:03:51,092
+was one already but if it was zero, it
+gets set to one. If it's one then it stays
+
+53
+00:03:51,092 --> 00:03:55,008
+one. So, how is this first pick going to
+stay zero? We'll have to be missed by all
+
+54
+00:03:55,008 --> 00:04:01,021
+of the darts. A given dart, a given bit
+flick is uniformly likely to be any of the
+
+55
+00:04:01,021 --> 00:04:04,718
+n bits so the probability of the ones that
+being this bit is only 1/n but, if it even
+
+56
+00:04:04,718 --> 00:04:08,760
+it's fortunately somebody else? Well,
+that's one - 1/n so you have a chance of
+
+57
+00:04:08,760 --> 00:04:13,524
+surviving a single dart with probably one
+- 1/n There is the number of hash
+
+58
+00:04:13,524 --> 00:04:17,211
+functions k the number of objects
+cardinality that's a dart being thrown.
+
+59
+00:04:17,211 --> 00:04:21,181
+Right k per object that gets inserted so
+the overall probability of eluding all of
+
+60
+00:04:21,181 --> 00:04:25,232
+the darts is one - one or n raised to the
+number of hash functions k the number of
+
+61
+00:04:25,232 --> 00:04:29,985
+insertions cardinality of S. Again, the
+probability that is one which is the one -
+
+62
+00:04:30,057 --> 00:04:36,244
+that quantity which is the second option
+in the quiz. So, let's go ahead and resume
+
+63
+00:04:36,244 --> 00:04:40,843
+our analysis using the answer to that
+quiz. So, what do we discover, discover
+
+64
+00:04:40,843 --> 00:04:46,646
+the probability that a given bit is one,
+is one - quantity one - 1/n or n is the
+
+65
+00:04:46,646 --> 00:04:52,155
+number of position raised to the number of
+hash functions k the number of insertions
+
+66
+00:04:52,155 --> 00:04:56,983
+cardinality of S. So, that's the kind of
+messy quantity so let's recall a simple
+
+67
+00:04:56,983 --> 00:05:01,186
+estimation facts that we used once
+earlier. You saw this when we analyzed
+
+68
+00:05:01,186 --> 00:05:05,673
+cardinals construction algorithm and the
+benefit of multiple repetitions or
+
+69
+00:05:05,673 --> 00:05:10,589
+cardinals contraction algorithm. And the
+trick here is to estimate a quantity
+
+70
+00:05:10,589 --> 00:05:16,228
+that's on the form of one + x or one - x
+by either the x or the - x as the case
+
+71
+00:05:16,228 --> 00:05:23,808
+maybe. So you take the function one + x
+which goes through the points -ten and 01.
+
+72
+00:05:23,808 --> 00:05:29,727
+And of course it's a straight line and
+then you also look at the function e to
+
+73
+00:05:29,727 --> 00:05:35,613
+the x. Well, those two functions are going
+to kiss at the point 0,1 and everywhere
+
+74
+00:05:35,613 --> 00:05:42,053
+else e to the x is going to be above one +
+x. So for any real value of x we can
+
+75
+00:05:42,053 --> 00:05:47,903
+always upper bound the quantity one + x by
+either the - x. So let's apply this fact
+
+76
+00:05:47,903 --> 00:05:54,141
+to this quantity here, one - 1/n raise to
+the k cardinality of S. We're going to
+
+77
+00:05:54,141 --> 00:06:02,701
+take x to the - 1/n so that gives us an
+upper bound on this probability of one - e
+
+78
+00:06:02,701 --> 00:06:12,019
+to th e - k the number of insertions over
+n, okay? So that's taking x to the - 1/n.
+
+79
+00:06:12,019 --> 00:06:16,227
+Let's simplify and finalize a little bit
+further by introducing some notation. So,
+
+80
+00:06:16,227 --> 00:06:21,439
+I'm going to let b denote the number of
+bits that were using per object. So this
+
+81
+00:06:21,439 --> 00:06:25,579
+is the quantity I was telling you to think
+about as eighth previously. This is the
+
+82
+00:06:25,579 --> 00:06:33,152
+ratio n, the total number of bits divided
+by the cardinality of S. So, this green
+
+83
+00:06:33,152 --> 00:06:41,632
+expression becomes one - e^k where b is
+the number of bits per object. And now
+
+84
+00:06:41,632 --> 00:06:46,347
+we're already seeing this type of trade
+off that we're expecting. Remember we're
+
+85
+00:06:46,347 --> 00:06:49,810
+expecting that as we use more and more
+space, then the error rate we think should
+
+86
+00:06:49,810 --> 00:06:52,859
+go down so if you can press the table a
+lot or use bits for lots of different
+
+87
+00:06:52,859 --> 00:06:57,565
+objects that's when you start going to see
+a lot of false positives so in this light
+
+88
+00:06:57,565 --> 00:07:01,707
+blue expression if you take the number of
+bits per objects with the number space,
+
+89
+00:07:01,707 --> 00:07:05,065
+the amount of space, little b if you take
+that going very large expanding to
+
+90
+00:07:05,065 --> 00:07:08,638
+infinity, this exponent to zero. So either
+the -zero is one. So overall, this
+
+91
+00:07:08,638 --> 00:07:13,342
+probability of a given bit being one is
+turning to zero. So, that is, the more
+
+92
+00:07:13,342 --> 00:07:18,423
+bits you have, the bigger space you have.
+The, well, the smaller of the fraction of
+
+93
+00:07:18,423 --> 00:07:22,290
+1s. The bigger the faction of 0s. That
+should translate to a smaller false
+
+94
+00:07:22,290 --> 00:07:27,313
+positive probability unless we will make
+precise on the next and final slot. So
+
+95
+00:07:27,313 --> 00:07:31,855
+let's, let's rewrite the upshot form the
+last slide but probability that a given
+
+96
+00:07:31,855 --> 00:07:35,226
+bit is equal to one is that at above by
+one - e to the - k over b where k is the
+
+97
+00:07:35,226 --> 00:07:39,131
+number of hash functions and b is the
+number of bits we're using per object. Now
+
+98
+00:07:39,131 --> 00:07:43,391
+this is not the quantity that you care
+about. The quantity we care about is a
+
+99
+00:07:43,391 --> 00:07:47,061
+false positive probability where something
+looks like it's in the bloom filter even
+
+100
+00:07:47,061 --> 00:07:50,366
+though it's never been inserted so it's
+focused on some object like some IP
+
+101
+00:07:50,366 --> 00:07:56,028
+address which is never ever been inserted
+into this bloom filter. So for a given
+
+102
+00:07:56,028 --> 00:08:00,533
+object x which is not in the data set,
+that this has not been inserted into the
+
+103
+00:08:00,533 --> 00:08:04,479
+bloom filter or what has to happen for us
+to have a success ful look up for false
+
+104
+00:08:04,479 --> 00:08:09,437
+positive for this object? Well each one of
+its k bits has to be set to one. So, we
+
+105
+00:08:09,437 --> 00:08:14,667
+already computed the probability that a
+given bit is set to one. So, what has to
+
+106
+00:08:14,667 --> 00:08:19,478
+happen for all k of the bits that
+indicates x's membership in the bloom
+
+107
+00:08:19,478 --> 00:08:23,779
+filter all k of them has to be set to one.
+So we just take the quantity we computed
+
+108
+00:08:23,779 --> 00:08:29,144
+on the previous slide and we raise that to
+the kth power. Indicating that it has to
+
+109
+00:08:29,144 --> 00:08:33,941
+happen k different times. So believe it or
+not we now have exactly what we wanted.
+
+110
+00:08:33,941 --> 00:08:38,516
+What we set out to do which is derive a
+qualitative understanding of the intuitive
+
+111
+00:08:38,516 --> 00:08:42,319
+trade off between the one hand space used
+and on the other hand on the error
+
+112
+00:08:42,319 --> 00:08:45,979
+probability. The false positive of
+probability. So, we're going to call this
+
+113
+00:08:45,979 --> 00:08:50,444
+green circle quantity and name it. We'll
+call it epsilon for the error rate and
+
+114
+00:08:50,444 --> 00:08:54,232
+again all errors are false positives. And
+again as b goes to infinity, as we use
+
+115
+00:08:54,232 --> 00:08:59,175
+more and more space, this exponent goes to
+zero so one - e to that quantity is going
+
+116
+00:08:59,175 --> 00:09:03,153
+to zero as well. And of course, once we
+power it through the kth power, it gets
+
+117
+00:09:03,153 --> 00:09:07,427
+even closer to zero. So if the bigger b
+gets the small of this error rate epsilon
+
+118
+00:09:07,427 --> 00:09:12,199
+gets. So now let's get to the punch line.
+So remember the question is, is this data
+
+119
+00:09:12,199 --> 00:09:16,545
+structure actually useful? Can we actually
+set all of the parameters in a way that we
+
+120
+00:09:16,545 --> 00:09:22,135
+could both really usefully small space but
+a tolerable error epsilon? And, of course
+
+121
+00:09:22,135 --> 00:09:27,863
+we wouldn't be giving this video if the
+answer wasn't yes. Now one thing I've been
+
+122
+00:09:27,863 --> 00:09:31,831
+alluding all along is how do we set k? How
+do we choose the number of hash functions?
+
+123
+00:09:31,831 --> 00:09:36,449
+I told you at the very beginning We think
+of k as a small constant like 2345. And
+
+124
+00:09:36,449 --> 00:09:40,365
+now that we have this really nice
+qualitative version of how the error rate
+
+125
+00:09:40,365 --> 00:09:45,565
+in the space trade off with each other. We
+can answer how to set k. Namely set k
+
+126
+00:09:45,565 --> 00:09:51,440
+optimally so what do I mean? Well, fix the
+number of bits that you're using per
+
+127
+00:09:51,440 --> 00:09:56,033
+object. Eight, sixteen, 24, whatever. For
+fixed b, you can just choose the k that
+
+128
+00:09:56,033 --> 00:09:59,837
+minimize the screen quantity. That
+minimizes the error rate epsilon. So, how
+
+129
+00:09:59,837 --> 00:10:03,433
+do you minimize t his quantity? Well, you
+do it just like you learn in calculus and
+
+130
+00:10:03,433 --> 00:10:07,236
+I'll leave this as an exercise for you to
+do in the privacy of your own home. But
+
+131
+00:10:07,236 --> 00:10:11,227
+for fixed b, the way to get this green
+quantity epsilon as small as possible is
+
+132
+00:10:11,227 --> 00:10:16,966
+to set the number of hash functions k to
+be roughly the natural log of two. That's
+
+133
+00:10:16,966 --> 00:10:23,648
+a number of < one notice that's like
+.693 b. So, in other words the number of
+
+134
+00:10:23,648 --> 00:10:27,139
+hash functions for the optimal
+implementation of the bloom filter is
+
+135
+00:10:27,139 --> 00:10:33,396
+scaling linearly than the number of bits
+that you're using per object. It's about
+
+136
+00:10:33,396 --> 00:10:38,690
+.693 the bits per object. Of course this
+is generally not going to be an integer so
+
+137
+00:10:38,690 --> 00:10:45,219
+you just pick k either this number rounded
+up or this number rounded down. But,
+
+138
+00:10:45,219 --> 00:10:49,451
+continuing the heuristic analysis, now
+that we know how to set k optimally to
+
+139
+00:10:49,451 --> 00:10:53,884
+minimize the error for a given amount of
+space we can plug that value of k back in
+
+140
+00:10:53,884 --> 00:10:57,937
+and see well, how does the space and the
+error rate trade off against each other
+
+141
+00:10:57,937 --> 00:11:01,315
+and we get a very nice answer.
+Specifically, we get that the error rate
+
+142
+00:11:01,315 --> 00:11:05,986
+epsilon is just under an optimal trades to
+the number of hash functions k decreases
+
+143
+00:11:05,986 --> 00:11:12,650
+exponentially in the number of bits that
+you use per object. So, it's roughly one
+
+144
+00:11:12,650 --> 00:11:20,553
+half raised to the natural log of two or
+.693 roughly the number of bits per object
+
+145
+00:11:20,553 --> 00:11:26,815
+b. But, again the key qualitative point
+here is notice that epsilon is going down
+
+146
+00:11:26,815 --> 00:11:31,429
+really quickly as you scale b. If you
+double the number of bits that you're
+
+147
+00:11:31,429 --> 00:11:35,620
+allocating per object, you're squaring the
+error rate and for small error rates,
+
+148
+00:11:35,620 --> 00:11:39,355
+squaring it makes it much, much, much
+smaller. And of course this is just one
+
+149
+00:11:39,355 --> 00:11:42,834
+equation in two variables. If you prefer,
+you can solve this equation to express b,
+
+150
+00:11:42,834 --> 00:11:48,825
+the space requirement as a function of an
+error requirement. So if you know that the
+
+151
+00:11:48,825 --> 00:11:52,553
+tolerance for false positives in your
+application is one percent you can just
+
+152
+00:11:52,553 --> 00:11:56,160
+solve this for b and figure out how many
+bits per object you need to allocate. And
+
+153
+00:11:56,160 --> 00:12:01,282
+so rewriting what you get is that the
+number of bits per object that you need is
+
+154
+00:12:01,282 --> 00:12:07,252
+roughly 1.44 the log base two of one over
+epsilon. So, as expected as epsilon gets
+
+155
+00:12:07,252 --> 00:12:12,196
+smaller and smaller, you want fewer and
+fewer errors, the space requirements will
+
+156
+00:12:12,196 --> 00:12:17,243
+increase. So, the final question is, is it
+a useful data structure? Can you set all
+
+157
+00:12:17,243 --> 00:12:22,241
+the parameters so that you get you know,
+really interesting space error trade off
+
+158
+00:12:22,241 --> 00:12:27,817
+and the answer is totally. So, let me give
+you an example. Let's go back to having
+
+159
+00:12:27,817 --> 00:12:33,198
+eight bits of storage per object so that
+corresponds to b = eight. Then, what this
+
+160
+00:12:33,198 --> 00:12:38,712
+pick formula indicates is we should use
+five or six hash functions and already you
+
+161
+00:12:38,712 --> 00:12:41,640
+have an error probability of something
+like two percent which for a lot of the
+
+162
+00:12:41,640 --> 00:12:45,740
+motivating applications we talked about is
+already good enough. And again, if you
+
+163
+00:12:45,740 --> 00:12:49,744
+double the number of bits to say sixteen
+per object, then this error probability
+
+164
+00:12:49,744 --> 00:12:54,279
+would be really small. Pushing you know
+one in 5,000 or something like that. So,
+
+165
+00:12:54,279 --> 00:12:59,659
+to conclude at least in this idealized
+analysis which again, you should check
+
+166
+00:12:59,659 --> 00:13:03,418
+against at any real world implementation
+although empirically, it is definitely
+
+167
+00:13:03,418 --> 00:13:06,778
+achievable with well implemented bloom
+filter in nonpathological data to get this
+
+168
+00:13:06,778 --> 00:13:11,661
+kind of performance even with really a
+ridiculously minuscule amount of space per
+
+169
+00:13:11,661 --> 00:13:16,313
+object much less generally than storing
+the object itself, you can get fast
+
+170
+00:13:16,313 --> 00:13:20,095
+inserts, fast look ups, you do have to
+have false positives but with a very
+
+171
+00:13:20,095 --> 00:13:31,892
+controllable amount of error rates and
+that what's make bloom filters a win in a
+
+172
+00:13:31,892 --> 00:14:51,068
+number of applications.

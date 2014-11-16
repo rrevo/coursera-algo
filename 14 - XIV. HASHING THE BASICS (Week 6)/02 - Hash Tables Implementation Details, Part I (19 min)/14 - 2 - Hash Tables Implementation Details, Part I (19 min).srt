@@ -1,0 +1,1363 @@
+1
+00:00:00,000 --> 00:00:04,182
+So in this video we'll take a peek under
+the hood of hash functions. And I'll
+
+2
+00:00:04,182 --> 00:00:09,451
+discuss some of the high level principles
+by which their implemented. So let's
+
+3
+00:00:09,451 --> 00:00:13,338
+briefly review the raison d'etre of a hash
+table. So the purpose in life for a hash
+
+4
+00:00:13,338 --> 00:00:17,038
+table is to support super-fast lookups. So
+maybe you're keeping track of the
+
+5
+00:00:17,038 --> 00:00:20,925
+transactions that happened on your website
+yesterday. Maybe you're keeping track of
+
+6
+00:00:20,925 --> 00:00:24,671
+your employees; maybe you're keeping track
+of IP addresses in an Internet router.
+
+7
+00:00:24,671 --> 00:00:28,184
+Maybe you're keeping track of chess
+configurations in a, in a chess-playing
+
+8
+00:00:28,184 --> 00:00:31,837
+program, Whatever, The point is, you want
+to be able to insert stuff into a hash
+
+9
+00:00:31,837 --> 00:00:35,302
+table, and later remember whether
+something's there or whether something's
+
+10
+00:00:35,302 --> 00:00:38,815
+not there. So the implementations we'll
+discuss will generally also support
+
+11
+00:00:38,815 --> 00:00:42,608
+deletions. But that's pretty much it. It's
+a very restricted set of operations. But
+
+12
+00:00:42,608 --> 00:00:46,627
+the hash, It was going to execute them at
+very, very well. So, basically in constant
+
+13
+00:00:46,627 --> 00:00:50,574
+time, again subject to some fine print,
+which we'll discuss a little bit in this
+
+14
+00:00:50,574 --> 00:00:54,671
+video but, then more deeply in a separate
+optional video. So, the two caveats are
+
+15
+00:00:54,671 --> 00:00:59,018
+first of all the hash table had better be
+properly implemented. It's actually pretty
+
+16
+00:00:59,018 --> 00:01:03,015
+easy to screw up a hash table to screw up
+hash functions. We'll talk a bit about
+
+17
+00:01:03,015 --> 00:01:06,462
+that in a few minutes and, then, also, the
+data should, in some sense, be
+
+18
+00:01:06,462 --> 00:01:10,310
+non-pathological, and that, we will
+discuss more deeply in a separate video.
+
+19
+00:01:10,310 --> 00:01:14,163
+Alright, so let me give you an initial
+glimpse of some of the magic that's
+
+20
+00:01:14,163 --> 00:01:18,017
+happening under the hood in hash
+functions. So, at first let me say exactly
+
+21
+00:01:18,017 --> 00:01:22,079
+what the setup is. The first step is to
+identify all the things that you might
+
+22
+00:01:22,079 --> 00:01:26,141
+want to be storing. So, in other words,
+the universe of your application, So this
+
+23
+00:01:26,141 --> 00:01:30,463
+would be something like, all possible I-P
+addresses, of which there's 2^32 .
+
+24
+00:01:30,463 --> 00:01:34,981
+All possible names you might
+encounter, perhaps with a maximum of, say,
+
+25
+00:01:34,981 --> 00:01:40,190
+30 characters. All possible configurations
+of a chessboard, and so on, And one thing
+
+26
+00:01:40,190 --> 00:01:44,935
+I hope you can appreciate from these
+examples is that, in many cases, this
+
+27
+00:01:44,935 --> 00:01:49,260
+universe is really big. Sothe number of ] IP
+address is, quote unquote, only two 2^32.
+
+28
+00:01:49,260 --> 00:01:52,811
+The number of all names, you're
+probably talking more like 26 raised to the 30.
+
+29
+00:01:52,811 --> 00:01:56,697
+All chessboard configurations I
+don't even wanna think about. And what you
+
+30
+00:01:56,697 --> 00:02:00,535
+wanna accomplish is, you wanna maintain an
+evolving subset of this universe U. So
+
+31
+00:02:00,535 --> 00:02:04,470
+maybe you wanna keep track of all the IP
+addresses you've seen on your website in
+
+32
+00:02:04,470 --> 00:02:08,452
+the last 24 hours. You wanna keep track of
+the phone numbers of all of your friends.
+
+33
+00:02:08,452 --> 00:02:12,386
+You wanna keep track of the chessboard
+configurations that you've explored in the
+
+34
+00:02:12,386 --> 00:02:16,665
+past three seconds, whatever. And again I
+hope what is clear from the applications
+
+35
+00:02:16,665 --> 00:02:20,929
+we've been discussing, is that the set S
+is usually of a reasonable size. It's,
+
+36
+00:02:20,929 --> 00:02:25,194
+it's something you could store in main
+memory. You know, it maybe it's tens of
+
+37
+00:02:25,194 --> 00:02:29,735
+thousands of IP addresses. Maybe it's, you
+know, a few hundred names of your various
+
+38
+00:02:29,735 --> 00:02:33,446
+friends. You know, maybe it's in the, you
+know, millions of chessboard
+
+39
+00:02:33,446 --> 00:02:37,760
+configurations, but still way, way, way
+smaller than the size of the universe. So
+
+40
+00:02:37,760 --> 00:02:41,978
+without data structures, you'd have to
+resort to other unsatisfactory solutions
+
+41
+00:02:41,978 --> 00:02:46,035
+to maintaining this set. So the first
+thing you could try, as we discussed in
+
+42
+00:02:46,035 --> 00:02:50,040
+the previous video, would be just have an
+array with one position for every
+
+43
+00:02:50,040 --> 00:02:54,068
+imaginable thing you might want to store
+in your set. So this is the solution
+
+44
+00:02:54,068 --> 00:02:58,015
+that's going to work well if all of your
+friends happen to have names that are
+
+45
+00:02:58,015 --> 00:03:01,611
+integers between 1 and 10,000, but
+doesn't scale when the universe size
+
+46
+00:03:01,761 --> 00:03:05,658
+becomes really big, as in most of these
+applications. So, the good news is, is of
+
+47
+00:03:05,658 --> 00:03:09,754
+course, is an array of and it's of course
+fast random access so you can access any
+
+48
+00:03:09,754 --> 00:03:13,800
+position in constant time. So, if you have
+an array base solution index by all the
+
+49
+00:03:13,800 --> 00:03:17,547
+elements of the universe, you can do
+constant time, insert, delete and look up.
+
+50
+00:03:17,547 --> 00:03:20,893
+The bad news is, is the space
+requirement is proportional to the
+
+51
+00:03:20,893 --> 00:03:24,590
+universe. And again, forget about being
+unsatisfactory. That's just literary
+
+52
+00:03:24,590 --> 00:03:28,695
+impossible. Infeasible in many
+applications in which you'd use hash
+
+53
+00:03:28,695 --> 00:03:32,539
+tables.  Now of course to get the memory
+proportional to the size of the set stuff
+
+54
+00:03:32,539 --> 00:03:35,982
+that you're storing, an easy solution
+would just be to use a list. You know, say
+
+55
+00:03:35,982 --> 00:03:39,557
+a doubly-linked list. Something like that.
+Now with a list-based solution the good
+
+56
+00:03:39,557 --> 00:03:42,956
+news is, is your memory is certainly
+proportional to the size of the set that
+
+57
+00:03:42,956 --> 00:03:46,311
+you're storing, and independent of the
+size of the universe from which these
+
+58
+00:03:46,311 --> 00:03:49,887
+elements are drawn. The bad news is that
+to figure out whether something is, or is
+
+59
+00:03:49,887 --> 00:03:53,330
+not, in a list you generally have to
+traverse through most of that list. And
+
+60
+00:03:53,330 --> 00:03:57,063
+that's gonna take up time proportional to
+the length of the list. So, really the
+
+61
+00:03:57,063 --> 00:04:02,096
+question we're faced in implementing cache
+table is, can we get the best Of both
+
+62
+00:04:02,096 --> 00:04:06,211
+worlds, of these two naive solutions. And
+the one hand, we want to have the constant
+
+63
+00:04:06,211 --> 00:04:10,429
+time operations enjoyed by the array based
+solution. But on the other hand, we wanna
+
+64
+00:04:10,429 --> 00:04:14,951
+have the, linear space in the size of the
+set that we're storing; that we get in the
+
+65
+00:04:14,951 --> 00:04:19,168
+list based solution. So to get the best of
+both worlds, we are going to use an array
+
+66
+00:04:19,168 --> 00:04:23,283
+based solution. But the array will not be
+big. It'll not be with size proportional
+
+67
+00:04:23,283 --> 00:04:27,297
+to the universe. The array will only have
+size, you know, roughly the same as the
+
+68
+00:04:27,297 --> 00:04:31,367
+set that we're storing, So somewhere in
+the ball park of the cardinality of S. So
+
+69
+00:04:31,367 --> 00:04:35,737
+the first thing we do is we decide on how
+big we want our array to be. So that, that
+
+70
+00:04:35,737 --> 00:04:40,002
+length is gonna be called n. We're gonna
+have an array of length n. And n is gonna
+
+71
+00:04:40,002 --> 00:04:44,319
+be in the ballpark of the size of S. It's
+gonna depend on a few things. Exactly how
+
+72
+00:04:44,319 --> 00:04:48,766
+n compares to S, but for now think of n as
+like double the size of S. We're gonna be
+
+73
+00:04:48,766 --> 00:04:53,557
+calling each entry of the array a bucket,
+so there's n buckets, and then, the size
+
+74
+00:04:53,557 --> 00:04:57,633
+of S is about 50 percent of the number of
+buckets, let's say. So one objection you
+
+75
+00:04:57,633 --> 00:05:01,720
+might legitimately raise at this point is,
+you know I thought, I said the set was
+
+76
+00:05:01,720 --> 00:05:05,604
+dynamic. The set S. Right? Stuff can be
+added, stuff can be deleted. So the size
+
+77
+00:05:05,604 --> 00:05:09,691
+isn't always the same. It can fluctuate
+over time. So what does it mean to define
+
+78
+00:05:09,691 --> 00:05:13,472
+an array which is the, roughly the same
+length as this changing set. So for
+
+79
+00:05:13,472 --> 00:05:17,714
+simplicity, for the purposes of this video
+to focus on the key points I am going to
+
+80
+00:05:17,714 --> 00:05:21,955
+assume that the set size S. While S itself
+can be changing, I'm going to assume that
+
+81
+00:05:21,955 --> 00:05:26,033
+the size of S doesn't fluctuate too much.
+So there are additional bells and whistles
+
+82
+00:05:26,033 --> 00:05:29,032
+you can add to a hash table
+implementation, and they're all quite
+
+83
+00:05:29,032 --> 00:05:32,446
+natural. I think most of you could
+probably figure them out on your own, to
+
+84
+00:05:32,446 --> 00:05:35,813
+deal with the fact that S might be
+changing sizes. So for example, you can
+
+85
+00:05:35,813 --> 00:05:39,596
+just keep track of how many elements are
+in your hash table. And when it exceeds a
+
+86
+00:05:39,596 --> 00:05:43,287
+big, a certain threshold, so when it's too
+big relative to the size of your array,
+
+87
+00:05:43,287 --> 00:05:47,208
+you just double the array. And then you
+reinsert all of the elements into this new
+
+88
+00:05:47,208 --> 00:05:50,945
+doubled array. Similarly, if you want to,
+if the set shrinks, you can have tricks
+
+89
+00:05:50,945 --> 00:05:54,682
+for shrinking the array dynamically as
+well. So I'm not gonna discuss these bells
+
+90
+00:05:54,682 --> 00:05:58,556
+and whistles for resizing your hash table
+dynamically. They are, of course Important
+
+91
+00:05:58,556 --> 00:06:02,458
+for a real implementation, and they are
+part of the implementations in the
+
+92
+00:06:02,458 --> 00:06:06,358
+standard programming libraries. But I view
+those as sort of a, a second order point
+
+93
+00:06:06,358 --> 00:06:10,102
+in the implementation of a hash table. And
+I wanna focus on the first order points,
+
+94
+00:06:10,239 --> 00:06:13,571
+in this video. So, summarizing, think of
+the set S. There are insertions and
+
+95
+00:06:13,571 --> 00:06:17,315
+deletions we have to accommodate. But, you
+know, S is gonna be roughly the same size.
+
+96
+00:06:17,315 --> 00:06:20,967
+And the number of buckets will be, you
+know, within a constant factor of the size
+
+97
+00:06:20,967 --> 00:06:25,978
+of the set. All right so there we have our
+array with totally reasonable space, space
+
+98
+00:06:25,978 --> 00:06:31,103
+proportional to the size of the set that
+we are storing. And now what we want is we
+
+99
+00:06:31,103 --> 00:06:35,920
+want is some way of translating between
+the things that we care about, say our
+
+100
+00:06:35,920 --> 00:06:41,108
+friends names or whatever the elements in
+the universe are to the positions in this
+
+101
+00:06:41,108 --> 00:06:46,172
+array. So the object responsible for that
+translation from keys drawn from this universe to
+
+102
+00:06:46,172 --> 00:06:52,060
+positions in this array is called a hash
+function. So formally, a hash function
+
+103
+00:06:52,060 --> 00:06:56,844
+Takes as input a key. So this is gonna be
+an IP address or the name of somebody or a
+
+104
+00:06:56,844 --> 00:07:01,628
+chessboard configuration or whatever. And
+it's going to spit out an position in this
+
+105
+00:07:01,628 --> 00:07:06,013
+array. So I'm gonna label the array
+entries from 0 to n-1 for this lecture.
+
+106
+00:07:06,013 --> 00:07:10,057
+Obviously at the moment this is super
+underspecified. There's a zillion
+
+107
+00:07:10,057 --> 00:07:14,556
+functions you could choose. Which one you
+use, we'll talk about that, but for now
+
+108
+00:07:14,556 --> 00:07:19,226
+there's just gonna be some hash function
+mapping from elements of the universe to
+
+109
+00:07:19,226 --> 00:07:23,977
+buckets, to positions in this array. Now,
+as far as the semantics of this hash
+
+110
+00:07:23,977 --> 00:07:29,223
+function, what the hash function is doing,
+it's telling us in which position we
+
+111
+00:07:29,223 --> 00:07:34,132
+should store a given key from the
+universe. So, if we have some new friend
+
+112
+00:07:34,132 --> 00:07:38,737
+named Alice.  And we run Alice, we key
+Alice through the hash function and it
+
+113
+00:07:38,737 --> 00:07:43,226
+gives us a 17. It says we should
+store Alice's phone number in position
+
+114
+00:07:43,226 --> 00:07:47,886
+17 of the array. If we have some
+crazy chessboard configuration, we feed it
+
+115
+00:07:47,886 --> 00:07:52,777
+into a hash function and it spits out 172,
+it says we should remember this chessboard
+
+116
+00:07:52,777 --> 00:07:57,788
+configuration in the 172nd bucket of this
+array. So again, given x, which is some
+
+117
+00:07:57,788 --> 00:08:03,662
+key from this universe, we invoke a hash
+function to get a position in this array,
+
+118
+00:08:03,662 --> 00:08:09,537
+to get a bucket. And then that is where we
+try to store this x and any associated
+
+119
+00:08:09,537 --> 00:08:13,366
+data with it. So that's the high
+leveled idea of how you implement a hash
+
+120
+00:08:13,366 --> 00:08:16,986
+table, but we're quite far from done, And
+in particular there is a serious issue,
+
+121
+00:08:16,986 --> 00:08:20,560
+that we're going to have to deal with,
+that's fundamental to implementing hash
+
+122
+00:08:20,560 --> 00:08:23,997
+tables, and that's the notion of a
+collision. So probably many of you may
+
+123
+00:08:23,997 --> 00:08:27,709
+have already noticed that this problem
+might occur. Which is well what happens if
+
+124
+00:08:27,709 --> 00:08:31,558
+we're storing our friend's phone numbers,
+and you know Alice shows up and we ask our
+
+125
+00:08:31,558 --> 00:08:35,178
+hash function where to store Alice's phone
+number, and it says oh bucket number
+
+126
+00:08:35,178 --> 00:08:38,889
+17, And then our friend Bob shows
+up, and we ask our hash function where to
+
+127
+00:08:38,889 --> 00:08:42,509
+store Bob's phone number, and what if the
+hash function also says bucket number
+
+128
+00:08:42,509 --> 00:08:45,865
+17 for Bob? What do we put in
+bucket at 17? Do we put Alice
+
+129
+00:08:45,865 --> 00:08:49,590
+there, do we put Bob there, do we put them
+both there? How do we deal with these
+
+130
+00:08:49,590 --> 00:08:53,459
+so-called collisions? So, the next quiz is
+meant to give, to get you thinking about
+
+131
+00:08:53,459 --> 00:08:57,900
+collisions, and in some sense, how truly
+unavoidable they really are. [sound],
+
+132
+00:08:57,900 --> 00:09:02,587
+[sound] All right. So the correct answer
+to this question is the first answer,
+
+133
+00:09:02,587 --> 00:09:06,605
+believe it or not. All you need is 23
+people in a room before you're equally
+
+134
+00:09:06,605 --> 00:09:10,834
+likely to have two people with the same
+birthday as not. So if you're looking to,
+
+135
+00:09:10,834 --> 00:09:14,851
+to skim a little money off of your
+non-mathematical friends, this is one way
+
+136
+00:09:14,851 --> 00:09:19,345
+you can do it. Go to cocktail parties with
+about 40 people and place bets with people
+
+137
+00:09:19,345 --> 00:09:23,710
+that there are two people in the room with
+the same birthday. So if you have 367
+
+138
+00:09:23,710 --> 00:09:27,910
+people, well there's only 366 distinct
+birthdays, I'm counting February 29th
+
+139
+00:09:27,910 --> 00:09:32,770
+here as one of them. So by
+the pigeonhole principle, certainly the
+
+140
+00:09:32,770 --> 00:09:38,910
+probability is 100%. By the time you get
+to 367. Now, by the time you're at 57.
+
+141
+00:09:38,910 --> 00:09:45,418
+You're already at 99%. So you already have
+overwhelming probability to have a
+
+142
+00:09:45,418 --> 00:09:51,112
+duplicate birthday with 57 people. So of
+course, with 184 you're gonna be almost at
+
+143
+00:09:51,112 --> 00:09:56,389
+100%, 99.99. Who knows? Some large number
+of 9's, And at 23, you're at 50%. So many
+
+144
+00:09:56,389 --> 00:10:02,083
+people find this quite counter-intuitive
+that you only need 23 people to get a
+
+145
+00:10:02,083 --> 00:10:08,193
+duplicate birthday on average. And so this
+is a, this is a quite famous example and
+
+146
+00:10:08,193 --> 00:10:12,699
+it sometimes goes by the birthday paradox.
+Calling it a paradox is sort of a
+
+147
+00:10:12,699 --> 00:10:15,691
+misnomer. A paradox, you know, often
+suggests some kind of logical
+
+148
+00:10:15,691 --> 00:10:18,822
+inconsistency. There's no logical
+inconsistency here. It's just that
+
+149
+00:10:18,822 --> 00:10:22,562
+people's brains are not really wired to
+have this intuition, for whatever reason.
+
+150
+00:10:22,562 --> 00:10:26,208
+So, but it's really just math. You can
+work out the math, and, and, and you can
+
+151
+00:10:26,208 --> 00:10:29,808
+just solve it. So, more generally, the
+principle behind the birthday paradox is
+
+152
+00:10:29,808 --> 00:10:33,126
+the following. So suppose you have a
+calendar, perhaps on some different
+
+153
+00:10:33,126 --> 00:10:36,913
+planet, which has K days. Where each,
+everybody's equally likely to have each of
+
+154
+00:10:36,913 --> 00:10:40,746
+the K days as their birthday. Then it's
+about the square root of k people that you
+
+155
+00:10:40,746 --> 00:10:44,392
+need in a room before you're equally
+likely to have a duplicate, or not have a
+
+156
+00:10:44,392 --> 00:10:48,006
+duplicate. Okay, and the reason that you
+get the square root effect is because if
+
+157
+00:10:48,006 --> 00:10:52,572
+you think about it. There's a quadratic
+number of pairs of people in the room, so
+
+158
+00:10:52,572 --> 00:10:56,997
+that's a quadratic, and the number of
+people Opportunities to have a duplicate.
+
+159
+00:10:56,997 --> 00:11:01,110
+Right? So, each pair of people could be a
+duplicate, there's a quadratic number of
+
+160
+00:11:01,110 --> 00:11:05,326
+pairs. And so, that's why, once the number
+of pairs starts reaching about the number
+
+161
+00:11:05,480 --> 00:11:09,644
+of different days, you're, you're about,
+you're likely to see a duplicate around
+
+162
+00:11:09,644 --> 00:11:13,542
+that point. So you might be wondering why
+I'm telling you about the birthday paradox
+
+163
+00:11:13,542 --> 00:11:17,361
+in the middle of a lecture about hashing,
+but really it's quite relevant. So imagine
+
+164
+00:11:17,361 --> 00:11:21,324
+for example you defined a hash function in
+the following way. Now to be clear, this
+
+165
+00:11:21,324 --> 00:11:25,239
+is not a practical hash function, but just
+for the purposes of discussion, imagine
+
+166
+00:11:25,239 --> 00:11:29,202
+you have a hash function which randomly
+assigned every single key to a uniform
+
+167
+00:11:29,202 --> 00:11:33,068
+bucket. 'Kay, so for each, each of the 1/n
+buckets equally likely. Then what
+
+168
+00:11:33,068 --> 00:11:36,983
+the birthday paradox says is, even for a
+very small dataset, you are already gonna
+
+169
+00:11:36,983 --> 00:11:40,439
+have a pair of things colliding. All
+right, So if you have an n buckets, so
+
+170
+00:11:40,439 --> 00:11:44,355
+maybe your n is like, 10,000, all you need
+is roughly 100 elements in your data set,
+
+171
+00:11:44,355 --> 00:11:47,793
+and despite the fact that the table is
+only going to be one percent full, you're
+
+172
+00:11:47,793 --> 00:11:51,278
+already going to see a collision, okay? So
+99 percent of them are empty, but you're
+
+173
+00:11:51,278 --> 00:11:55,146
+going to have one bucket that has two, so
+that's sort of annoying. So the birthday
+
+174
+00:11:55,146 --> 00:11:58,918
+paradox says, you start getting collisions
+with the hash function, even with the
+
+175
+00:11:58,918 --> 00:12:02,499
+really tiny data sets. So in this sense,
+if you're going to have hash tables,
+
+176
+00:12:02,499 --> 00:12:06,175
+you've got to deal with collisions.
+There's going to be a fair number of them,
+
+177
+00:12:06,175 --> 00:12:10,375
+and you need some method for resolving
+them So, collisions are a fact of life
+
+178
+00:12:10,375 --> 00:12:15,292
+when you're talking about hashing. Where
+again, by collision, what I mean is two
+
+179
+00:12:15,292 --> 00:12:20,832
+different keys. So two different elements
+x and y from the universe that hash to the
+
+180
+00:12:20,832 --> 00:12:25,977
+same bucket, Who have the same hash value,
+So in general we can think of a hash
+
+181
+00:12:25,977 --> 00:12:31,386
+function as doing a compression of sorts.
+So we have a huge universe U and we have
+
+182
+00:12:31,386 --> 00:12:36,272
+this very modest size array A with the
+only n buckets. Where n, we're thinking
+
+183
+00:12:36,272 --> 00:12:40,318
+of as being much, much, much smaller than
+U. So, of course, this hash function has
+
+184
+00:12:40,318 --> 00:12:44,519
+to map various elements of U to the same
+bucket. So what are we gonna do about it?
+
+185
+00:12:44,519 --> 00:12:48,254
+How are we going to resolve these
+collisions? Well, there's two different
+
+186
+00:12:48,254 --> 00:12:52,351
+solutions which are both quite prevalent
+in practice. So solution number one is
+
+187
+00:12:52,351 --> 00:12:56,604
+called chaining, or sometimes you'll also
+see it called separate chaining. And this
+
+188
+00:12:56,604 --> 00:13:00,702
+is a very natural solution; it's also the
+one that's relatively easy to analyze
+
+189
+00:13:00,702 --> 00:13:05,139
+mathematically. What you do is just for
+elements that hash to the same bucket, you
+
+190
+00:13:05,139 --> 00:13:09,740
+just revert to the list-based solution
+that we talked about in a previous slide.
+
+191
+00:13:09,740 --> 00:13:13,954
+So, each of the n buckets will not
+necessarily contain just merely 0 or 1 element
+
+192
+00:13:13,954 --> 00:13:18,555
+, it will contain a list within
+a principle unbounded number of elements.
+
+193
+00:13:18,555 --> 00:13:22,991
+Okay, so when we use chaining, it's done
+quite straight-forward to figure out how
+
+194
+00:13:22,991 --> 00:13:26,927
+to implement all of the hash table
+operations, namely, insert, delete and
+
+195
+00:13:26,927 --> 00:13:31,307
+look-up, you just hash something to the
+appropriate bucket and then you just do
+
+196
+00:13:31,307 --> 00:13:36,075
+insert, delete or look-up, as appropriate,
+in the list that's in that bucket. So just
+
+197
+00:13:36,075 --> 00:13:42,400
+to make clear that everything is type
+checking, so here h(x), this is the bucket
+
+198
+00:13:42,400 --> 00:13:48,950
+for x. That's what's specified by the hash
+function. And then, in the h(x) position
+
+199
+00:13:48,950 --> 00:13:54,631
+of this array A, in the h (x), the bucket
+is where we find the linked list that is
+
+200
+00:13:54,631 --> 00:13:59,627
+going to contain x. So just to give a
+cartoon example, if you had, say, four
+
+201
+00:13:59,627 --> 00:14:05,188
+buckets, Maybe, you know, the first bucket
+has exactly one record. Corresponding to
+
+202
+00:14:05,188 --> 00:14:11,285
+Alice, maybe the second bucket just has a
+null pointer. No one's been inserted in the
+
+203
+00:14:11,285 --> 00:14:17,015
+second bucket. And then the third bucket
+we have, let's say, both Bob as well as
+
+204
+00:14:17,015 --> 00:14:22,960
+Daniel. And then maybe in the fourth
+bucket we have Carol. Okay, so because we
+
+205
+00:14:22,960 --> 00:14:26,964
+have a collision between Bob and Daniel,
+both map to the third bucket, and we
+
+206
+00:14:26,964 --> 00:14:31,469
+resolve that just by having a linked list,
+with Bob and Daniel in some order. So the
+
+207
+00:14:31,469 --> 00:14:36,539
+second solution which is trickier to talk
+about mathematically but still quite
+
+208
+00:14:36,539 --> 00:14:41,221
+important practically is called open
+addressing. And the principal in open
+
+209
+00:14:41,221 --> 00:14:45,546
+addressing is you're not going to use
+any space for pointers. You're not gonna
+
+210
+00:14:45,546 --> 00:14:49,936
+have lists. So you're only gonna have one
+object per bucket of the array. So another
+
+211
+00:14:49,936 --> 00:14:53,812
+question is what happens if, you know, you
+try and insert Daniel and you go, you
+
+212
+00:14:53,812 --> 00:14:57,639
+invoke the hash function on Daniel and it
+takes you to a bucket that already
+
+213
+00:14:57,639 --> 00:15:01,664
+contains Bob? That means there's no room
+for Daniel. So what you're going to do is
+
+214
+00:15:01,664 --> 00:15:05,739
+you're gonna probe the hash table in some
+other position. So a hash function is, is
+
+215
+00:15:05,739 --> 00:15:09,864
+now gonna be replaced by a hash sequence,
+where you try, the hash function tells you
+
+216
+00:15:09,864 --> 00:15:13,939
+the first bucket to try to insert Daniel;
+failing that, a second bucket in which to
+
+217
+00:15:13,939 --> 00:15:17,765
+try to insert Daniel; failing that, a
+third bucket to try to insert Daniel; and
+
+218
+00:15:17,765 --> 00:15:21,691
+so on. And you just keep trying till you
+find an open position somewhere in the
+
+219
+00:15:23,822 --> 00:15:25,953
+array. So there's various strategies for
+trying to figure out the probe
+
+220
+00:15:25,953 --> 00:15:30,698
+sequence. One strategy is if you fail and
+save bucket 17, which is where the
+
+221
+00:15:30,698 --> 00:15:35,109
+hash function tells you to go first. You
+just try bucket 18, then 19,
+
+222
+00:15:35,109 --> 00:15:39,351
+then, 20, then 21 and so on, until you
+find your first open slot. So that's
+
+223
+00:15:39,351 --> 00:15:43,626
+called linear probing. And another
+approach is double hashing. So this is a
+
+224
+00:15:43,626 --> 00:15:47,525
+solution where you actually have two hash
+functions, hash function 1 and hash
+
+225
+00:15:47,525 --> 00:15:51,325
+function 2. And the idea is, suppose
+you're trying to insert, say, Daniel, into
+
+226
+00:15:51,325 --> 00:15:55,372
+a hash table with open addressing, and you
+evaluate both of the hash functions. And
+
+227
+00:15:55,372 --> 00:15:59,270
+the first one comes up 17, and the
+fir-, the second one comes up 23. So, as
+
+228
+00:15:59,270 --> 00:16:03,120
+usual, the has-, first hash function will
+specify where you look first. So if it
+
+229
+00:16:03,120 --> 00:16:07,216
+evaluates on Daniel to 17, you look
+in the seventeenth position of the array,
+
+230
+00:16:07,216 --> 00:16:11,066
+And if, if it's empty, that's where you
+insert Daniel. Now, if it's full, what you
+
+231
+00:16:11,066 --> 00:16:16,513
+do is you use the second Hash value to be
+an additive shift, so. Unlike linear
+
+232
+00:16:16,513 --> 00:16:20,488
+probing where after seventeen, you look at
+eighteen. With double hashing, if the
+
+233
+00:16:20,488 --> 00:16:24,617
+second hash function gives you 23, that's
+gonna be your offset. So after seventeen,
+
+234
+00:16:24,617 --> 00:16:28,643
+you look at bucket 40. If 40 is already
+full, you look at bucket 63. If bucket 63
+
+235
+00:16:28,643 --> 00:16:32,670
+is already full then you look at bucket
+86. So you keep adding increments of 23
+
+236
+00:16:32,670 --> 00:16:36,849
+until you finally find a bucket where,
+that's empty and that's where you insert
+
+237
+00:16:36,849 --> 00:16:40,518
+Daniel. Now of course, if you try to
+insert some other name, if you try to
+
+238
+00:16:40,518 --> 00:16:44,494
+insert Elizabeth, you're gonna get two
+totally different numbers in general. So
+
+239
+00:16:44,494 --> 00:16:48,469
+maybe you'll get 42 and 27, and so here
+the probed sequence will be 42, failing
+
+240
+00:16:48,469 --> 00:16:54,781
+that 69, failing that 96 failing that 123
+and so on, So a question you should have
+
+241
+00:16:54,781 --> 00:16:58,215
+at this point, is, you know. I've told you
+two solutions to resolving collisions in a
+
+242
+00:16:58,215 --> 00:17:01,359
+hash table. And you're probably asking,
+well, which ones should you use if you
+
+243
+00:17:01,359 --> 00:17:04,545
+have to implement your own hash table?
+And, you know, as usual, if I present you
+
+244
+00:17:04,545 --> 00:17:07,978
+with two different solutions for the same
+problem. You can probably rest assured
+
+245
+00:17:07,978 --> 00:17:11,081
+that neither one dominates the other,
+right? Otherwise I wouldn't waste your
+
+246
+00:17:11,081 --> 00:17:14,267
+time by presenting both of them to you.
+So, sometimes chaining's gonna perform
+
+247
+00:17:14,267 --> 00:17:17,453
+better, and sometimes, open addressing's
+gonna perform better. And of course, it
+
+248
+00:17:17,453 --> 00:17:20,994
+also depends on what kind of metric that
+you care about. So there are a couple of
+
+249
+00:17:20,994 --> 00:17:24,963
+rules of thumb that I can tell you. So
+first of all if space is at a real premium
+
+250
+00:17:24,963 --> 00:17:29,127
+you might want to consider open addressing
+instead of chaining, and that's cause with
+
+251
+00:17:29,127 --> 00:17:33,095
+chaining you do have this excess, not
+huge but you do have this little bit of
+
+252
+00:17:33,095 --> 00:17:37,210
+space overhead and dealing with all these
+pointers in this link list. So if you want
+
+253
+00:17:37,210 --> 00:17:41,081
+to avoid that, you might want to think
+about open addressing. The second rule of
+
+254
+00:17:41,081 --> 00:17:44,706
+thumb is deletion is trickier with open
+addressing than with chaining, but
+
+255
+00:17:44,706 --> 00:17:48,919
+deletion is clearly not difficult at all,
+either to code or understand when you use
+
+256
+00:17:48,919 --> 00:17:53,035
+chaining cause it just reduces chaining to
+a linked list which of course you all know
+
+257
+00:17:53,035 --> 00:17:56,887
+how to do. Open Addressing is, it's not
+impossible to implement deletion but it's
+
+258
+00:17:56,887 --> 00:18:00,340
+much trickier. So if deletion's a, a
+crucial operation for you, that might
+
+259
+00:18:00,340 --> 00:18:04,082
+steer you towards thinking about chaining.
+But ultimately, if it's really kinda
+
+260
+00:18:04,082 --> 00:18:07,871
+mission critical code, probably the best
+thing to do is implement both kinds of
+
+261
+00:18:07,871 --> 00:18:11,708
+solutions and just see which one works
+better. It's a little hard to predict how
+
+262
+00:18:11,708 --> 00:18:15,065
+they're gonna interact with memory
+hierarchies and that kind of thing.
+
+263
+00:18:15,065 --> 00:18:18,746
+They're both useful in their own contexts.
+Alright so we've covered the two most
+
+264
+00:18:18,746 --> 00:18:22,386
+prevalent ways of handling collisions. And
+we argued that collisions are inevitable
+
+265
+00:18:22,386 --> 00:18:25,894
+no matter you design you hash function.
+You're stuck with collisions and you can
+
+266
+00:18:25,894 --> 00:18:29,490
+do chaining or linked lists per bucket, or
+you can do addressing, where you actually
+
+267
+00:18:29,490 --> 00:18:32,911
+have a probe sequence in order of which
+you look at buckets until you find an
+
+268
+00:18:32,911 --> 00:18:37,694
+empty one. And the elephant in the room at
+this point is, you know, what is this hash
+
+269
+00:18:37,694 --> 00:18:42,514
+function? I have told you nothing about
+hash functions. All I told you is there is
+
+270
+00:18:42,514 --> 00:18:47,394
+some mapping from the set of the universe,
+so IP addresses, or names, or whatever to
+
+271
+00:18:47,394 --> 00:18:51,441
+a bucket number. Well what kind of
+function should you use? Excellent
+
+272
+00:18:51,441 --> 00:18:55,845
+question, Tons of research on that
+question, And to this day as much art as
+
+273
+00:18:55,845 --> 00:18:58,285
+science. But let's start talking about it.

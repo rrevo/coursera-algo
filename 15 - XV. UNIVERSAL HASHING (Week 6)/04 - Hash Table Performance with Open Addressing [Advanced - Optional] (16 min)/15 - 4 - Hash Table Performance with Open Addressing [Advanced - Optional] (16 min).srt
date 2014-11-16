@@ -1,0 +1,1079 @@
+1
+00:00:00,000 --> 00:00:03,508
+In the last video, we discussed the
+performance of hash tables that are
+
+2
+00:00:03,508 --> 00:00:07,264
+implemented using chaining, using one link
+list per bucket. In fact, we proved
+
+3
+00:00:07,264 --> 00:00:11,267
+mathematically that if you use a hash
+function chosen uniformly at random from a
+
+4
+00:00:11,267 --> 00:00:15,072
+universal family, and if you keep the
+buckets, number of buckets, comparable to
+
+5
+00:00:15,072 --> 00:00:19,026
+the size of your data set, then in fact,
+you're guaranteed constant time expected
+
+6
+00:00:19,026 --> 00:00:22,782
+performance But, recall that chaining is
+not the only implementation of hash
+
+7
+00:00:22,782 --> 00:00:26,439
+tables. There's a second paradigm which is
+also very important called open
+
+8
+00:00:26,439 --> 00:00:30,293
+addressing. This is where you're only
+allowed to store one object in each slot,
+
+9
+00:00:30,293 --> 00:00:34,275
+and you keep searching for an empty slot
+When you need to insert a new object into
+
+10
+00:00:34,275 --> 00:00:38,582
+your hash table. Now it turns out it's
+much harder to mathematically analyze hash
+
+11
+00:00:38,582 --> 00:00:43,130
+tables implemented using open addressing
+But, I do want to say a few words about it
+
+12
+00:00:43,130 --> 00:00:47,460
+to give you the gist of what kind of
+performance you might hope to expect from
+
+13
+00:00:47,460 --> 00:00:51,858
+those sorts of hash tables. So recall how
+open addressing works. We're only
+
+14
+00:00:51,858 --> 00:00:57,074
+permitted to store one object in each slot
+So this is unlike the case with chaining
+
+15
+00:00:57,074 --> 00:01:02,263
+where we can have an arbitrarily long list
+in a given bucket of the hash table. With
+
+16
+00:01:02,263 --> 00:01:06,804
+at most one object per slot, obviously
+open addressing only makes sense when the
+
+17
+00:01:06,804 --> 00:01:11,345
+load factor alpha is less than one. When
+the number of objects you're storing in
+
+18
+00:01:11,345 --> 00:01:15,344
+your table is less than the number of
+slots available Because of this
+
+19
+00:01:15,344 --> 00:01:20,194
+requirement we have at most one object per
+slot we need to demand more of our hash
+
+20
+00:01:20,194 --> 00:01:24,810
+function. Our hash function might ask us
+to put a given object, say with some IP
+
+21
+00:01:24,810 --> 00:01:29,660
+address into say bucket number seventeen
+but bucket number seventeen might already
+
+22
+00:01:29,660 --> 00:01:34,334
+be full, might already be populated. In
+that case, we go back to our hash function
+
+23
+00:01:34,334 --> 00:01:39,300
+and ask it where to look for an empty slot
+next. So maybe it tells us to next look in
+
+24
+00:01:39,300 --> 00:01:44,028
+bucket 41. If 41 is full it tells us to
+look in bucket number seven and so on Two
+
+25
+00:01:44,028 --> 00:01:48,708
+specific strategies for producing a probe
+sequence that we mentioned earlier were
+
+26
+00:01:48,708 --> 00:01:53,274
+double hashing and linear probing. D ouble
+hashing is where you use two different
+
+27
+00:01:53,274 --> 00:01:57,726
+hash functions, h1 and h2. H1 tells you
+which slot in which to search first and
+
+28
+00:01:57,726 --> 00:02:02,521
+then every time you find a full slot you
+add an increment which is specified by the
+
+29
+00:02:02,521 --> 00:02:07,030
+second hash functions h2. Linear probing
+is even simpler you just have one hash
+
+30
+00:02:07,030 --> 00:02:11,539
+function that tells you where to search
+first and then you just add one to the
+
+31
+00:02:11,539 --> 00:02:15,914
+slot until you find an empty slot As I
+mentioned at the beginning, it is quite
+
+32
+00:02:15,914 --> 00:02:20,339
+nontrivial to Mathematically analyze the
+performance of hash tables, using these
+
+33
+00:02:20,339 --> 00:02:24,488
+various open addressing strategies. It's
+not impossible. There is some quite
+
+34
+00:02:24,488 --> 00:02:28,582
+beautiful and quite informative
+theoretical work. That does tell us how
+
+35
+00:02:28,582 --> 00:02:32,565
+hash tables perform But that's well
+outside the scope, of this course. So
+
+36
+00:02:32,565 --> 00:02:37,045
+instead what I wanna do is I want to give
+you a quick and dirty calculation. That
+
+37
+00:02:37,045 --> 00:02:41,582
+suggests, at least in an idealized world.
+What kind of performance we should expect
+
+38
+00:02:41,582 --> 00:02:46,284
+from a hash table with open addressing If
+it's well implemented As a function of the
+
+39
+00:02:46,284 --> 00:02:50,800
+load factor, alpha. Precisely, I'm going
+to introduce a heuristic assumption. It's
+
+40
+00:02:50,800 --> 00:02:55,358
+certainly not true but we'll do it just
+for a quick and dirty calculation, that
+
+41
+00:02:55,358 --> 00:02:59,744
+we're using a hash function in which each
+of the n-factorial possible probe
+
+42
+00:02:59,744 --> 00:03:03,789
+sequences is equally likely. Now, no hash
+function you're ever going to use is
+
+43
+00:03:03,789 --> 00:03:07,805
+actually going to satisfy this assumption,
+and if you think about it for a little
+
+44
+00:03:07,805 --> 00:03:11,574
+bit, you realize that if you use double
+hashing or linear programming, you're
+
+45
+00:03:11,574 --> 00:03:15,640
+certainly not going to be satisfying that
+assumption. So this will still give us a
+
+46
+00:03:15,640 --> 00:03:19,557
+kind of best case scenario against to
+which you can compare the performance of
+
+47
+00:03:19,557 --> 00:03:23,523
+your own hash table implementations. So if
+you [inaudible] hash table, and you're
+
+48
+00:03:23,523 --> 00:03:27,341
+seeing performance as good, as what's
+suggested by this idealized [inaudible]
+
+49
+00:03:27,341 --> 00:03:31,294
+analysis, then you're home free. You know
+your hash table is performing great. So
+
+50
+00:03:31,294 --> 00:03:36,029
+what is the line in the sand that gets
+drawn, under this heuristic assumption?
+
+51
+00:03:36,029 --> 00:03:40,949
+What is this idealized, idealized hash
+function performance? As a function of the
+
+52
+00:03:40,949 --> 00:03:45,439
+lo ad alpha Well here it is. What I'm
+gonna argue next is that under this
+
+53
+00:03:45,439 --> 00:03:50,532
+heuristic assumption, the expected amount
+of time to insert a new object into the
+
+54
+00:03:50,532 --> 00:03:55,688
+hash table, is going to be essentially one
+over one minus alpha, where alpha is the
+
+55
+00:03:55,688 --> 00:04:00,781
+load. Remember the load is the number of
+objects in the hash table divided by the
+
+56
+00:04:00,781 --> 00:04:05,937
+number of available slots. So if the hash
+table is half full, then alpha's going to
+
+57
+00:04:05,937 --> 00:04:10,472
+be.5. If it's 75 percent full then alpha's
+going to be three-fourths. So what this
+
+58
+00:04:10,472 --> 00:04:15,338
+means is that, in this idealized scenario,
+if you keep the load pretty under control.
+
+59
+00:04:15,338 --> 00:04:19,617
+So, say if the load is 50%, then the
+insertion time is gonna be great, right?
+
+60
+00:04:19,617 --> 00:04:22,830
+If alpha's.5 And 1/ (1-alpha) =two, so you
+expect just two probes before the
+
+61
+00:04:22,830 --> 00:04:27,016
+successful insert of the new object And of
+course, if you're thinking about lookup,
+
+62
+00:04:27,016 --> 00:04:31,100
+that's going to be at least as good as
+insert, so if you're lucky a lookup might
+
+63
+00:04:31,100 --> 00:04:35,286
+terminate early if you find what you are
+looking for. In the worst case you go all
+
+64
+00:04:35,286 --> 00:04:39,064
+the way until an empty slot in an
+unsuccessful search, and that's gonna be
+
+65
+00:04:39,064 --> 00:04:42,740
+the same as insertion. So if alpha is
+small bounded away from one, you're
+
+66
+00:04:42,740 --> 00:04:46,824
+getting constant time performance. On the
+other hand, as the hash table gets full,
+
+67
+00:04:46,824 --> 00:04:51,010
+as alpha gets close to one, this operation
+time is blowing up; it's such a going to
+
+68
+00:04:51,010 --> 00:04:54,792
+infinity as alpha gets close to one. So if
+you need to have a nice. 90 percent full
+
+69
+00:04:54,792 --> 00:04:58,713
+hash table with open addressing. You're
+gonna start seeing, ten probes. So, you
+
+70
+00:04:58,713 --> 00:05:02,892
+really wanna keep hash tables with open
+addressing. You wanna keep the load under
+
+71
+00:05:02,892 --> 00:05:07,204
+control Certainly no more than probably.7.
+Maybe even less than that To refresh your
+
+72
+00:05:07,204 --> 00:05:10,977
+memory, with chaining, hash tables are
+perfectly well-defined even with loads
+
+73
+00:05:10,977 --> 00:05:15,002
+factors bigger than one. What we derived
+is that under universal hashing, under a
+
+74
+00:05:15,002 --> 00:05:18,926
+weaker assumption, we had an operation
+time of one plus alpha, for a load of
+
+75
+00:05:18,926 --> 00:05:22,498
+alpha. So with chaining, you just gotta
+keep alpha, you know, at most, some
+
+76
+00:05:22,498 --> 00:05:26,221
+reasonably small constant with open
+address, and you really got to keep it
+
+77
+00:05:26,221 --> 00:05:30,213
+well bounded a way below one. So next
+let's understand why this observation is
+
+78
+00:05:30,213 --> 00:05:34,506
+true. Why under the assumption that every
+probe sequence is equally likely do we
+
+79
+00:05:34,506 --> 00:05:38,850
+expect a one over one minus alpha running
+time for hash tables with open addressing?
+
+80
+00:05:38,850 --> 00:05:43,325
+So, the reason is pretty simple. And we
+can derive it by analogy with a simple
+
+81
+00:05:43,325 --> 00:05:48,032
+coin flipping experiment. So, to motivate
+the experiment, think just about the very
+
+82
+00:05:48,032 --> 00:05:52,682
+first probe that we do. Okay, so we get
+some new objects, some new IP address that
+
+83
+00:05:52,682 --> 00:05:57,215
+we want to insert into our hash table.
+Let's say our hash table's currently 70
+
+84
+00:05:57,215 --> 00:06:01,226
+percent full. Say there's 100 slots, 70
+are already taken by objects. Well, when
+
+85
+00:06:01,226 --> 00:06:06,050
+we look at this first probe, by assumption
+it's equally likely to be any one of the
+
+86
+00:06:06,050 --> 00:06:10,525
+100 slots. 70 of which are full, 30 which
+are empty So, with probability of one
+
+87
+00:06:10,525 --> 00:06:14,779
+minus alpha, or in the case, 30%, our
+first Probe will, luckily, find an empty
+
+88
+00:06:14,779 --> 00:06:19,511
+slot and we'll be done. We'll just insert
+the new object into that slot If we get
+
+89
+00:06:19,511 --> 00:06:24,219
+unlucky with a probability, 70%. We find a
+slot that's already occupied and then we
+
+90
+00:06:24,219 --> 00:06:28,869
+have to try again. So we try a new slot,
+drawn at random And we again check is it
+
+91
+00:06:28,869 --> 00:06:32,937
+full, or is it not full? And again, with
+30 percent probability, essentially it's
+
+92
+00:06:32,937 --> 00:06:37,645
+going to be empty and we can stop And if
+it's already full. Then we try, yet again.
+
+93
+00:06:37,645 --> 00:06:42,054
+So Doing random probes, looking for an
+empty slot, is tantamount to flipping a
+
+94
+00:06:42,054 --> 00:06:45,773
+coin with the probability of heads
+1-alpha, or, in this example, 30 Percent
+
+95
+00:06:45,773 --> 00:06:50,522
+And the number of probes you need until
+you successfully insert is just the number
+
+96
+00:06:50,522 --> 00:06:55,065
+of times you flip this last coin until you
+see a heads. In fact this biased coin
+
+97
+00:06:55,065 --> 00:06:59,755
+flipping experiment slightly overestimates
+the expected time for insertions and the
+
+98
+00:06:59,755 --> 00:07:04,500
+heuristics assumptions and that's because
+in the insertion time whenever we're never
+
+99
+00:07:04,500 --> 00:07:09,078
+going to try the same slot twice. We're
+going to try all end buckets in some order
+
+100
+00:07:09,078 --> 00:07:13,266
+with each of the impact [inaudible]
+ordering equally likely So back to our
+
+101
+00:07:13,266 --> 00:07:17,955
+example, where we have a hash table with
+100 slots, 70 of which are full. The first
+
+102
+00:07:17,955 --> 00:07:22,254
+probe indeed, we have a 30 in 100 chance
+of ge tting an empty slot. If that one
+
+103
+00:07:22,254 --> 00:07:26,888
+fails then we're not going to try the same
+slot again. So there is only 99 residual
+
+104
+00:07:26,888 --> 00:07:31,375
+possibilities. Again, 30 of which are
+empty. The one we checked last time was
+
+105
+00:07:31,375 --> 00:07:35,809
+full. So we actually have a 30 over 99
+percent chance of getting an empty slot on
+
+106
+00:07:35,809 --> 00:07:40,608
+the second try. Like 30 over 98 on the
+third try, if the second one fails, and so
+
+107
+00:07:40,608 --> 00:07:44,799
+on But, a valid upper bond is just to
+assume a 30 percent success probability
+
+108
+00:07:44,799 --> 00:07:49,172
+with every single probe, and that's
+precisely, what this coin flipping
+
+109
+00:07:49,172 --> 00:07:53,665
+experiment will get us. So the next quiz
+will ask you to actually compute the
+
+110
+00:07:53,665 --> 00:07:58,538
+expected value of capital N, the number of
+coin flips, needed to get heads when you
+
+111
+00:07:58,538 --> 00:08:02,953
+have a probability of heads of one minus
+alpha. As a hint, we actually analyzed
+
+112
+00:08:02,953 --> 00:08:07,482
+this exact same coin flipping experiment
+when alpha equals a half, back when we
+
+113
+00:08:07,482 --> 00:08:12,074
+discussed the expected running time of
+randomized linear time selection. Alright,
+
+114
+00:08:12,074 --> 00:08:16,487
+so the correct answer is the first one.
+One over 1-alpha So to see why, let's
+
+115
+00:08:16,487 --> 00:08:21,306
+return to our derivation, where we reduced
+analyzing the expected insertion time to
+
+116
+00:08:21,306 --> 00:08:26,067
+this random variable. The expected number
+of coin flips until we see a heads. So,
+
+117
+00:08:26,067 --> 00:08:30,770
+I'm gonna solve this exactly the same way
+that we did it back when we analyzed a
+
+118
+00:08:30,770 --> 00:08:35,473
+randomized, selection algorithm. And it's
+quite a sneaky way, but very effective.
+
+119
+00:08:35,473 --> 00:08:40,175
+What we're going to do is we're going to
+express the expected value of capital N,
+
+120
+00:08:40,175 --> 00:08:44,779
+in terms of itself, and then solve. So how
+do we do that? Well on the left hand side
+
+121
+00:08:44,779 --> 00:08:49,052
+let's write the expected number of coin
+flips, the expected value of capital N,
+
+122
+00:08:49,052 --> 00:08:53,545
+and then let's just notice that there's
+two different cases, either the first coin
+
+123
+00:08:53,545 --> 00:08:57,818
+flip is a heads or it's not. So in any
+case you're certainly going to have one
+
+124
+00:08:57,818 --> 00:09:02,109
+coin flip so let's separate that out and
+count it separately. With probability
+
+125
+00:09:02,109 --> 00:09:06,466
+alpha, the first coin flip is gonna be
+tails and then you start all over again
+
+126
+00:09:06,466 --> 00:09:10,935
+And because it's a memory less process,
+the expected number of further coin flips
+
+127
+00:09:10,935 --> 00:09:15,292
+one requires, given that the first coin
+flip was tails, is just the same as the
+
+128
+00:09:15,292 --> 00:09:19,754
+expected number of coin flips in the first
+place. So now it's a simple matter to
+
+129
+00:09:19,754 --> 00:09:24,149
+solve this one linear equation for the
+expected value of N, and we find that it
+
+130
+00:09:24,149 --> 00:09:28,488
+is indeed one over one minus alpha, as
+claimed. Summarizing, under our idealized
+
+131
+00:09:28,488 --> 00:09:32,716
+heuristic assumption, that every single
+probe sequence is equally likely, the
+
+132
+00:09:32,716 --> 00:09:37,055
+expected insertion time is upper bounded
+by the expected number of coin flips,
+
+133
+00:09:37,055 --> 00:09:41,394
+which by this argument is, at most, one
+over one minus alpha. So, as long as your
+
+134
+00:09:41,394 --> 00:09:45,622
+load, alpha, is well bounded below one,
+you're good. At least in this idealized
+
+135
+00:09:45,622 --> 00:09:50,138
+analysis, you're hash table will, will
+work extremely quickly. Now I hope you're
+
+136
+00:09:50,138 --> 00:09:54,120
+regarding this idealized analysis with a
+bit of skepticism. Right, from a false
+
+137
+00:09:54,120 --> 00:09:57,898
+hypothesis you can literally derive
+anything you want. And we started with
+
+138
+00:09:57,898 --> 00:10:02,084
+this assumption which is not satisfied, by
+hash functions you're actually going to
+
+139
+00:10:02,084 --> 00:10:05,709
+use in practice. This heuristic
+assumption, that all probe sequences are
+
+140
+00:10:05,709 --> 00:10:09,946
+equally likely. So, should you expect this
+one over one minus alpha bound to hold in
+
+141
+00:10:09,946 --> 00:10:13,673
+practice or not? Well, that depends to
+some extent. It depends on what open
+
+142
+00:10:13,673 --> 00:10:17,349
+addressing strategy you're using. It
+depends on, how good a hash function
+
+143
+00:10:17,349 --> 00:10:21,331
+you're using. It depends on whether the
+data is pathological or not. So, just to
+
+144
+00:10:21,331 --> 00:10:25,001
+give course rules of thumb If you're Using
+double hashing and you have
+
+145
+00:10:25,001 --> 00:10:28,982
+non-pathological data, I would go ahead
+and look for this 1/1-alpha bound in
+
+146
+00:10:28,982 --> 00:10:33,226
+practice. So implement your hash table,
+check its performance as a function of the
+
+147
+00:10:33,226 --> 00:10:37,260
+load factor alpha and shoot for the
+1/1-alpha curve. That's really what you'd
+
+148
+00:10:37,260 --> 00:10:41,398
+like to see. With linear probing, on the
+other hand, you should not expect to see
+
+149
+00:10:41,398 --> 00:10:45,432
+this performance guarantee of 1/1-alpha
+even in a totally idealized scenario.
+
+150
+00:10:45,432 --> 00:10:49,309
+Remember, linear probing is the strategy
+where your initial probe, the hash
+
+151
+00:10:49,309 --> 00:10:53,448
+function, tells you where to look first,
+and then you just skim linearly through
+
+152
+00:10:53,448 --> 00:10:57,508
+the hash table until you find what you're
+looking for, an empty slot, the. That
+
+153
+00:10:57,508 --> 00:11:02,067
+you're looking up or whatever So a linear
+probing, even in a best case scenario,
+
+154
+00:11:02,067 --> 00:11:06,603
+it's going to be subject to clumping.
+You're going to have contiguous Groups of
+
+155
+00:11:06,603 --> 00:11:10,753
+slots which are all full, and that's
+because of the linear probing strategy.
+
+156
+00:11:10,753 --> 00:11:15,180
+Now I encourage you to do some experiments
+with implementations to see this for
+
+157
+00:11:15,180 --> 00:11:19,274
+yourself. So because of clumping with
+linear probing, even in the idealized
+
+158
+00:11:19,274 --> 00:11:23,812
+scenario, you're not going to see one over
+one minus alpha. However, you're going to
+
+159
+00:11:23,812 --> 00:11:27,555
+see something worse, but still in
+idealized situations. Quite reasonable so
+
+160
+00:11:27,555 --> 00:11:31,784
+that's the last thing I want to tell you
+about In this video. Now needless to say,
+
+161
+00:11:31,784 --> 00:11:35,575
+with linear probing the heuristic
+assumption is badly false. The heuristic
+
+162
+00:11:35,575 --> 00:11:39,609
+assumption is pretty much always false to
+no matter what hashing strategy you're
+
+163
+00:11:39,623 --> 00:11:43,619
+using, but with linear programming it's
+quote on quote really false. So to see
+
+164
+00:11:43,619 --> 00:11:47,461
+that, the heuristic assumption, say that
+all in factorial probe sequences are
+
+165
+00:11:47,461 --> 00:11:51,251
+equally likely. So your next probe is
+going to be uniform or random amongst
+
+166
+00:11:51,251 --> 00:11:55,179
+everything you haven't probed so far but
+when you're probing, it's totally the
+
+167
+00:11:55,179 --> 00:11:59,208
+opposite. Right once you know the first
+slot that you're looking into say bucket
+
+168
+00:11:59,208 --> 00:12:03,187
+seventeen, slot a7 is gonna be the first
+slot, you know the rest of the sequence
+
+169
+00:12:03,187 --> 00:12:07,367
+because it's a linear [inaudible] cancel
+the table. So it's kind of [inaudible] the
+
+170
+00:12:07,367 --> 00:12:11,900
+opposite from each successive probe being
+independent from the previous ones except
+
+171
+00:12:11,900 --> 00:12:16,076
+not exploring things twice. So to state a
+conjectured or idealized performance
+
+172
+00:12:16,076 --> 00:12:20,438
+guarantee for hash tables with linear
+probing, we're going to place, replace the
+
+173
+00:12:20,438 --> 00:12:24,966
+blatant false heuristic assumption by a
+still false, but more heuristic reasonable
+
+174
+00:12:24,966 --> 00:12:29,439
+assumption. So what do we know? We know
+that the initial probe with linear probing
+
+175
+00:12:29,439 --> 00:12:33,967
+determines the rest of the sequence. So
+let's assume that these initial probes are
+
+176
+00:12:33,967 --> 00:12:38,218
+uniform at random, and independent for
+different keys. Of course, once you have
+
+177
+00:12:38,218 --> 00:12:42,470
+the initial probe, you know everything
+else, but let's assume independence and
+
+178
+00:12:42,470 --> 00:12:46,952
+uniformity amongst The initial probes.
+Now, this is a strong assumption. This is
+
+179
+00:12:46,952 --> 00:12:51,490
+way stronger than assuming you ha ve a
+universal family of hash functions. This
+
+180
+00:12:51,490 --> 00:12:57,435
+assumption is not satisfied Practice, but
+Performance guarantees we can derive under
+
+181
+00:12:57,435 --> 00:13:02,994
+this assumption are typically satisfied in
+practice by well implemented hash tables
+
+182
+00:13:02,994 --> 00:13:07,693
+that use linear probing. So, the
+assumption is still useful for deriving
+
+183
+00:13:07,693 --> 00:13:12,824
+the correct, idealized performance of this
+type of hash table. So what is that
+
+184
+00:13:12,824 --> 00:13:18,230
+performance? Well this is an utterly
+classic result from exactly 50 years ago
+
+185
+00:13:18,230 --> 00:13:25,491
+From 1962 And this is a result by my
+colleague, the living legend, Don Canuth,
+
+186
+00:13:25,491 --> 00:13:31,642
+author of Art of Computer Programming. At
+what can proved is, was that is that under
+
+187
+00:13:31,642 --> 00:13:37,604
+this weaker [inaudible] assumptions,
+suitable for linear probing. The expected
+
+188
+00:13:37,604 --> 00:13:43,296
+time to insert an object into a hash table
+with a load factor alpha, when you're
+
+189
+00:13:43,296 --> 00:13:48,785
+using linear probing is worse than one
+over one minus alpha, but. It is still a
+
+190
+00:13:48,785 --> 00:13:54,330
+function of the load alpha only and not a
+function of the number of objects in the
+
+191
+00:13:54,330 --> 00:13:59,007
+hash table. That is with linear
+programming you will not get as good a
+
+192
+00:13:59,007 --> 00:14:04,351
+performance guarantee, but it is still the
+case that if you keep the load factor
+
+193
+00:14:04,351 --> 00:14:09,629
+bounded away from one. If you make sure
+the hash table doesn't get too full you
+
+194
+00:14:09,629 --> 00:14:14,377
+will enjoy constant time operations on
+average so for example if with linear
+
+195
+00:14:14,377 --> 00:14:18,288
+probing your hash table is 50 percent full
+then you are going to get an expected
+
+196
+00:14:18,288 --> 00:14:22,521
+insertion time of roughly four probes.
+Note however this quantity does approach
+
+197
+00:14:22,521 --> 00:14:26,486
+does blow up pretty rapidly as the hash
+table grows full. If it is 90 percent full
+
+198
+00:14:26,486 --> 00:14:31,040
+this is already going to be something like
+a hundred probes on average. So you really
+
+199
+00:14:31,040 --> 00:14:35,412
+don't wanna let hash tables get too full
+when you are using linear probing. You
+
+200
+00:14:35,412 --> 00:14:39,356
+might well wonder if it's ever worth,
+implementing linear probing, given that it
+
+201
+00:14:39,356 --> 00:14:42,914
+has the worst performance curve, one over
+one minus alpha squared. Then the
+
+202
+00:14:42,914 --> 00:14:46,425
+performance curve you'd hope from
+something like double hashing, one over
+
+203
+00:14:46,425 --> 00:14:50,225
+one, minus alpha. And it's a tricky cost
+benefit analysis between linear probing
+
+204
+00:14:50,225 --> 00:14:54,252
+and more complicated but better performing
+strategies. That really depends on the ap
+
+205
+00:14:54,252 --> 00:14:58,064
+plication. There are reasons that you do
+want to use linear probing sometimes, it
+
+206
+00:14:58,064 --> 00:15:02,005
+is actually quite Common in practice For
+example, it's often interacts very well
+
+207
+00:15:02,005 --> 00:15:06,008
+with memory hierarchies So again, as with
+all of this hash and discussion. You know
+
+208
+00:15:06,008 --> 00:15:09,718
+the costs and benefits Are, are very
+subtle trade-offs between the different
+
+209
+00:15:09,718 --> 00:15:13,575
+approaches. If you have mission critical
+code that's using a hash table and you
+
+210
+00:15:13,575 --> 00:15:17,383
+really want to optimize it. Try a bunch of
+prototypes, and just test. Figure out
+
+211
+00:15:17,383 --> 00:15:21,673
+which one is the best, for your particular
+type of application. Let me conclude the
+
+212
+00:15:21,673 --> 00:15:26,413
+video with a quote from Canuck himself
+where he talks about the rapture of
+
+213
+00:15:26,413 --> 00:15:31,279
+proving this one of our one man is half a
+square theorem and how it was life
+
+214
+00:15:31,279 --> 00:15:36,271
+changing. He says I first formulated the
+following derivation, meaning, the proof
+
+215
+00:15:36,271 --> 00:15:41,326
+of that last theorem in 1962. Ever since
+that day, the analysis of algorithms has,
+
+216
+00:15:41,326 --> 00:15:44,360
+in fact, been one of the major themes in
+my life.

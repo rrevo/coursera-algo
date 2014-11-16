@@ -1,0 +1,894 @@
+1
+00:00:00,000 --> 00:00:02,841
+So, in this video, we'll go over the
+basics behind implementing binary search
+
+2
+00:00:02,841 --> 00:00:07,023
+trees. We are not going to focus on the
+balance aspect in this video that will be
+
+3
+00:00:07,023 --> 00:00:10,084
+discussed in later videos and we are going
+to talk about things which are true for
+
+4
+00:00:10,084 --> 00:00:13,661
+binary search trees on general, balanced
+or otherwise. But let's just recall, you
+
+5
+00:00:13,661 --> 00:00:18,017
+know, why are we doing this, you know,
+what is the raison d'être of this data
+
+6
+00:00:18,017 --> 00:00:21,078
+structure, the balance version of the
+binary search tree and basically, its a
+
+7
+00:00:21,078 --> 00:00:24,316
+dynamic version of a sorted array. So,
+that's pretty much everything you can do
+
+8
+00:00:24,316 --> 00:00:27,995
+on a sorted array, maybe in slightly more
+expensive time. They are still
+
+9
+00:00:27,995 --> 00:00:31,825
+really fast but in addition to this
+dynamic, it accommodates insertions and
+
+10
+00:00:31,825 --> 00:00:35,535
+deletions. So, remember, if you want to
+keep a sorted array data structure, every
+
+11
+00:00:35,535 --> 00:00:39,311
+time you insert, every time you delete,
+you're probably going to wind up paying a
+
+12
+00:00:39,311 --> 00:00:42,811
+linear factor which is way too
+expensive in most applications. By
+
+13
+00:00:42,811 --> 00:00:46,861
+contrast with the search tree, a balanced
+version, you can insert and delete a
+
+14
+00:00:46,861 --> 00:00:50,992
+logarithmic time in the number of keys in
+the tree. And moreover, you can do stuff
+
+15
+00:00:50,992 --> 00:00:55,185
+like search in logarithmic time, no more
+expensive than binary search on a sorted
+
+16
+00:00:55,185 --> 00:00:59,189
+array and also you can sort of say the
+selection problem in the special cases,
+
+17
+00:00:59,189 --> 00:01:03,149
+the minimum or maximum. Okay, it's not
+constant time like in a sorted array but
+
+18
+00:01:03,149 --> 00:01:06,922
+still logarithmic pretty good and in
+addition, you can print out all of the
+
+19
+00:01:06,922 --> 00:01:10,813
+keys from smallest to largest and in
+linear time, constant time per element
+
+20
+00:01:10,813 --> 00:01:15,221
+just like you could with the linear scan
+through a sorted array. So, that's what
+
+21
+00:01:15,221 --> 00:01:19,431
+they're good for. Everything a sorted
+array can do more or less plus insertions
+
+22
+00:01:19,431 --> 00:01:23,503
+and deletions everything in logarithmic
+time. So, how are search trees organized?
+
+23
+00:01:23,503 --> 00:01:27,896
+And again, what I'm going to say in the
+rest of this video is true both for
+
+24
+00:01:27,896 --> 00:01:31,959
+balanced and unbalanced search trees.
+We're going to worry about the balancing
+
+25
+00:01:31,959 --> 00:01:36,908
+aspect in the later videos. Alright, so,
+let me tell you the key ingredients in a
+
+26
+00:01:36,908 --> 00:01:40,726
+binary search tree. Let me also just draw
+a simple cartoon example in the upper
+
+27
+00:01:40,726 --> 00:01:44,856
+right part of the slide. So, this one to
+one correspondence between nodes of the
+
+28
+00:01:44,856 --> 00:01:49,613
+tree and keys that are being stored. And
+as usual in our data structure discussions
+
+29
+00:01:49,758 --> 00:01:53,576
+we're going to act as if the only thing
+that we care about, the only thing that
+
+30
+00:01:53,576 --> 00:01:57,300
+exists at each node is this key when
+generally, this associated data that you
+
+31
+00:01:57,300 --> 00:02:02,003
+really care about. So, each node in the
+tree will generally contain both the key
+
+32
+00:02:02,003 --> 00:02:06,020
+plus a pointer to some data structure that
+has more information. Maybe the key is the
+
+33
+00:02:06,020 --> 00:02:10,026
+employee ID number, and then there's a
+pointer to lots of other information about
+
+34
+00:02:10,026 --> 00:02:14,051
+that employee. Now, in addition to the
+nodes, you have to have links amongst the
+
+35
+00:02:14,051 --> 00:02:18,095
+nodes and there's a lot of different ways
+to do the exact implementation of the
+
+36
+00:02:18,095 --> 00:02:23,061
+pointers that connect the node of the tree
+together but the video I'm just going to
+
+37
+00:02:23,061 --> 00:02:28,015
+keep is straightforward as possible and
+we're just going to assume that in each
+
+38
+00:02:28,015 --> 00:02:32,054
+node, there's three pointers. One to a
+left child, another one to the right child
+
+39
+00:02:32,054 --> 00:02:37,050
+and then the third pointer which points to
+the parent. Now, of course, some of these
+
+40
+00:02:37,050 --> 00:02:42,239
+pointers can be null and in fact in the
+five node binary search tree I've drawn on
+
+41
+00:02:42,239 --> 00:02:47,384
+the right for each of the five nodes, at
+least one of these three pointers is null.
+
+42
+00:02:47,384 --> 00:02:52,693
+So, for example, for the node with key one
+it has a null left child pointer, there was
+
+43
+00:02:52,693 --> 00:02:57,434
+no left child. It's the right child
+pointer going to point to the node with
+
+44
+00:02:57,434 --> 00:03:02,652
+key two and the parent pointer was going
+to a node that has key three. Similarly
+
+45
+00:03:02,835 --> 00:03:07,830
+three is going to have a null parent pointer
+and the root node in this case, three is a
+
+46
+00:03:07,830 --> 00:03:12,707
+unique node but has a null parent pointer.
+Here the node with key value three, of
+
+47
+00:03:12,707 --> 00:03:17,278
+course, has a left child pointer points to
+one and has a right child pointer that
+
+48
+00:03:17,278 --> 00:03:21,082
+points to five. Now, here is the most
+fundamental property of search trees.
+
+49
+00:03:21,082 --> 00:03:26,392
+Let's just go ahead and call it the Search
+Tree Property. So, the search tree
+
+50
+00:03:26,392 --> 00:03:31,567
+property asserts the following condition
+at every single node of the search tree.
+
+51
+00:03:31,567 --> 00:03:36,823
+If the node has some key value then all of
+the keys stored in the left subtree should
+
+52
+00:03:36,823 --> 00:03:41,599
+be less than that key. And similarly, all
+of the keys stored in the right subtree
+
+53
+00:03:41,599 --> 00:03:46,767
+should be bigger than that key. So, if we
+have some node who's stored key value is x
+
+54
+00:03:46,767 --> 00:03:51,646
+and this is somewhere, you know, say deep
+in the middle of the tree so upward we
+
+55
+00:03:51,646 --> 00:03:56,765
+think of as being toward the root. And
+then if we think about all the nodes that
+
+56
+00:03:56,765 --> 00:04:02,026
+are reachable, after following the left
+child pointer from x, that's the left
+
+57
+00:04:02,026 --> 00:04:07,070
+subtree. And similarly, the right subtree
+being everything reachable via the right
+
+58
+00:04:07,070 --> 00:04:13,007
+child pointer from x, it should be the
+case that all keys in the left subtree are
+
+59
+00:04:13,007 --> 00:04:18,011
+less than x and all keys in the right
+subtree are bigger than x. And again, I
+
+60
+00:04:18,011 --> 00:04:23,061
+want to emphasize this property holds not
+just to the root but at every single node
+
+61
+00:04:23,061 --> 00:04:27,577
+in the tree. I've defined the search to a
+property assuming that all of the keys are
+
+62
+00:04:27,577 --> 00:04:31,993
+distinct, that's why I wrote strictly less
+than in the left sub tree and strictly
+
+63
+00:04:31,993 --> 00:04:35,704
+bigger than in the right subtree. But
+search trees can easily accommodate
+
+64
+00:04:35,704 --> 00:04:39,864
+duplicate keys as well. We just have to
+have some convention about how you handle
+
+65
+00:04:39,864 --> 00:04:44,019
+ties. So, for example, you could say that
+everything in the left subtree is less
+
+66
+00:04:44,019 --> 00:04:48,723
+than or equal to the key at that node and
+then everything in the right subtree
+
+67
+00:04:48,723 --> 00:04:52,722
+should be strictly bigger than that node.
+That works fine as well. So, if this is
+
+68
+00:04:52,722 --> 00:04:56,901
+the first time you've ever heard of the
+search tree property, maybe at first blush
+
+69
+00:04:56,901 --> 00:05:01,533
+it seems a little arbitrary. It seems like
+I pulled it out of thin air but actually,
+
+70
+00:05:01,533 --> 00:05:06,043
+you would have reversed engineer this property
+if you sat down and thought about what
+
+71
+00:05:06,043 --> 00:05:10,601
+property would make search really easy in
+a data structure. The point is, the search
+
+72
+00:05:10,601 --> 00:05:15,441
+tree property tells you exactly where to
+look for some given key. So, looking ahead
+
+73
+00:05:15,441 --> 00:05:19,581
+a little bit, stealing my fire from a
+slide to come, suppose you were looking
+
+74
+00:05:19,581 --> 00:05:23,965
+for say, a key 23, and you started the
+root and the root is seventeen. The point
+
+75
+00:05:23,965 --> 00:05:29,109
+of the search tree property is you know
+where 23 has to be. If the root is
+
+76
+00:05:29,109 --> 00:05:33,641
+seventeen, you're looking to 23, if it's
+in the tree, no way is it in the left
+
+77
+00:05:33,641 --> 00:05:37,357
+subtree, it's got to be in the right
+subtree. So, you can just follow the right
+
+78
+00:05:37,357 --> 00:05:41,295
+child pointer and forget about the left
+subtree for the rest of the search. This
+
+79
+00:05:41,295 --> 00:05:45,046
+is very much in the spirit of binary
+search where you start in the middle of
+
+80
+00:05:45,046 --> 00:05:49,031
+the array and again, you compare what
+you're looking for to what's in the middle
+
+81
+00:05:49,031 --> 00:05:53,039
+and either way, you can recurse on one of
+the two sides forgetting forevermore about
+
+82
+00:05:53,039 --> 00:05:56,597
+the other half of the array and that's
+exactly the point of the search tree
+
+83
+00:05:56,597 --> 00:05:59,284
+property. We're going to have to search
+from root on down, the search tree
+
+84
+00:05:59,284 --> 00:06:03,333
+property guarantees we have a unique
+direction to go next and we never have to
+
+85
+00:06:03,333 --> 00:06:07,653
+worry about any of the stuff that we don't
+see. We can also draw a very loose analogy
+
+86
+00:06:07,653 --> 00:06:10,946
+with our discussion of heaps and may
+recall heaps were also logically, we
+
+87
+00:06:10,946 --> 00:06:14,737
+thought of them as a tree even though they
+are implemented as an array. And heaps
+
+88
+00:06:14,737 --> 00:06:18,965
+have some heap property and if you go back
+to review the heap property, you'll find
+
+89
+00:06:18,965 --> 00:06:22,945
+that this is not the same thing as the
+search three property. These are two
+
+90
+00:06:22,945 --> 00:06:27,333
+different properties and that's going to
+trying to make different things easy. Back
+
+91
+00:06:27,333 --> 00:06:32,018
+when we talk about heaps, the property was
+that this is for the extract min version.
+
+92
+00:06:32,018 --> 00:06:36,199
+Parents always have to be smaller than
+their children. That's different than the
+
+93
+00:06:36,199 --> 00:06:40,011
+search tree property which says stuff to the
+left, that's smaller than you, stuff to
+
+94
+00:06:40,011 --> 00:06:44,005
+the right is bigger than you. And heaps,
+we have the heap property so that
+
+95
+00:06:44,005 --> 00:06:48,058
+identifying the minimum value was trivial.
+It was guaranteed to be at the root. Heaps
+
+96
+00:06:48,058 --> 00:06:51,686
+are designed so that you can find the
+minimum easily. Search trees are, are
+
+97
+00:06:51,686 --> 00:06:55,834
+defined so that you can search easily
+that's why, you have this different search
+
+98
+00:06:55,834 --> 00:07:00,849
+tree property. If you want to get smaller,
+you go left. If you want to get bigger you
+
+99
+00:07:00,849 --> 00:07:05,035
+go right. One point that's important to
+understand early, and this will be
+
+100
+00:07:05,035 --> 00:07:10,027
+particularly relevant once we did, once we
+try to enforce balancing in our subsequent
+
+101
+00:07:10,027 --> 00:07:14,078
+videos is that, for a given set of keys,
+you can have a lot of different search
+
+102
+00:07:14,078 --> 00:07:19,037
+trees. On the previous slide , I drew one
+search tree containing the key values one,
+
+103
+00:07:19,037 --> 00:07:24,021
+two, three, four, five. Let me redraw that
+exact same search tree here. If you stare
+
+104
+00:07:24,021 --> 00:07:29,055
+to this tree a little while you'll agree
+that in fact that every single node of
+
+105
+00:07:29,055 --> 00:07:34,088
+this tree, all of the things in the left
+subtree are smaller, all of the things in
+
+106
+00:07:34,088 --> 00:07:40,028
+the right subtree are bigger. However, let
+me show you another valid binary search
+
+107
+00:07:40,028 --> 00:07:45,072
+tree with the exact same sets of keys. So,
+in the second search three, the root is
+
+108
+00:07:45,072 --> 00:07:51,038
+five, the maximum value. And everybody has
+no right children, only the left children
+
+109
+00:07:51,038 --> 00:07:56,056
+are populated and that goes five, four,
+three, two, one in descending order. If
+
+110
+00:07:56,056 --> 00:08:01,049
+you check here again, it has the property
+that at every node, everything in the left
+
+111
+00:08:01,049 --> 00:08:06,007
+subtree is smaller. Everything in the
+right subtree, in this case, empty, is
+
+112
+00:08:06,007 --> 00:08:10,656
+bigger. So, extrapolating from these two
+cartoon examples, we surmised that for
+
+113
+00:08:10,656 --> 00:08:15,711
+a given set of n keys, search trees that
+contain these keys could vary in height
+
+114
+00:08:15,711 --> 00:08:21,003
+anywhere from the best case scenario of a
+perfectly balance binary tree which just
+
+115
+00:08:21,003 --> 00:08:25,991
+going to have logarithmic height to the
+worst case of one of these link list like
+
+116
+00:08:25,991 --> 00:08:30,940
+chain which is going to be linear in the
+number of keys n. And so just to remind
+
+117
+00:08:30,940 --> 00:08:36,108
+you the height of a search tree which is
+also sometimes called the depth is just
+
+118
+00:08:36,108 --> 00:08:42,008
+the longest number of hops it ever take to
+get to from a root to a leaf. So, in the
+
+119
+00:08:42,008 --> 00:08:47,062
+first search tree, here the height is two
+and then the second search tree, the
+
+120
+00:08:47,062 --> 00:08:51,717
+height is four. If the search tree is
+perfectly arranged with the number of
+
+121
+00:08:51,717 --> 00:08:57,257
+nodes essentially doubling at every level,
+then the depth is you're going to run out
+
+122
+00:08:57,257 --> 00:09:02,694
+of nodes around the depth of log2n. And in
+general, if you have a chain of n keys
+
+123
+00:09:02,694 --> 00:09:07,183
+that that's going to be n - 1 but we'll
+just call it n amongst friends. So, now
+
+124
+00:09:07,183 --> 00:09:11,684
+that we understand the basic structure of
+binary search trees, we can actually talk
+
+125
+00:09:11,684 --> 00:09:16,031
+about how to implement all of the
+operations that they support. So, as we go
+
+126
+00:09:16,031 --> 00:09:20,423
+through most of the supported operations
+one at a time, I'm just going to give you
+
+127
+00:09:20,423 --> 00:09:24,708
+a really high level description. It should
+be enough for you to code up on
+
+128
+00:09:24,708 --> 00:09:29,126
+implementation if you want or as usual, if
+you want more details or actual working
+
+129
+00:09:29,126 --> 00:09:33,825
+code, you can check on the web or in one
+of the number of good programming or
+
+130
+00:09:33,825 --> 00:09:38,237
+algorithms textbooks. So, let's start with
+really the primary operation which is
+
+131
+00:09:38,237 --> 00:09:42,804
+search. Searching, we've really already
+discussed how it's done when we discuss
+
+132
+00:09:42,804 --> 00:09:46,606
+the search tree property. Again, the
+search tree property makes it obvious how
+
+133
+00:09:46,606 --> 00:09:50,349
+to look for something in a search tree.
+Pretty much you just follow your nose
+
+134
+00:09:50,349 --> 00:09:54,471
+you have no other choice. So, you started
+the root, it's the obvious place to start.
+
+135
+00:09:54,471 --> 00:09:58,513
+If you're lucky, the root is what you are
+looking for and then you stop and then you
+
+136
+00:09:58,513 --> 00:10:02,501
+return to root. More likely, the root is
+either bigger than or less than the key
+
+137
+00:10:02,501 --> 00:10:06,768
+that you're looking for. Now, if the key
+is smaller, the key you are looking for is
+
+138
+00:10:06,768 --> 00:10:10,411
+smaller than the key of the root, where
+you're going to look? Well, the search
+
+139
+00:10:10,411 --> 00:10:14,320
+tree property says, if it's in the tree,
+it's got to be in the left subtree so you
+
+140
+00:10:14,320 --> 00:10:19,015
+follow the left sub child pointer. If the
+key you're looking for is bigger than the
+
+141
+00:10:19,015 --> 00:10:23,002
+key at the root, where is it got to be?
+Got to be in the right subtree. So, you're
+
+142
+00:10:23,002 --> 00:10:26,069
+just going to recurse on the right
+subtree. So, in this example, if you're
+
+143
+00:10:26,069 --> 00:10:30,076
+searching for, say the key two, obviously
+you're going to go left from the root. If
+
+144
+00:10:30,076 --> 00:10:34,047
+you're searching for the key four,
+obviously you're going to go right from
+
+145
+00:10:34,047 --> 00:10:37,847
+the root. So, how can the search
+terminate? Well, it can terminate in one
+
+146
+00:10:37,847 --> 00:10:41,067
+of two ways. First of all, you might find
+what you're looking for so in this
+
+147
+00:10:41,067 --> 00:10:45,059
+example, if you search for four, you're
+going to traverse to right child pointer
+
+148
+00:10:45,059 --> 00:10:49,026
+then a left child pointer and then boom,
+you're at the four and you return
+
+149
+00:10:49,026 --> 00:10:53,057
+successfully. The other way the search can
+terminate is with a null pointer. So, in
+
+150
+00:10:53,057 --> 00:10:57,087
+this example, suppose you were looking for
+a node with key six, what would happen?
+
+151
+00:10:57,087 --> 00:11:02,018
+Well, you start at the root, three is too
+small so you go to the right. You get to
+
+152
+00:11:02,018 --> 00:11:06,064
+five, five is still too small cuz you're
+looking for six so you try to go right but
+
+153
+00:11:06,064 --> 00:11:11,011
+the right child pointer is null. And that
+means six is not in the tree. If there was
+
+154
+00:11:11,011 --> 00:11:15,042
+anywhere in the tree, it had to be to the
+right of the three, it had to be to the
+
+155
+00:11:15,042 --> 00:11:18,783
+right of the five but you tried it and you
+ran on the pointers so the six isn't
+
+156
+00:11:18,783 --> 00:11:23,099
+there. And you return correctly with an
+unsuccessful search. Next, let's discuss
+
+157
+00:11:23,099 --> 00:11:29,078
+the insert operation which really is just
+a simple piggy backing on the search that
+
+158
+00:11:29,078 --> 00:11:35,050
+we just described. So, for simplicity the
+first think about the case where there are
+
+159
+00:11:35,050 --> 00:11:41,015
+no duplicate keys. The first thing to do
+on this insertion is search for the key k.
+
+160
+00:11:41,015 --> 00:11:46,008
+Now, because there are no duplicates, this
+search will not succeed. This key k is not
+
+161
+00:11:46,008 --> 00:11:50,082
+yet in the tree. So, for example, in the
+picture on the right, we might think about
+
+162
+00:11:50,082 --> 00:11:54,653
+trying to insert the key six. What's going
+to happen when we search for six, we
+
+163
+00:11:54,653 --> 00:11:59,512
+follow a right child pointer. We go from
+three to five and then we try to spot
+
+164
+00:11:59,512 --> 00:12:04,688
+another one and make it stuck. There's a
+null pointer going to the right of five.
+
+165
+00:12:04,692 --> 00:12:08,821
+Then when this unsuccessful search
+terminates at a null pointer, we just rewire
+
+166
+00:12:08,821 --> 00:12:13,093
+that pointer to point to a node with this
+new key k. So, if you want to permit
+
+167
+00:12:13,093 --> 00:12:18,012
+duplicates from the data structure, you
+got to tweak the code and insert a little
+
+168
+00:12:18,012 --> 00:12:22,030
+bit but really barely at all. You just
+need some convention for handling the case
+
+169
+00:12:22,030 --> 00:12:25,687
+when you do in counter the key that we are
+about to insert. So, for example, if the
+
+170
+00:12:25,687 --> 00:12:29,522
+current note has the key equal to the one
+you're inserting, you could have the
+
+171
+00:12:29,522 --> 00:12:33,590
+convention that you always continue on the
+left subtree and then you continue the
+
+172
+00:12:33,590 --> 00:12:37,990
+search as usual again, eventually
+terminating at a null pointer and you stick
+
+173
+00:12:37,990 --> 00:12:42,246
+the new inserted node you rewire to null
+pointer to point to it. One good exercise
+
+174
+00:12:42,246 --> 00:12:46,237
+for you to think through which I'm not
+going to say more about here is that when
+
+175
+00:12:46,237 --> 00:12:50,772
+you insert a new node, you retain the
+search tree property. That is if you start
+
+176
+00:12:50,772 --> 00:12:54,903
+with the search tree, you start within
+tree where at every node stuff to the left
+
+177
+00:12:54,903 --> 00:12:58,520
+is smaller, the stuff to the right is
+bigger. You insert something and you
+
+178
+00:12:58,520 --> 00:13:03,182
+follow this procedure. You will still have
+the search tree property after this new
+
+179
+00:13:03,182 --> 00:13:06,094
+node has been inserted. That's something
+for you to think through.

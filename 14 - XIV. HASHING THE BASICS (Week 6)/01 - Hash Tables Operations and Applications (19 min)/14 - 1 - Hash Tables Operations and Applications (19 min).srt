@@ -1,0 +1,1379 @@
+1
+00:00:00,000 --> 00:00:04,020
+In this video we'll begin our discussion
+of hash tables; we'll focus first on the
+
+2
+00:00:04,020 --> 00:00:08,030
+support operations, and on some of the
+canonical applications. So hash tables are
+
+3
+00:00:08,030 --> 00:00:12,018
+insanely useful. If you want to be a
+serious programmer or a computer scientist
+
+4
+00:00:12,018 --> 00:00:16,002
+you really have no choice but to learn
+about hash tables. I'm sure many of you
+
+5
+00:00:16,002 --> 00:00:20,010
+have used them in your own programs in the
+past in fact. Now on the one hand what's
+
+6
+00:00:20,010 --> 00:00:24,027
+funny is they don't actually do that many
+things in terms of the number of supported
+
+7
+00:00:24,027 --> 00:00:28,025
+operations, but what they do, do they do
+really, really well. So what is a hash
+
+8
+00:00:28,025 --> 00:00:33,008
+table? Well conceptually, ignoring all of
+the aspects of the implementation, you may
+
+9
+00:00:33,008 --> 00:00:37,097
+wanna think of a hash table as an array.
+So one thing that arrays do super well is
+
+10
+00:00:37,097 --> 00:00:42,040
+support immediate random access. So if
+you're wondering what's the position
+
+11
+00:00:42,040 --> 00:00:47,023
+number seventeen of some array, boom, with
+a couple of machine instructions you can
+
+12
+00:00:47,023 --> 00:00:51,089
+find out, wanna change the contents of
+position number 23 in some array? Done, in
+
+13
+00:00:51,089 --> 00:00:56,025
+constant time. So let's think about an
+application in which you want to remember
+
+14
+00:00:56,025 --> 00:01:00,059
+your friends phone numbers. So if you're
+lucky your friends parents were all u nu,
+
+15
+00:01:00,059 --> 00:01:05,009
+unusually unimaginative people and all of
+your friends names are integers let's say
+
+16
+00:01:05,009 --> 00:01:09,048
+between one and 10,000. So if this is the
+case then you can just maintain an array
+
+17
+00:01:09,048 --> 00:01:14,099
+of link 10,000. And to store the phone
+number of say, your best friend, 173, you
+
+18
+00:01:14,099 --> 00:01:21,022
+can just use position 173 of this modest
+sized array. So this array based solution
+
+19
+00:01:21,022 --> 00:01:27,014
+would work great, even if your friends
+change over time, you gain some here you
+
+20
+00:01:27,014 --> 00:01:32,060
+lose some there, as long as all your
+friends names happen to be integers
+
+21
+00:01:32,060 --> 00:01:37,081
+between 1-10,000. Now, of course, your
+friends have more interesting names:
+
+22
+00:01:37,081 --> 00:01:42,044
+Alice, Bob, Carol, whatever. And last
+names as well. So in principal you could
+
+23
+00:01:42,044 --> 00:01:47,023
+have an array with one position in the
+array for every conceivable name you might
+
+24
+00:01:47,023 --> 00:01:52,001
+encounter, with at least 30 letters set.
+But of course this array would be way too
+
+25
+00:01:52,001 --> 00:01:56,091
+big. It would be something like 26 raised
+to the thirtieth power and you could never
+
+26
+00:01:56,091 --> 00:02:01,063
+implement it. So what you'd really want is
+you'd want an array of reasonable size,
+
+27
+00:02:01,063 --> 00:02:06,001
+say, you know ballpark the number of
+friends that you'd ever have, so say in
+
+28
+00:02:06,001 --> 00:02:10,062
+the thousands or something, where it's
+positions are indexed not by the numbers,
+
+29
+00:02:10,062 --> 00:02:16,012
+not integers. [inaudible] Between one and
+10,000, but rather by your friends Names
+
+30
+00:02:16,012 --> 00:02:20,050
+And what you'd like to do is you'd like to
+have random access to this array based on
+
+31
+00:02:20,050 --> 00:02:24,064
+your friend's name. So you just look up
+the quote unquote Alice position of this
+
+32
+00:02:24,064 --> 00:02:28,069
+array and. Boom, there would be Alice's
+phone number in constant time. And this,
+
+33
+00:02:28,069 --> 00:02:32,097
+on a conceptual level is basically what a
+hash table, can do for you. So there's a
+
+34
+00:02:32,097 --> 00:02:37,025
+lot of magic happening under the hood of a
+hash table and that's something we'll
+
+35
+00:02:37,025 --> 00:02:41,069
+discuss to some extent in other videos. So
+you have to have this mapping between the
+
+36
+00:02:41,069 --> 00:02:45,076
+keys that you care about, like your
+friends' names, and, numerical positions
+
+37
+00:02:45,076 --> 00:02:49,056
+of some array. That's done by what's
+called a hash function, but properly
+
+38
+00:02:49,056 --> 00:02:53,042
+implemented, this is the kind of
+functionality that hash tables gives you,
+
+39
+00:02:53,042 --> 00:02:57,049
+So like an array with its positions
+indexed by the keys that you're storing.
+
+40
+00:02:57,049 --> 00:03:03,026
+So you can think of the purpose of the
+hash table as to maintain a possibly
+
+41
+00:03:03,026 --> 00:03:07,099
+evolving set of stuff. Where of course the
+set of things that you're maintaining, you
+
+42
+00:03:07,099 --> 00:03:12,009
+know, will vary with the application. It
+can be any number of things. So if you're
+
+43
+00:03:12,009 --> 00:03:15,088
+running an e-commerce website, maybe
+you're keeping track of transactions. You
+
+44
+00:03:15,088 --> 00:03:19,093
+know, again, maybe you're keeping track of
+people, like for example, your friends and
+
+45
+00:03:19,093 --> 00:03:23,063
+various data about them. So maybe you're
+keeping track of I-P addresses, for
+
+46
+00:03:23,063 --> 00:03:27,062
+example if you wanna know, who was, were
+there unique visitors to your websites.
+
+47
+00:03:27,062 --> 00:03:31,091
+And so on. So a little bit more formally,
+you know, the basic operations, you need
+
+48
+00:03:31,091 --> 00:03:36,021
+to be able to insert stuff into a hash
+table. In many, but not all applications,
+
+49
+00:03:36,021 --> 00:03:40,061
+you need to be able to delete stuff as
+well. And typically the most important
+
+50
+00:03:40,061 --> 00:03:45,053
+operation is look-up. And for all these
+three operation you do it in a key based
+
+51
+00:03:45,053 --> 00:03:49,015
+way. Where as usual a key should just be a
+unique identifier for the record that
+
+52
+00:03:49,015 --> 00:03:52,057
+you're concerned with. So, for example,
+for employees you might be using social
+
+53
+00:03:52,057 --> 00:03:56,013
+security numbers. For transactions you
+might have a transaction ID number. And
+
+54
+00:03:56,013 --> 00:03:59,078
+then IP addresses could act as their own
+key. And so sometimes all you're doing is
+
+55
+00:03:59,078 --> 00:04:03,025
+keeping track of the keys themselves. So,
+for example, in IP addresses, maybe you
+
+56
+00:04:03,025 --> 00:04:06,050
+just want to remember a list of IP
+addresses. You don't actually have any
+
+57
+00:04:06,050 --> 00:04:10,006
+associated data but in many applications,
+you know, along with the key, is a bunch
+
+58
+00:04:10,006 --> 00:04:13,022
+of other stuff. So along with the
+employee's social security number, you
+
+59
+00:04:13,022 --> 00:04:16,096
+gotta remember a bunch of other data about
+that employee. But when you do the insert,
+
+60
+00:04:16,096 --> 00:04:20,056
+when you do the delete, when you do the
+look up, you do it based. On this key, and
+
+61
+00:04:20,056 --> 00:04:24,075
+then for example, on look up you feed the
+key into the hash table and the hash table
+
+62
+00:04:24,075 --> 00:04:28,055
+will spit back out all of the data
+associated with that key. We sometimes
+
+63
+00:04:28,055 --> 00:04:32,072
+hear people refer to data structures that
+support these operations as a dictionary.
+
+64
+00:04:32,087 --> 00:04:37,018
+So the main thing the hash table is meant
+to support is look up in the spirit of a
+
+65
+00:04:37,018 --> 00:04:41,025
+dictionary. I find that terminology a
+little misleading actually. You know, most
+
+66
+00:04:41,025 --> 00:04:45,002
+dictionaries that you'll find are in
+alphabetical order. So they'll support
+
+67
+00:04:45,002 --> 00:04:49,004
+something like binary search. And I want
+to emphasis something a hash table does
+
+68
+00:04:49,004 --> 00:04:52,091
+not do is maintain an ordering on the
+elements that it supports. So if you're
+
+69
+00:04:52,091 --> 00:04:56,092
+storing stuff and you do want to have
+order based operations, you wanna find the
+
+70
+00:04:56,092 --> 00:05:00,084
+minimum or the maximum, or something like
+that, a hash table's probably not the
+
+71
+00:05:00,084 --> 00:05:04,068
+right data structure. You want something
+more. You wanna look at a heap or you
+
+72
+00:05:04,068 --> 00:05:08,067
+wanna look at a, a search tree. But for
+applications in which all you have to do
+
+73
+00:05:08,067 --> 00:05:12,086
+is basically look stuff up you gotta, you
+gotta know what's there and what's not,
+
+74
+00:05:12,086 --> 00:05:16,090
+then there should be a light bulb that
+goes off in your head. And you can say,
+
+75
+00:05:16,090 --> 00:05:20,089
+let me consider a hash table, that's
+probably the perfect data structure for
+
+76
+00:05:20,089 --> 00:05:25,004
+this application. Now, looking at this
+menu-supported operations, you may be left
+
+77
+00:05:25,004 --> 00:05:29,008
+kinda unimpressed. Alright, so a hash
+table, in some sense, doesn't do that many
+
+78
+00:05:29,008 --> 00:05:33,001
+things; but again, what it does, it does
+really, really well. So, to first order.
+
+79
+00:05:33,001 --> 00:05:37,024
+What hash tables give you is the following
+amazing guarantee. All of these operations
+
+80
+00:05:37,024 --> 00:05:41,042
+run in constant time. And again this is in
+the spirit of thinking of a hash table as
+
+81
+00:05:41,042 --> 00:05:45,044
+just like an array. Where its positions
+are conveniently indexed by your keys, So
+
+82
+00:05:45,044 --> 00:05:49,032
+just like an array supports random access
+in constant time, you can see if, you
+
+83
+00:05:49,032 --> 00:05:53,000
+know, there's anything in the array
+position, and what it is. As similarly a
+
+84
+00:05:53,000 --> 00:05:57,006
+hash table will let you look up based on
+the key in constant time. So what is the
+
+85
+00:05:57,006 --> 00:06:01,007
+fine print? Well, there's basically two
+caveats. So the first thing is that hash
+
+86
+00:06:01,007 --> 00:06:05,039
+tables are easy to implement badly. And if
+you implement them badly you will not get
+
+87
+00:06:05,039 --> 00:06:09,051
+this guarantee. So this guarantee is for
+properly implemented hash tables. Now, of
+
+88
+00:06:09,051 --> 00:06:13,078
+course if you're just using a hash table
+from a well known library, it's probably a
+
+89
+00:06:13,078 --> 00:06:17,094
+pretty good assumption that it's properly
+implemented. You'd hope. But in the event
+
+90
+00:06:17,094 --> 00:06:21,089
+that you're forced to come up with your
+own hash table and your own hash function
+
+91
+00:06:21,089 --> 00:06:25,046
+and unlike many of the other data
+structures we'll talk about, some of you
+
+92
+00:06:25,046 --> 00:06:29,046
+probably will have to do that at some
+point in your career. Then you'll get this
+
+93
+00:06:29,046 --> 00:06:33,060
+guarantee only if you implement it well.
+And we'll talk about exactly what that
+
+94
+00:06:33,060 --> 00:06:37,066
+means in other videos. So the second
+caveat is that, unlike most of the
+
+95
+00:06:37,066 --> 00:06:42,015
+problems that we've solved in this course,
+hash tables don't enjoy worst case
+
+96
+00:06:42,015 --> 00:06:46,070
+guarantees. You cannot say for a given
+hash table that for every possible data
+
+97
+00:06:46,070 --> 00:06:51,043
+set you're gonna get cost and time. What's
+true is that for non-pathological data,
+
+98
+00:06:51,043 --> 00:06:56,026
+you will get cost and time operations in a
+properly implemented hash table. So we'll
+
+99
+00:06:56,026 --> 00:07:00,054
+talk about both of these issues a bit more
+in other videos, but for now just high
+
+100
+00:07:00,054 --> 00:07:04,036
+order bits are, you know, hash tables,
+constant time performance, subject to a
+
+101
+00:07:04,036 --> 00:07:08,018
+couple of caveats. So now that I've
+covered the operations that hash tables
+
+102
+00:07:08,018 --> 00:07:12,016
+support and the recommend way to think
+about them, let's turn our attention to
+
+103
+00:07:12,016 --> 00:07:15,077
+some applications. All of these
+applications are gonna be in some sense,
+
+104
+00:07:15,077 --> 00:07:19,039
+you know, kinda trivial uses of hash
+tables, but they're also all really
+
+105
+00:07:19,039 --> 00:07:23,050
+practical. These come up all the time. So
+the first application we'll discuss, which
+
+106
+00:07:23,050 --> 00:07:27,011
+again is a conical one, is removing
+duplicates from a bunch of stuff, Also
+
+107
+00:07:27,011 --> 00:07:31,023
+known as the deduplication problem. So in
+the De-duplication problem, the input is
+
+108
+00:07:31,023 --> 00:07:35,039
+essentially a stream of objects. Where,
+when I say a stream I have kinda, you know
+
+109
+00:07:35,039 --> 00:07:39,086
+two different things in mind as canonical
+examples. So first of all you can imagine
+
+110
+00:07:39,086 --> 00:07:43,097
+you have a huge file. So you have, you
+know, a log of everything that happened on
+
+111
+00:07:43,097 --> 00:07:48,049
+some website you're running. Or all of the
+transactions that were made in a store on
+
+112
+00:07:48,049 --> 00:07:52,076
+some day, And you do a pass through this
+huge file. So you're just in the middle of
+
+113
+00:07:52,076 --> 00:07:56,079
+some outer for loop going line by line
+through this massive file. The other
+
+114
+00:07:56,079 --> 00:08:00,071
+example of a stream that I had in mind,
+is, where you're getting new data over
+
+115
+00:08:00,071 --> 00:08:04,053
+time. So here, you might imagine that
+you're running software to be deployed on
+
+116
+00:08:04,053 --> 00:08:08,050
+an internet router. And data packets are
+coming through this router at a constant
+
+117
+00:08:08,050 --> 00:08:12,043
+extremely fast rate. And so you might be
+looking at, say, the IP addresses and the
+
+118
+00:08:12,043 --> 00:08:16,045
+sender, and use your data packet which is
+going through your router. So it would be
+
+119
+00:08:16,045 --> 00:08:20,022
+another example of a stream of objects.
+And now, what do you gotta do? What you
+
+120
+00:08:20,022 --> 00:08:23,085
+gotta do is you gotta ignore the
+duplicates. So remember just the distinct
+
+121
+00:08:23,085 --> 00:08:27,093
+objects that you see in this stream. And I
+hope you find it easy to imagine why you
+
+122
+00:08:27,093 --> 00:08:31,069
+might want to do this task in various
+applications. So, for example, if you're
+
+123
+00:08:31,069 --> 00:08:35,069
+running a website you might want to keep
+track of the distinct visitors that you
+
+124
+00:08:35,069 --> 00:08:39,049
+ever saw in a given day or a given week.
+If you're doing something like a web
+
+125
+00:08:39,049 --> 00:08:43,024
+crawl, you might want to identify
+duplicate documents and only remember them
+
+126
+00:08:43,024 --> 00:08:46,095
+once. So, for example, it would be
+annoying if in search results both the top
+
+127
+00:08:46,095 --> 00:08:50,070
+link and the second link both led to
+identical pages at different URLs, okay,
+
+128
+00:08:50,070 --> 00:08:54,077
+so search engines obviously want to avoid
+that, so you want to detect duplicate web
+
+129
+00:08:54,077 --> 00:09:00,095
+pages and only report unique ones. And the
+solution using a hash table is laughably
+
+130
+00:09:00,095 --> 00:09:06,051
+simple. So every time a new object arrives
+in the stream, you look it up. If it?s
+
+131
+00:09:06,051 --> 00:09:11,079
+there, then it?s a duplicate and you
+ignore it. If it?s not there, then this is
+
+132
+00:09:11,079 --> 00:09:16,064
+a new object and you remember it. Qed,
+that's it. And so then after the string
+
+133
+00:09:16,064 --> 00:09:21,000
+completes, so for example after you finish
+reading some huge file, if you just want
+
+134
+00:09:21,000 --> 00:09:25,040
+to report all of the unique objects, hash
+tables generally support a linear scan
+
+135
+00:09:25,040 --> 00:09:30,007
+through them and you can just report all
+of the distinct objects when this stream
+
+136
+00:09:30,007 --> 00:09:34,037
+finishes. So let's move on to a second
+application slightly less trivial maybe
+
+137
+00:09:34,037 --> 00:09:38,040
+but still quite easy, and this is the
+subject of Programming Projects number
+
+138
+00:09:38,040 --> 00:09:43,041
+five. So this is a problem called the two
+sum problem. You're given as input an
+
+139
+00:09:43,041 --> 00:09:48,048
+array of N number. These images are in no
+particular order. You're also given a
+
+140
+00:09:48,048 --> 00:09:53,054
+target sum, which I'll call T. And what
+you want to know is are there two integers
+
+141
+00:09:53,054 --> 00:09:58,044
+from amongst these N you are given that
+sum to T. Now the most obvious and naive
+
+142
+00:09:58,044 --> 00:10:03,033
+way to solve this problem is just to go
+over all N, choose two pairs of integers
+
+143
+00:10:03,033 --> 00:10:07,080
+in the input, and check each one
+separately. So that's clearly a quadratic
+
+144
+00:10:07,080 --> 00:10:12,053
+time algorithm. But now, of course, we
+need to ask, can we do better? And, yes,
+
+145
+00:10:12,053 --> 00:10:16,099
+we can. And first of all let's see what
+you'd do if you couldn't use any data
+
+146
+00:10:16,099 --> 00:10:21,085
+structures. So if you were clever, but you
+didn't use any data structures like a hash
+
+147
+00:10:21,085 --> 00:10:25,096
+table, here would be a reasonable
+improvement over the naive one. So the
+
+148
+00:10:25,096 --> 00:10:30,082
+first step of a better solution is to sort
+A upfront, For example, using word sort or
+
+149
+00:10:30,082 --> 00:10:35,038
+heap sort, something that runs in end log
+and time. So you may be asking about the
+
+150
+00:10:35,038 --> 00:10:39,061
+motivation for sorting. Well, again, you
+know, one thing is just, you know whenever
+
+151
+00:10:39,061 --> 00:10:43,096
+you're trying to do better than N squared;
+you might think that sorting your data
+
+152
+00:10:43,096 --> 00:10:48,014
+somehow helps. Right and you can sort of
+do it almost for free in N log N time.
+
+153
+00:10:48,014 --> 00:10:52,048
+Now, why would sorting the array up front
+help us? Well, then the clever insight is
+
+154
+00:10:52,048 --> 00:10:56,067
+that for each entry of the array a, say
+the first entry, now we know what we're
+
+155
+00:10:56,067 --> 00:11:01,007
+looking for to achieve this given target,
+right. If the target that we're trying to
+
+156
+00:11:01,007 --> 00:11:05,025
+get to is summed to 100 and the first
+entry in the sorted array is 43, then we
+
+157
+00:11:05,025 --> 00:11:09,056
+know we're looking for a 57 somewhere else
+in. This now sorted array. And we know
+
+158
+00:11:09,056 --> 00:11:13,091
+that searching a sorted array is pretty
+easy, right. That just binary search. That
+
+159
+00:11:13,091 --> 00:11:18,073
+just takes logarithmic time. So for each
+of the n array entries, we can look for a
+
+160
+00:11:18,073 --> 00:11:23,083
+complementary. Entry, namely of reach X we
+can look for T - X using binary search.
+
+161
+00:11:23,083 --> 00:11:28,080
+And to use binary search takes log N time.
+So the sorting upfront speeds up this
+
+162
+00:11:28,080 --> 00:11:33,038
+entire batch of N searches. So that's why
+it's a win. So, in the second step,
+
+163
+00:11:33,038 --> 00:11:37,089
+because we do a linear number of binary
+searches, again, this is just n, the
+
+164
+00:11:37,089 --> 00:11:42,083
+number of searches, times log-n, the time
+per search. So, this is just another theta
+
+165
+00:11:42,083 --> 00:11:48,036
+of N log N factor. Alright, so that's
+pretty cool. You, I don't think you could
+
+166
+00:11:48,036 --> 00:11:51,010
+come up with this N log N solution without
+having some basic, facility with
+
+167
+00:11:51,010 --> 00:11:55,043
+algorithms. This is already a really nice
+improvement over the naive N squared. But
+
+168
+00:11:55,043 --> 00:11:59,055
+we can do even better. It is no reason
+we're stuck with an N log N lower bound
+
+169
+00:11:59,055 --> 00:12:03,072
+for the [inaudible] problem. Obviously,
+because the array is unsorted, we have to
+
+170
+00:12:03,072 --> 00:12:07,083
+look at all the integers. So we're not
+gonna do better than linear time. But we
+
+171
+00:12:07,083 --> 00:12:12,040
+can do linear time via a hash table. So a
+good question you might ask at this point
+
+172
+00:12:12,040 --> 00:12:16,087
+is what's the clue about this problem,
+about this task that suggests we want to
+
+173
+00:12:16,087 --> 00:12:21,017
+use a hash table. Well, so hash tables are
+going to dramatically speed up any
+
+174
+00:12:21,017 --> 00:12:25,087
+application where the bulk of the word is
+just repeated look-ups. And if we examine
+
+175
+00:12:25,087 --> 00:12:30,046
+this n log n solution, once we have this
+idea of doing a search for T minus X for
+
+176
+00:12:30,046 --> 00:12:35,005
+each value of X, we realize actually, you
+know, the only thing we needed the sorted
+
+177
+00:12:35,005 --> 00:12:39,064
+array for was to support look-ups. That's
+all binary search here is doing, is just
+
+178
+00:12:39,064 --> 00:12:44,002
+looking stuff up. So we say, ah-ha. All of
+the work here in step two is from repeated
+
+179
+00:12:44,002 --> 00:12:47,085
+look-ups. We're paying an exorbitant
+relatively, logarithm per amount of time
+
+180
+00:12:47,085 --> 00:12:51,053
+per look-up, whereas hash tables can do
+them in cost and time. So, repeated
+
+181
+00:12:51,053 --> 00:12:55,036
+look-ups, ding, ding, ding, let's use a
+hash table; and indeed that's what gives
+
+182
+00:12:55,036 --> 00:12:59,034
+us linear time in this problem. So from
+the amazing guarantee of hash tables, we
+
+183
+00:12:59,034 --> 00:13:03,052
+get the following amazing solution for the
+true [inaudible] problem, although again
+
+184
+00:13:03,052 --> 00:13:07,015
+this is subject to the same fine print
+about you better use it properly
+
+185
+00:13:07,015 --> 00:13:11,019
+implemented hash table and you better not
+have pathological data. So rather than
+
+186
+00:13:11,019 --> 00:13:15,028
+sorting, you just insert everything in the
+array into a hash table. So insertions
+
+187
+00:13:15,028 --> 00:13:19,042
+cost time. So this is gonna be linear time
+rather than the end log [inaudible] we
+
+188
+00:13:19,042 --> 00:13:23,095
+were paying before. Once all the stuff is
+in the hash table, we just do the same
+
+189
+00:13:23,095 --> 00:13:28,080
+thing as in the n log-n solution. For each
+x in the array, we look for its matching
+
+190
+00:13:28,080 --> 00:13:33,065
+elements, t-x in the hash table using the
+cost and time look-up operation exported
+
+191
+00:13:33,065 --> 00:13:38,050
+by the hash table. And of course if for
+some X, you do find the matching element T
+
+192
+00:13:38,050 --> 00:13:43,043
+minus X. Then you can just report X and T
+minus X. That proves that there is indeed
+
+193
+00:13:43,043 --> 00:13:48,048
+a pair of integers of target sum T. If for
+every single element of the input array A,
+
+194
+00:13:48,048 --> 00:13:53,035
+you fail to find this matching element T
+minus X in the hash table. Then, for sure
+
+195
+00:13:53,035 --> 00:13:58,040
+there is no pair of integers in the input
+that sums to T. So this solves the problem
+
+196
+00:13:58,040 --> 00:14:02,079
+correctly. Moreover, constant time
+insertion, so that means this first step
+
+197
+00:14:02,079 --> 00:14:07,098
+is going to be O of end time. And constant
+time look-up. So that means that the
+
+198
+00:14:07,098 --> 00:14:12,072
+second step is also gonna be linear time.
+That leaves subjects to the caveats that
+
+199
+00:14:12,072 --> 00:14:17,027
+we discussed on the previous slide. So
+it's kind of amazing how many different
+
+200
+00:14:17,027 --> 00:14:21,093
+applications of computer science boil down
+in their essence to repeated look up
+
+201
+00:14:21,093 --> 00:14:26,071
+operations. Therefore, having a super fast
+look up operation, like that supported by
+
+202
+00:14:26,071 --> 00:14:31,043
+a hash table, permits these applications
+to scale to fantastic sizes. It's really
+
+203
+00:14:31,043 --> 00:14:35,074
+amazing, and it drives a lot of modern
+technology. So let me just mention a
+
+204
+00:14:35,074 --> 00:14:40,034
+couple examples. Again, if you look around
+or do some research on the web, you'll
+
+205
+00:14:40,034 --> 00:14:44,069
+quickly find many more. So originally what
+prompted researchers to think hard about
+
+206
+00:14:44,069 --> 00:14:48,075
+data structures that support super fast
+look ups, was back when people were first
+
+207
+00:14:48,075 --> 00:14:52,071
+building compilers. So this is a long time
+ago. This is in the fifties or so. And
+
+208
+00:14:52,071 --> 00:14:56,076
+these repeated look ups to figure out, you
+know, what has and has not been defined
+
+209
+00:14:56,076 --> 00:15:00,087
+before was, was emerging as a bottleneck
+in compilers. Back in the early days of
+
+210
+00:15:00,087 --> 00:15:05,023
+programming languages. And that was one of
+the early applications of hash tables. Was
+
+211
+00:15:05,023 --> 00:15:09,024
+to support super fast look ups to speed up
+compile time. To keep track of the
+
+212
+00:15:09,024 --> 00:15:13,090
+function of variable names and things like
+that. Hash table technology is also super
+
+213
+00:15:13,090 --> 00:15:18,027
+useful for software on routers in the
+Internet. So, for example, you might want
+
+214
+00:15:18,027 --> 00:15:21,061
+to block network traffic from certain
+sources. So, for example, maybe you
+
+215
+00:15:21,061 --> 00:15:25,061
+suspect that a certain IP address has been
+taken over by spammers and so any traffic
+
+216
+00:15:25,061 --> 00:15:29,057
+coming from that IP address you just want
+to ignore. And you don't wanna even let it
+
+217
+00:15:29,057 --> 00:15:33,034
+get to the end host, to the computer on
+someone's desktop, or to someone's mobile
+
+218
+00:15:33,034 --> 00:15:37,020
+device but rather inside the internet. You
+wanna just drop packets that are coming
+
+219
+00:15:37,020 --> 00:15:41,001
+certain, certain centers. So what is that
+problem boil down to? Well, you might have
+
+220
+00:15:41,001 --> 00:15:44,083
+a blacklist of IP addresses that you're
+refusing traffic from and then the tasks
+
+221
+00:15:44,083 --> 00:15:48,059
+faced by the router is really the look up
+problem. So if data packet comes in at
+
+222
+00:15:48,059 --> 00:15:52,050
+some insanely fast data rate, and when you
+wanna. You immediately, just look up, is
+
+223
+00:15:52,050 --> 00:15:56,080
+this in the blacklist or not, and if it is
+in the blacklist then you drop the packet,
+
+224
+00:15:56,080 --> 00:16:01,066
+if it?s not, then you let it go through.
+So a very different application is for
+
+225
+00:16:01,066 --> 00:16:06,057
+speeding up search algorithms. And when I
+say a search algorithm, what I'm thinking
+
+226
+00:16:06,057 --> 00:16:10,047
+about here is something like a chess
+playing program. So something that does
+
+227
+00:16:10,047 --> 00:16:14,056
+game tree exploration. So we've already
+talked a fair amount about graph search in
+
+228
+00:16:14,056 --> 00:16:18,032
+this class, but in our discussion of
+breadth first and depth first search, we
+
+229
+00:16:18,032 --> 00:16:22,047
+were thinking about graphs that you could
+basically write down. You could store them
+
+230
+00:16:22,047 --> 00:16:26,038
+in the main memory of your machine or, in
+the worst case, on some big cluster. So
+
+231
+00:16:26,038 --> 00:16:30,038
+maybe graphs, you know, about the size of
+the web graph or possibly smaller. But in
+
+232
+00:16:30,038 --> 00:16:34,019
+a context of something like a chess
+playing program the graph that you're
+
+233
+00:16:34,019 --> 00:16:38,029
+interested in is way, way, way bigger than
+the web graph. So what's the graph we care
+
+234
+00:16:38,029 --> 00:16:42,000
+about for a chess playing program? Well,
+the nodes of the graph are going to
+
+235
+00:16:42,000 --> 00:16:46,047
+correspond to all possible configurations
+of chess pieces On a chess board. So every
+
+236
+00:16:46,047 --> 00:16:51,039
+chess board that you might ever encounter
+in a game of chess. So that's a. Massive,
+
+237
+00:16:51,039 --> 00:16:55,025
+massive number of configurations. And
+you're never gonna be able to write down
+
+238
+00:16:55,025 --> 00:16:58,071
+these vertices. The edges in this graph
+are going to take you from one
+
+239
+00:16:58,071 --> 00:17:02,072
+configuration to another. And there gonna
+correspond to legal moves. So if you can
+
+240
+00:17:02,072 --> 00:17:06,057
+move a bishop from. One place to another
+place, and you get from one configuration
+
+241
+00:17:06,057 --> 00:17:10,038
+to another configuration, there's an edge
+in the graph corresponding to that move.
+
+242
+00:17:10,038 --> 00:17:14,015
+Now you can't write down this graph. So
+you can't implement breadth versus depth
+
+243
+00:17:14,015 --> 00:17:17,096
+versus search exactly as we discussed it
+before. But, you'd still like to do graph
+
+244
+00:17:17,096 --> 00:17:21,082
+exploration, right? So you'd like to have
+your computer program, reason about the at
+
+245
+00:17:21,082 --> 00:17:25,016
+least short term ramifications of your
+possible next move. So that will
+
+246
+00:17:25,016 --> 00:17:28,056
+correspond to searching through this
+graph. Now, how are you gonna, it's
+
+247
+00:17:28,056 --> 00:17:32,042
+remembering graphs search a really
+important property was you don't want to
+
+248
+00:17:32,042 --> 00:17:36,038
+do redundant work, you don't want to
+re-explore things you've already explored.
+
+249
+00:17:36,038 --> 00:17:40,049
+That would be silly and might lead into
+loops and so on. And you can't write down
+
+250
+00:17:40,049 --> 00:17:44,050
+the graph just remembering where you've
+been, is suddenly a non-trivial problem;
+
+251
+00:17:44,050 --> 00:17:49,026
+but what is remembering where you've been,
+fundamentally? Fundamentally that's a look
+
+252
+00:17:49,026 --> 00:17:53,035
+up operation. So that is exactly what hash
+tables are for. So to be a little more
+
+253
+00:17:53,035 --> 00:17:56,087
+concrete, you know, one where you use the
+hash table in, say, a chess playing
+
+254
+00:17:56,087 --> 00:18:00,068
+program, is you'd stake, take the initial
+configuration. You would sort of imagine
+
+255
+00:18:00,068 --> 00:18:04,025
+trying all possible moves from this
+configuration. And then you'd try, you'd
+
+256
+00:18:04,025 --> 00:18:08,006
+sort of have all moves from your opponent
+and then you'd have all your moves in
+
+257
+00:18:08,006 --> 00:18:11,078
+response. And you would always remember,
+as you were doing this reasoning, every
+
+258
+00:18:11,078 --> 00:18:15,064
+chessboard configuration you'd ever looked
+at before and you'd stick in the hash
+
+259
+00:18:15,064 --> 00:18:19,035
+table. And before you go exploring some
+configuration, you'd look it up in your
+
+260
+00:18:19,035 --> 00:18:22,098
+hash table to see if you've already
+explored it in the past. And if you have,
+
+261
+00:18:22,098 --> 00:18:27,047
+you don't bother. You've already seen it.
+All right. So chess playing programs
+
+262
+00:18:27,047 --> 00:18:30,098
+operate by exploring systematically as
+many configurations as they'd have time
+
+263
+00:18:30,098 --> 00:18:34,052
+for. You know, obviously, in a budget of
+three minutes or whatever you don't wanna
+
+264
+00:18:34,052 --> 00:18:37,085
+waste any work exploring any given
+configuration more than once. How do you
+
+265
+00:18:37,085 --> 00:18:41,013
+remember where you've been? Well
+everything you've explored you stick in a
+
+266
+00:18:41,013 --> 00:18:44,028
+hash table Before you explore a
+configuration you look it up in a hash
+
+267
+00:18:44,028 --> 00:18:48,002
+table and see if you've already done it.
+So these of course are just scratching the
+
+268
+00:18:48,002 --> 00:18:51,058
+surface. I just wanted to highlight a
+couple, you know, fairly different looking
+
+269
+00:18:51,058 --> 00:18:55,023
+applications, you know to convince you
+that hash tables come up all the time. And
+
+270
+00:18:55,023 --> 00:18:58,066
+the reason they come up all the time is
+because you know the need for fast
+
+271
+00:18:58,066 --> 00:19:02,035
+look-ups comes up all the time. It's kind
+of amazing how much technology is being
+
+272
+00:19:02,035 --> 00:19:05,092
+driven just by you know repeated fast
+look-ups. So as homework I encourage you
+
+273
+00:19:05,092 --> 00:19:09,061
+to just sort of think about you know your
+own life, or think about technology out
+
+274
+00:19:09,061 --> 00:19:13,047
+there in the world, and come up with some.
+You know, guesses about where probably
+
+275
+00:19:13,047 --> 00:19:17,050
+hash tables are making something out there
+running blazingly fast. I think it won't
+
+276
+00:19:17,050 --> 00:19:20,080
+take you more than a few minutes to come
+up with some good examples.

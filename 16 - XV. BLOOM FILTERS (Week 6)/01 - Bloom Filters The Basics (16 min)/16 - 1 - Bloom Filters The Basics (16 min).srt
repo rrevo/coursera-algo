@@ -1,0 +1,1137 @@
+1
+00:00:00,031 --> 00:00:03,042
+So, in this video, we're going to discuss
+Bloom filters which is a data structure
+
+2
+00:00:03,042 --> 00:00:08,005
+developed appropriately enough by Burton
+Bloom back in 1970. Bloom filters are
+
+3
+00:00:08,005 --> 00:00:11,538
+variant on hash tables, you'll recognize a
+lot of the ideas from our hash table
+
+4
+00:00:11,538 --> 00:00:15,794
+discussion. The win that you get in Bloom
+filters is that they are more space
+
+5
+00:00:15,794 --> 00:00:19,051
+efficient than run of the mill hash
+tables and they're going to handle, they
+
+6
+00:00:19,051 --> 00:00:22,366
+do allow for errors, there is a non zero
+false positive probability when you do
+
+7
+00:00:22,366 --> 00:00:26,511
+look ups but that's still a win for some
+applications. So, it's a very cool idea,
+
+8
+00:00:26,511 --> 00:00:30,756
+very cool data structure. You do see it
+used quite a bit in practice so let's
+
+9
+00:00:30,756 --> 00:00:34,130
+start talking about it. So, we'll go
+through the usual topics that we do
+
+10
+00:00:34,130 --> 00:00:37,317
+whenever we discuss a new data structure.
+So first, I want to tell you what
+
+11
+00:00:37,317 --> 00:00:41,257
+operations they support and what kind of
+performance you're going to expect from
+
+12
+00:00:41,257 --> 00:00:44,611
+those operations, in other words, what is
+the API corresponding to the data
+
+13
+00:00:44,611 --> 00:00:48,105
+structure. Secondly, I'm going to talk a
+little bit about what it's good for. So,
+
+14
+00:00:48,105 --> 00:00:50,737
+what are some potential application and
+then we'll take a peek under the hood.
+
+15
+00:00:50,737 --> 00:00:55,068
+I'll tell you some of the implementation
+details with an emphasis on explaining why
+
+16
+00:00:55,068 --> 00:00:59,242
+you get the kinds of performance trade
+offs that you do with Bloom filters. So,
+
+17
+00:00:59,242 --> 00:01:03,465
+to first order, the raison d'être of
+Bloom filters is exactly the same as a
+
+18
+00:01:03,465 --> 00:01:07,881
+hash table. It supports super fast
+inserts, super fast look ups. You can put
+
+19
+00:01:07,881 --> 00:01:11,874
+stuff in there and you can remember what
+you put in earlier. Now, of course, what
+
+20
+00:01:11,874 --> 00:01:14,961
+you should be wondering is what we already
+know what data structure that supports
+
+21
+00:01:14,961 --> 00:01:18,197
+super fast in certain look ups, a hash
+table. Why am I bothering to tell you
+
+22
+00:01:18,197 --> 00:01:22,304
+about yet another data structure with
+exactly those same operations? So, let me
+
+23
+00:01:22,304 --> 00:01:27,629
+tell you about the pros and cons of Bloom
+filters relative to run off the mill hash
+
+24
+00:01:27,629 --> 00:01:33,326
+tables as we've already discussed. The big
+win is that Bloom filters are more space
+
+25
+00:01:33,326 --> 00:01:35,687
+efficient than hash tables. No matter
+whether they are implemented with chaining
+
+26
+00:01:35,687 --> 00:01:39,443
+or with open addressing, you can store
+much less space per objects. In fact, as
+
+27
+00:01:39,443 --> 00:01:43,906
+we'll see, less space than that of an
+object itself using a Bloom filter. As
+
+28
+00:01:43,906 --> 00:01:48,821
+far as the cons, well, first of all, this
+is really for applications where you just
+
+29
+00:01:48,821 --> 00:01:53,001
+want to remember what kind of values you
+see. You are not trying to store pointers
+
+30
+00:01:53,001 --> 00:01:56,898
+to the objects themselves and just trying
+to remember values. So, the first drawback
+
+31
+00:01:56,898 --> 00:02:01,704
+of the Bloom filter is that because we
+want to be so space efficient, we don't
+
+32
+00:02:01,704 --> 00:02:05,148
+even want to remember the object itself
+just whether or not we've seen it before.
+
+33
+00:02:05,148 --> 00:02:09,242
+We're not going to be able to store the
+objects or even pointers to the objects in
+
+34
+00:02:09,242 --> 00:02:11,785
+a Bloom filter. We're just going to
+remember what we've seen and what we
+
+35
+00:02:11,785 --> 00:02:16,332
+haven't. So, some of you might know the
+terminology hash set for this kind of
+
+36
+00:02:16,332 --> 00:02:20,048
+variant of a hash table as opposed to a
+full blown hash table or hash map. The
+
+37
+00:02:20,048 --> 00:02:24,056
+second con is at least in the vanilla
+implementation of Bloom filters that I'm
+
+38
+00:02:24,056 --> 00:02:28,211
+going to describe here, deletions are not
+allowed. You can only insert, you can't
+
+39
+00:02:28,211 --> 00:02:32,030
+delete. The situation with deletions is
+very much similar to hash tables
+
+40
+00:02:32,030 --> 00:02:36,135
+implemented with open addressing. It's not
+that you can't have a Bloom filter that
+
+41
+00:02:36,135 --> 00:02:39,472
+accommodates deletion, you can, there are very
+instances of it but that requires
+
+42
+00:02:39,472 --> 00:02:42,664
+significantly more work and we're not
+going to discuss it here. So, the first
+
+43
+00:02:42,664 --> 00:02:46,561
+order at least for vanilla Bloom filters,
+you want to think of them as suitable for
+
+44
+00:02:46,561 --> 00:02:50,203
+applications or deletions or not a first
+order of operation. Now, the third con and
+
+45
+00:02:50,203 --> 00:02:54,274
+this is a drawback that we have not see
+previously using any data structures is
+
+46
+00:02:54,274 --> 00:03:00,291
+Bloom filters can actually make mistakes.
+Now, what kind of mistake could this kind
+
+47
+00:03:00,291 --> 00:03:03,879
+of data structure possibly make when all
+you're really doing is looking something
+
+48
+00:03:03,879 --> 00:03:08,073
+up. Well, one of mistake would be a false
+negative and that means you have inserted
+
+49
+00:03:08,073 --> 00:03:12,818
+something previously then you look it up
+and the hash table or the Bloom filter
+
+50
+00:03:12,818 --> 00:03:17,129
+says, it's not there. So, Bloom filters
+will not have false negatives of this
+
+51
+00:03:17,129 --> 00:03:20,537
+form. You've insert something, you look it
+up later, it's definitely going to
+
+52
+00:03:20,537 --> 00:03:24,269
+confirm that you inserted it in the past.
+But Bloom filters will have false
+
+53
+00:03:24,269 --> 00:03:29,388
+positives, that means that despite the
+fact you have never inserted say, a given
+
+54
+00:03:29,388 --> 00:03:33,579
+IP address into the, into the Bloom
+filter, if you look it up later, it will
+
+55
+00:03:33,579 --> 00:03:37,570
+say that you have. So, there will
+sometimes be in some sense phantom objects
+
+56
+00:03:37,570 --> 00:03:42,079
+in Bloom filters, objects which it thinks
+have been inserted even though they
+
+57
+00:03:42,079 --> 00:03:45,182
+haven't been. So, given that, I am now
+showing you two data structures with
+
+58
+00:03:45,182 --> 00:03:48,847
+essentially the same functionality, hash
+tables and Bloom filters, at least, if we
+
+59
+00:03:48,847 --> 00:03:53,047
+ignore the deletion issue. You might want
+to wonder which one is more appropriate,
+
+60
+00:03:53,047 --> 00:03:56,807
+which one is more useful. And because
+there is these trade offs between the two,
+
+61
+00:03:56,807 --> 00:04:00,565
+the answer as you expect is, it depends on
+the application, right? So, if it's an
+
+62
+00:04:00,565 --> 00:04:03,845
+application where space is really at a
+premium, you might want to turn to Bloom
+
+63
+00:04:03,845 --> 00:04:08,449
+filters especially if a small chance of a
+false positive is not deal breaker. If you
+
+64
+00:04:08,449 --> 00:04:12,497
+have some kind of application where false
+positives are absolutely out of the
+
+65
+00:04:12,497 --> 00:04:16,003
+question, of course, you should not use a
+Bloom filter and you want to think about a
+
+66
+00:04:16,003 --> 00:04:20,417
+hash table. So, what are some situations
+where people actually do use Bloom filters
+
+67
+00:04:20,417 --> 00:04:24,639
+where you either really care about space
+and/or you don't really care about this
+
+68
+00:04:24,639 --> 00:04:29,029
+false positive probability. For one of the
+earliest applications of Bloom filters,
+
+69
+00:04:29,029 --> 00:04:34,793
+this is not long time ago, this is
+something like 40 years ago, was the spell
+
+70
+00:04:34,793 --> 00:04:37,621
+checkers. So, how would you implement a
+spell checker using a Bloom filter? Well,
+
+71
+00:04:37,621 --> 00:04:40,977
+first you have this insert phase where you
+basically just go through the entire
+
+72
+00:04:40,977 --> 00:04:45,584
+dictionary word-by-word and you insert
+every valid word into the Bloom filter.
+
+73
+00:04:45,584 --> 00:04:49,054
+Then, afterwards, when you're presented
+with a new document that somebody has
+
+74
+00:04:49,054 --> 00:04:52,266
+written, you're going to go through the
+document word-by-word for each word, you
+
+75
+00:04:52,266 --> 00:04:56,326
+say, is this in the Bloom filter? That is,
+is this one of the legitimate word from
+
+76
+00:04:56,326 --> 00:05:00,061
+the dictionary which is previously
+inserted? If the Bloom filters says yes,
+
+77
+00:05:00,061 --> 00:05:04,190
+this word is in the dictionary as in we've
+stored and seen that before, then you
+
+78
+00:05:04,190 --> 00:05:08,801
+treat is as a correctly spelled word and
+if it's not in the Bloom filters, then you
+
+79
+00:05:08,801 --> 00:05:13,451
+treat it as incorrectly spelled word. Now,
+the false positive probability means this
+
+80
+00:05:13,451 --> 00:05:16,688
+isn't a perfect spell checker. I mean
+sometimes, you're going to look up a
+
+81
+00:05:16,688 --> 00:05:20,407
+misspelled word and the Bloom filter won't
+catch it and it willl actually say yes,
+
+82
+00:05:20,407 --> 00:05:24,614
+with small probability, we'll say, this is
+a legitimate word. So, you know, it's not
+
+83
+00:05:24,614 --> 00:05:28,164
+ideal but, you know, the, the English
+language is pretty big and space was
+
+84
+00:05:28,164 --> 00:05:32,611
+definitely at a premium, 40 plus years
+ago. So, it was a win for that application
+
+85
+00:05:32,611 --> 00:05:37,542
+at that time, to use Bloom filters to
+implement a spell checker. Another
+
+86
+00:05:37,542 --> 00:05:42,286
+application which, you know, remains
+relevant today is to keep track of a list
+
+87
+00:05:42,286 --> 00:05:45,976
+of forbidden passwords. Now, why would you
+have forbidden passwords? Well, maybe, you
+
+88
+00:05:45,976 --> 00:05:50,629
+want to keep track of password which are
+too weak or too easy to guess or too
+
+89
+00:05:50,629 --> 00:05:54,095
+common. You may, yourself, have used the
+piece of software or website at some point
+
+90
+00:05:54,095 --> 00:05:57,646
+where it asked you for a password and if
+you typed in something which is too simple
+
+91
+00:05:57,646 --> 00:06:00,799
+or too easy, rejected it and asked you to
+type in another one. So, one way to
+
+92
+00:06:00,799 --> 00:06:05,544
+implement a list of forbidden passwords is
+just with the Bloom filter and the idea is
+
+93
+00:06:05,544 --> 00:06:09,902
+similar to the spell checker. You first,
+insert into the Bloom filter all of the
+
+94
+00:06:09,902 --> 00:06:13,631
+passwords that you don't want anybody to
+use for whatever reason. Then, when a
+
+95
+00:06:13,631 --> 00:06:17,381
+client comes and tries to type in a new
+password, you look it up in the Bloom
+
+96
+00:06:17,381 --> 00:06:21,618
+filter and if you get a positive look up,
+then you tell the user, no, that's no
+
+97
+00:06:21,618 --> 00:06:26,768
+good, you can't use that password, choose
+another one. And this is an application
+
+98
+00:06:26,768 --> 00:06:28,763
+where you really don't care about the
+errors, you really don't care about the
+
+99
+00:06:28,763 --> 00:06:31,295
+fact that there's a false positive rate.
+Let's assume that the error rate is
+
+100
+00:06:31,295 --> 00:06:34,757
+something like one percent or 0.1%. So,
+what would that means in context, that
+
+101
+00:06:34,757 --> 00:06:38,666
+would just mean once in a while, one in a
+hundred clients or one in a thousand
+
+102
+00:06:38,666 --> 00:06:41,733
+clients actually types in a perfectly
+strong password that gets rejected by the
+
+103
+00:06:41,733 --> 00:06:44,967
+Bloom filter and they have to type in a
+second one. Okay, but big deal and if
+
+104
+00:06:44,967 --> 00:06:48,131
+space is at the, the premium, this is
+definitely a win to use this super
+
+105
+00:06:48,131 --> 00:06:53,640
+lightweight data structure to keep track
+of these blocked passwords. These days
+
+106
+00:06:53,640 --> 00:06:58,427
+certainly one the killer applications of
+Bloom filters is in software deployed on
+
+107
+00:06:58,427 --> 00:07:03,517
+network routers. So, the machinery out in
+the Internet which is responsible for
+
+108
+00:07:03,517 --> 00:07:07,894
+transmitting packets from one place to
+another. So, what are the reasons why
+
+109
+00:07:07,894 --> 00:07:11,917
+Bloom filters have found fertile 
+application in network routers? Well,
+
+110
+00:07:11,917 --> 00:07:15,055
+first of all, you do have a budget on
+space, typically on network routers.
+
+111
+00:07:15,055 --> 00:07:18,818
+There's a lot of things that you got to do
+and you don't want to waste that much of
+
+112
+00:07:18,818 --> 00:07:21,507
+it on some random data structure to do
+one's specific task. So, you do have a
+
+113
+00:07:21,507 --> 00:07:25,487
+budget on space and also, you need super,
+super fast data structures, right? Since
+
+114
+00:07:25,487 --> 00:07:29,083
+these packets are coming in at this
+torrential rate which you can't even
+
+115
+00:07:29,083 --> 00:07:32,619
+imagine and you want to process these
+packets in real time, sending them off to
+
+116
+00:07:32,619 --> 00:07:37,038
+the next top. Bloom filters are the work
+force behind a lot of different tasks that
+
+117
+00:07:37,038 --> 00:07:41,430
+is done in the network router. You can
+imagine wanting to keep track of blocked
+
+118
+00:07:41,430 --> 00:07:45,503
+IP addresses, you can imagine keeping
+track of the contents of some cache so you
+
+119
+00:07:45,503 --> 00:07:49,324
+don't do spurious look ups. You can imagine
+maintaining statistics to check for denial
+
+120
+00:07:49,324 --> 00:07:56,086
+of service attacks and so on and so forth.
+So, summarizing as a expert programmer,
+
+121
+00:07:56,086 --> 00:08:00,030
+what is it that you should remember about
+Bloom filters, what purpose does this
+
+122
+00:08:00,030 --> 00:08:04,268
+tool serve in your tool box? Well, as far
+as the operation supported which is the
+
+123
+00:08:04,268 --> 00:08:09,005
+same as a hash table, the point is to have
+super fast inserts, super fast look ups.
+
+124
+00:08:09,005 --> 00:08:12,966
+But Bloom filters are more lightweight
+version of a hash table. So, they are more
+
+125
+00:08:12,966 --> 00:08:16,708
+space efficient but they do have this
+drawback of having a small error
+
+126
+00:08:16,708 --> 00:08:20,537
+probability. So, those are the key
+features you should remember when deciding
+
+127
+00:08:20,537 --> 00:08:24,772
+whether or not you are working on an
+application that could make good use of
+
+128
+00:08:24,772 --> 00:08:28,323
+this data structure. So, having discussed
+one of th e operations and what these data
+
+129
+00:08:28,323 --> 00:08:31,788
+structures are good for, let's take it to
+the next level, let's peer under the hood
+
+130
+00:08:31,788 --> 00:08:35,715
+and see how they are actually implemented.
+Cuz this is really a quite simple, quite
+
+131
+00:08:35,715 --> 00:08:39,990
+cool idea. So, like hash tables, Bloom
+filters have essentially two ingredients.
+
+132
+00:08:39,990 --> 00:08:42,897
+First of all, there's an array and second
+of all, there's a hash function or in
+
+133
+00:08:42,897 --> 00:08:47,246
+fact, several hash functions. So, we're
+going to have a random access array
+
+134
+00:08:47,246 --> 00:08:50,765
+except, instead of having n buckets or
+n slots as we've been calling them, each
+
+135
+00:08:50,765 --> 00:08:56,140
+entry in this array is just going to be a
+single bit. Each entry in this array can
+
+136
+00:08:56,140 --> 00:09:00,381
+only take on two values, zero or one. And
+the way they think about the space
+
+137
+00:09:00,381 --> 00:09:05,067
+occupied by Bloom filters is in terms of
+the number of bits per object that has
+
+138
+00:09:05,067 --> 00:09:09,967
+been inserted into the Bloom filter. So,
+if you have inserted the data set capital
+
+139
+00:09:09,967 --> 00:09:15,059
+S, then the total number of bits is n, the
+number of objects that have been inserted
+
+140
+00:09:15,059 --> 00:09:21,168
+is cardinality of s. So, n / |s| is the
+number of bits in this data structure that
+
+141
+00:09:21,168 --> 00:09:25,991
+you are using per entry in the data set.
+Now, you can tune a Bloom filter so this
+
+142
+00:09:25,991 --> 00:09:30,043
+ratio is any number of different
+quantities but for now, I encourage you to
+
+143
+00:09:30,043 --> 00:09:34,139
+think of this ratio as being eight, that
+is for each object stored in the Bloom
+
+144
+00:09:34,139 --> 00:09:38,351
+Filter, you are using only eight bits of
+memory. That will help you appreciate just
+
+145
+00:09:38,351 --> 00:09:42,614
+how amazing this data structures are,
+right, cuz maybe our data set is something
+
+146
+00:09:42,614 --> 00:09:47,117
+like IP addresses which is 32 bits so what
+I'm saying here, if this is eight, I'm
+
+147
+00:09:47,117 --> 00:09:51,605
+saying we are not, definitely not actually
+storing the IP address. So, we have this
+
+148
+00:09:51,605 --> 00:09:54,342
+32-bit object we are inserting and we are
+only using eight bits of memory. This is
+
+149
+00:09:54,342 --> 00:09:57,436
+how we are going to remember whether its
+there or whether its not. And again,
+
+150
+00:09:57,436 --> 00:10:00,429
+certainly, eight bits per object is way
+less than keeping a pointer to some
+
+151
+00:10:00,429 --> 00:10:04,483
+associated memory somewhere. So, this is a
+really impressive minimal use of space to
+
+152
+00:10:04,483 --> 00:10:08,284
+keep track of what we've seen and what we
+haven't. And secondly, we need mappings of
+
+153
+00:10:08,284 --> 00:10:13,338
+given an object to say, given the IP
+address, what are the relevant bits for
+
+154
+00:10:13,338 --> 00:10:17,504
+seeing if we've seen this IP address
+before or not? So, in a Bloom filter, its
+
+155
+00:10:17,504 --> 00:10:20,571
+important to have not one hash function,
+but several hash functions. So, k is going
+
+156
+00:10:20,571 --> 00:10:25,737
+to denote the number of hash functions in
+the Bloom filter which you think of k is
+
+157
+00:10:25,737 --> 00:10:30,897
+some small constant somewhere, you know,
+three, four, five, or something like that.
+
+158
+00:10:30,897 --> 00:10:35,926
+So, obviously it's a little bit more
+complicated to use multiple hash functions
+
+159
+00:10:35,926 --> 00:10:39,597
+as supposed to just one hash function. But
+it's really not that big of deal. So, we'll
+
+160
+00:10:39,597 --> 00:10:42,920
+call from our discussion of say, universal
+hashing, we have identified the entire
+
+161
+00:10:42,920 --> 00:10:46,029
+families of hash functions which will work
+well on average. So, instead of choosing
+
+162
+00:10:46,029 --> 00:10:49,360
+just using one hash function at random
+from universal family, you gave me k
+
+163
+00:10:49,360 --> 00:10:54,098
+independent random choices from universal
+family. In fact, in practice, it seems to
+
+164
+00:10:54,098 --> 00:10:58,320
+typically be enough to just use two
+different hash functions and then generate
+
+165
+00:10:58,320 --> 00:11:02,669
+k different linear combinations of those
+two hash functions. But for the purposes
+
+166
+00:11:02,669 --> 00:11:07,178
+of this video, let's just assume that
+we've done enough work to come up with k,
+
+167
+00:11:07,178 --> 00:11:10,738
+different good hash functions and that's
+what we're going to be using in our Bloom
+
+168
+00:11:10,738 --> 00:11:15,733
+filter. So, the code for both insert
+and delete is very elegant. So, let's
+
+169
+00:11:15,733 --> 00:11:19,844
+start by insertion. So, suppose we have
+some new IP address and we want to stick
+
+170
+00:11:19,844 --> 00:11:24,316
+into these Bloom filter, what we do? Well,
+we'll just evaluate each of our k hash
+
+171
+00:11:24,316 --> 00:11:28,783
+functions on this new object. Each of
+those tells us an index into our array of
+
+172
+00:11:28,783 --> 00:11:33,707
+bits and we'll just set those k bits equal
+to one. And when we do this insert, we
+
+173
+00:11:33,707 --> 00:11:37,925
+don't even bother to look at what the
+previous values of these bits were.. So,
+
+174
+00:11:37,925 --> 00:11:42,839
+zero or one, we don't care. We'll just
+blithely go in and set this k bits equal
+
+175
+00:11:42,839 --> 00:11:47,310
+to one, whatever they were before. So,
+what about looking up? How are we going to
+
+176
+00:11:47,310 --> 00:11:50,557
+implement that? Well, all you have to do
+is check for the footprint that was
+
+177
+00:11:50,557 --> 00:11:54,738
+inevitably left by a prior insertion. So,
+if we're looking up an IP address and we
+
+178
+00:11:54,738 --> 00:11:58,562
+know was inserted sometime in the past,
+what happened when we evaluated the k hash
+
+179
+00:11:58,562 --> 00:12:02,024
+functions, we went t o appropriate
+positions in the array and we set all of
+
+180
+00:12:02,024 --> 00:12:04,825
+those bits to one. So now, I'll just check
+that, that indeed happened, that is when
+
+181
+00:12:04,825 --> 00:12:09,395
+we get a new IP address, we're looking it
+up. We evaluate the hash functions, all k
+
+182
+00:12:09,395 --> 00:12:14,011
+of them. We look at the corresponding k
+positions and we verified that indeed
+
+183
+00:12:14,011 --> 00:12:18,454
+those k bits have been set to one. So,
+what I hope is clear fairly quickly from
+
+184
+00:12:18,454 --> 00:12:24,290
+inspecting this very elegant code is that
+we will not ever have false negatives,
+
+185
+00:12:24,290 --> 00:12:28,824
+yet, we might have false positives. So,
+let's discuss those one other time. So,
+
+186
+00:12:28,824 --> 00:12:33,056
+remember, a false negative would mean that
+the Bloom filter says, something isn't
+
+187
+00:12:33,056 --> 00:12:36,815
+there when in fact, it is, that is we
+insert something and we'll look it up
+
+188
+00:12:36,815 --> 00:12:40,435
+later and the Bloom filter rejects us.
+Well, that's not going to happen. Cuz when
+
+189
+00:12:40,435 --> 00:12:44,042
+we insert something, we set the relevant k
+bits to one. Notice when a bit is one, it
+
+190
+00:12:44,042 --> 00:12:47,891
+remains one forevermore. That bits are
+never reset back to zero. So, if anything
+
+191
+00:12:47,891 --> 00:12:52,228
+was ever inserted in the subs when we look
+it up, definitely we well confirm that all
+
+192
+00:12:52,228 --> 00:12:55,707
+those bits are one. So, we're never going
+to be rejected by something we inserted
+
+193
+00:12:55,707 --> 00:13:00,365
+before. On the other hand, it is totally
+possible that we will have a false
+
+194
+00:13:00,365 --> 00:13:04,359
+positive. It's totally possible that
+there will be a phantom object and we'll
+
+195
+00:13:04,359 --> 00:13:08,392
+do a look up and the Bloom filter will
+turn yes when we never inserted that
+
+196
+00:13:08,392 --> 00:13:13,004
+object. Suppose for example, the k =
+three. So, we're using three different
+
+197
+00:13:13,004 --> 00:13:18,488
+hash functions. Consider some IP address,
+fixed IP address, maybe the three hash
+
+198
+00:13:18,488 --> 00:13:23,764
+functions tell us the relevant bits are
+seventeen, 23, and 36. Maybe we never
+
+199
+00:13:23,764 --> 00:13:27,853
+inserted this IP address, but we have
+inserted IP address number two and in its
+
+200
+00:13:27,853 --> 00:13:33,186
+insertion, the seventeenth bit got set to
+one. We inserted some other IP address, IP
+
+201
+00:13:33,186 --> 00:13:36,843
+address number three and the twenty-third
+bit got set to one. And then we inserted
+
+202
+00:13:36,843 --> 00:13:41,174
+IP address number four and the 36th bit
+got set to one. So, three different IP
+
+203
+00:13:41,174 --> 00:13:45,040
+addresses were responsible for setting
+these three different bits but whatever,
+
+204
+00:13:45,040 --> 00:13:48,459
+its not like we are remembering that. And
+that once, once we look up this IP address
+
+205
+00:13:48,459 --> 00:13:52,008
+we really care about, what do we do, we
+just inspect bit seventeen, its one.
+
+206
+00:13:52,015 --> 00:13:56,346
+Inspect the 23, its one. We inspect the
+36, its also one. For all we know, this
+
+207
+00:13:56,346 --> 00:14:00,687
+thing really was inserted and the Bloom
+filter is going to say, yes, it's in the
+
+208
+00:14:00,687 --> 00:14:04,473
+table. So, that's how we have false
+positives. All of the bits that are
+
+209
+00:14:04,473 --> 00:14:07,530
+indicating whether or not a given object
+are in, are in the Bloom filter were
+
+210
+00:14:07,530 --> 00:14:11,759
+previously set by insertions from other
+objects. So, there are two points that I
+
+211
+00:14:11,759 --> 00:14:16,120
+hope are clear at this stage of the
+discussion. First of all, that this Bloom
+
+212
+00:14:16,120 --> 00:14:20,258
+filter, the idea does suggests a
+possibility of a super space efficient
+
+213
+00:14:20,258 --> 00:14:23,264
+variant of a hash table, right. So, we've
+been talking about setting the number of
+
+214
+00:14:23,264 --> 00:14:25,812
+bits to be say roughly eight
+times the number of objects that you're
+
+215
+00:14:25,812 --> 00:14:29,317
+storing so you're only using eight bits
+per object and for most objects, that's
+
+216
+00:14:29,317 --> 00:14:33,615
+going to be radically smaller than just
+the simple array, storing the objects
+
+217
+00:14:33,615 --> 00:14:38,235
+themselves. Again, if their IP addresses we're only have 25 percent much space as
+
+218
+00:14:38,235 --> 00:14:43,545
+we actually stored those IP address in
+just an array with no extra bells and
+
+219
+00:14:43,545 --> 00:14:48,040
+whistles. The second point is that we're
+inevitably going to have errors in a
+
+220
+00:14:48,040 --> 00:14:51,329
+Bloom filter, we will have false
+positives or we look something up and it
+
+221
+00:14:51,329 --> 00:14:55,159
+says, its there when in fact, its not. So,
+those two points I hope are clear. What's
+
+222
+00:14:55,159 --> 00:14:59,809
+actually not clear is the bottom line. Is
+this actually a useful idea? For this to
+
+223
+00:14:59,809 --> 00:15:05,441
+be useful, it'd better be the case that
+the error probability can be quite small
+
+224
+00:15:05,441 --> 00:15:10,504
+even while the space per object is quite
+small. If we can't get those two things
+
+225
+00:15:10,504 --> 00:15:14,446
+small simultaneously, this is a bad idea
+and we should always just use a hash table
+
+226
+00:15:14,446 --> 00:15:17,797
+instead. So, to evaluate the quality of
+this idea, we're going to have to do
+
+227
+00:15:17,797 --> 00:15:21,831
+little bit of mathematical analysis.
+That's what I'm going to show you in the
+
+228
+00:15:21,831 --> 00:15:23,063
+next couple of slides.

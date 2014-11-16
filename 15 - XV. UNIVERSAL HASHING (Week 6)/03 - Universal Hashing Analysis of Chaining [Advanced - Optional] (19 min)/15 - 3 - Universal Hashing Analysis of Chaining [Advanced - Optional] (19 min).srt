@@ -1,0 +1,1224 @@
+1
+00:00:00,000 --> 00:00:03,093
+So, in this video, we're going to start
+reasoning about the performance of hash
+
+2
+00:00:03,093 --> 00:00:08,017
+tables. In particular, we'll make precise
+this idea that properly implemented they
+
+3
+00:00:08,017 --> 00:00:12,043
+guarantee constant time lookup. So, let me
+just briefly remind you of the road map
+
+4
+00:00:12,043 --> 00:00:16,048
+that we're in the middle of. So, we
+observed that every fixed hash function is
+
+5
+00:00:16,048 --> 00:00:20,080
+subject to a pathological data set and so
+exploring the solution of making a real
+
+6
+00:00:20,080 --> 00:00:24,081
+time decision of what hash function to
+use. And we've already gone over this
+
+7
+00:00:24,081 --> 00:00:28,097
+really quite interesting definition of
+universal hash functions and that's the
+
+8
+00:00:28,097 --> 00:00:33,034
+proposed definition of a good random hash
+function. More over, in the previous video
+
+9
+00:00:33,034 --> 00:00:37,045
+I showed you that there are simple such
+families of hash functions. They don't
+
+10
+00:00:37,045 --> 00:00:41,067
+take much space to store, they don't take
+much time to evaluate. And the plan for
+
+11
+00:00:41,067 --> 00:00:45,087
+this video is to prove formally, that if
+you draw a hash function uniformly at
+
+12
+00:00:45,087 --> 00:00:50,006
+random from a universal family of hash
+functions, like the one we saw in the
+
+13
+00:00:50,006 --> 00:00:54,025
+previous video, then you're guaranteed
+expected constant time for all of the
+
+14
+00:00:54,025 --> 00:00:58,029
+supported operations. So, here's the
+definition once more of a universal family
+
+15
+00:00:58,029 --> 00:01:01,052
+of hash functions. We'll be using this
+definition, of course, when we prove that
+
+16
+00:01:01,052 --> 00:01:05,431
+these hash functions give good
+performance. So, remember, we're talking
+
+17
+00:01:05,431 --> 00:01:09,065
+now about a set of hash functions. These
+are all of the conceivable real time
+
+18
+00:01:09,065 --> 00:01:12,466
+decisions you might make about which hash
+function to use. So, the universe is
+
+19
+00:01:12,466 --> 00:01:16,544
+fixed, this is something like IP
+addresses, the number of buckets is fixed.
+
+20
+00:01:16,544 --> 00:01:20,432
+You know that's going to be something like
+10,000, say, and what it means for a
+
+21
+00:01:20,432 --> 00:01:24,643
+family to be universal is that the
+probability that any given pair of items
+
+22
+00:01:24,643 --> 00:01:30,008
+collides is as good, as small as with the
+gold standard of completely perfect
+
+23
+00:01:30,008 --> 00:01:35,333
+uniform random hashing. That is for each
+pair xy of distinct elements of the
+
+24
+00:01:35,333 --> 00:01:39,573
+universe, so for example, for each
+distinct pair of IP addresses, the
+
+25
+00:01:39,573 --> 00:01:44,715
+probability over the choice of the random
+hash function little h from the family
+
+26
+00:01:44,715 --> 00:01:49,290
+script h is no more than one over n, where
+n is the number of buckets. So, if you
+
+27
+00:01:49,290 --> 00:01:53,832
+have 10,000 buckets, the probability that
+any given pair of IP addresses winds up
+
+28
+00:01:53,832 --> 00:01:58,551
+getting mapped to the same bucket is
+almost one in 10,000. Let me now spell out
+
+29
+00:01:58,551 --> 00:02:03,789
+the precise guarantee we're going to prove
+if you use a randomly chosen hash function
+
+30
+00:02:03,789 --> 00:02:08,068
+from a universal family. So, for this
+video, we're going to only talk about hash
+
+31
+00:02:08,068 --> 00:02:12,574
+tables implemented with chaining, with one
+length list per bucket. We'll be able to
+
+32
+00:02:12,574 --> 00:02:17,710
+give a completely precise mathematical
+analysis with this collision resolution
+
+33
+00:02:17,710 --> 00:02:21,940
+scheme. We're going to analyze the
+performance of this hash table in
+
+34
+00:02:21,940 --> 00:02:26,862
+expectation over the choice of a hash
+function little h drawn uniformly from a
+
+35
+00:02:26,862 --> 00:02:30,842
+universal family script h. So, for
+example, for the family that we
+
+36
+00:02:30,842 --> 00:02:35,101
+constructed in the previous video, this
+just amounts to choosing each of the four
+
+37
+00:02:35,101 --> 00:02:39,210
+coefficients uniformly at random. That's
+how you select a universal, that's how you
+
+38
+00:02:39,210 --> 00:02:42,977
+select a hash function uniformly at
+random. So, this theorem and also the
+
+39
+00:02:42,977 --> 00:02:47,018
+definition of universal hash functions
+dates back to a 1979 research paper by
+
+40
+00:02:47,018 --> 00:02:50,898
+Carter and Wegman. The idea of hashing
+dates back quite a bit before that,
+
+41
+00:02:50,898 --> 00:02:54,931
+certainly to the 50s. So, this just kind
+of shows us sometimes ideas have to be
+
+42
+00:02:54,931 --> 00:02:59,771
+percolating for awhile before you find the
+right way to explain what's going on. So,
+
+43
+00:02:59,771 --> 00:03:04,130
+Carter and Wegman provided this very clean
+and modular way of thinking about
+
+44
+00:03:04,130 --> 00:03:08,045
+performance of hashing through this
+universal hashing definition. And the
+
+45
+00:03:08,045 --> 00:03:12,035
+guarantee is exactly the one that I
+promised way back when we talked about
+
+46
+00:03:12,035 --> 00:03:16,144
+what operations are supported by hash
+tables and what kind of performance should
+
+47
+00:03:16,144 --> 00:03:20,533
+you expect, you should expect constant
+time performance. As always, with hashing,
+
+48
+00:03:20,533 --> 00:03:25,941
+there is some fine print so let me just be
+precise about what the caveats of this
+
+49
+00:03:25,941 --> 00:03:30,269
+guarantee are. So, first of all,
+necessarily this guarantee is an
+
+50
+00:03:30,269 --> 00:03:35,548
+expectation. So, it's on average over the
+choice of the hash function, little h. But
+
+51
+00:03:35,548 --> 00:03:40,397
+I want to reiterate that this guarantee
+does hold for an arbitrary data set. So,
+
+52
+00:03:40,397 --> 00:03:44,693
+this guarantee is quite reminiscent of the
+one we had for the rand omized quick sort
+
+53
+00:03:44,693 --> 00:03:47,961
+algorithm. In Quicksort, we made no
+assumptions about the data. It was a
+
+54
+00:03:47,961 --> 00:03:52,267
+completely arbitrary input array and the
+guarantee said, on average over the real
+
+55
+00:03:52,267 --> 00:03:56,012
+time randomized decisions of the
+algorithm, no matter what the input is,
+
+56
+00:03:56,012 --> 00:04:00,087
+the expected running time was in log in.
+Here we're saying again, no assumptions
+
+57
+00:04:00,087 --> 00:04:03,764
+about the data. It doesn't matter what
+you're storing in the hash table and
+
+58
+00:04:03,764 --> 00:04:07,521
+expectation over the real time random
+decision of what hash function you use,
+
+59
+00:04:07,521 --> 00:04:11,319
+you should expect constant time
+performance, no matter what that data set
+
+60
+00:04:11,319 --> 00:04:15,083
+is. So, the second caveat is something
+we've talked about before. Remember, the
+
+61
+00:04:15,083 --> 00:04:19,343
+key to having good hash table performance,
+not only do you need a good hash function
+
+62
+00:04:19,343 --> 00:04:23,616
+which is what this universality key is
+providing us but you also need to control
+
+63
+00:04:23,616 --> 00:04:28,405
+the load of the hash table. So, of course,
+to get constant time performance, as we've
+
+64
+00:04:28,405 --> 00:04:32,608
+discussed, a necessary condition is that
+you have enough buckets to hold more or
+
+65
+00:04:32,608 --> 00:04:36,701
+less the stuff that you're storing. That
+is the load, alpha, the number of objects
+
+66
+00:04:36,701 --> 00:04:40,462
+in the table divided by the number of
+buckets should be constant for this
+
+67
+00:04:40,462 --> 00:04:44,561
+theorem to hold. And finally, whenever you
+do a hash table operation, you have to in
+
+68
+00:04:44,561 --> 00:04:48,793
+particular invoke the hash function on
+whatever key you're given. So, in order to
+
+69
+00:04:48,793 --> 00:04:53,508
+have constant time performance, it better
+be the case that it only takes constant
+
+70
+00:04:53,508 --> 00:04:57,372
+time to evaluate your hash function and
+that's, of course, something we also
+
+71
+00:04:57,372 --> 00:05:01,486
+discussed in the previous video when we
+emphasized the importance of having simple
+
+72
+00:05:01,486 --> 00:05:05,793
+universal hash functions like those random
+linear combinations we discussed in the
+
+73
+00:05:05,793 --> 00:05:09,202
+previous video. In general, the
+mathematical analysis of hash table
+
+74
+00:05:09,202 --> 00:05:12,996
+performance is a quite deep field, and
+there is some, quite mathematically
+
+75
+00:05:12,996 --> 00:05:17,757
+interesting results that are well outside
+the scope of this course. But what's cool,
+
+76
+00:05:17,757 --> 00:05:21,439
+in this theorem I will be able to provide
+you a full and rigorous proof. So, for
+
+77
+00:05:21,439 --> 00:05:25,527
+hash tables with chaining and using
+randomly chosen universal hash functions,
+
+78
+00:05:25,527 --> 00:05:29,317
+I'm going to now prove that you do get
+cons tant time performance. Right, so hash
+
+79
+00:05:29,317 --> 00:05:33,430
+tables support various operations, Insert,
+Delete and Lookup. But really if we can
+
+80
+00:05:33,430 --> 00:05:37,051
+just bound a running time of an
+unsuccessful lookup, that's going to be
+
+81
+00:05:37,051 --> 00:05:41,044
+enough to bound the running time of all of
+these operations. So, remember in hash
+
+82
+00:05:41,044 --> 00:05:45,022
+table with chaining, you first hash the
+appropriate bucket and then you do the
+
+83
+00:05:45,022 --> 00:05:48,728
+appropriate Insert, Delete or Lookup in
+the link list in that bucket. So, the
+
+84
+00:05:48,728 --> 00:05:52,405
+worst case as far as traversing though
+this length list is if you're looking for
+
+85
+00:05:52,405 --> 00:05:56,188
+something but it's not there cuz you have
+to look at every single element in the
+
+86
+00:05:56,188 --> 00:06:00,480
+list and followup into the list before you
+can conclude that the lookup has failed.
+
+87
+00:06:00,480 --> 00:06:03,623
+Of course, insertion, as we discussed, is
+always constant time, deletion and
+
+88
+00:06:03,623 --> 00:06:07,517
+successful searches, well, you might get
+lucky, and stop early before you hit the
+
+89
+00:06:07,517 --> 00:06:11,806
+end of the list. So, all we're going to do
+is bother to analyze unsuccessful lookups
+
+90
+00:06:11,806 --> 00:06:16,091
+that will carry over to all of the other
+operations. So, a little more precisely,
+
+91
+00:06:16,091 --> 00:06:21,077
+let's let s be the data set. This is the
+objects that we are storing in our hash
+
+92
+00:06:21,077 --> 00:06:25,725
+table. And remember that to get constant
+time lookup, it really needs to be the
+
+93
+00:06:25,725 --> 00:06:30,046
+case that the load is constant. So, we are
+assuming that the size of s is bigger over
+
+94
+00:06:30,046 --> 00:06:34,810
+the number of buckets n. And let's suppose
+we are searching for some other object
+
+95
+00:06:34,810 --> 00:06:39,033
+which is not an s, call it x. And again, I
+want to emphasize we are making no
+
+96
+00:06:39,033 --> 00:06:43,077
+assumptions about what this data set s is
+other than that the size is comparable to
+
+97
+00:06:43,077 --> 00:06:47,065
+the number of buckets. So, conceptually
+doing a lookup in a hash table with
+
+98
+00:06:47,065 --> 00:06:51,078
+chaining is a very simple thing. You just
+hash to the appropriate bucket and then
+
+99
+00:06:51,078 --> 00:06:54,938
+you scan through the length list in that
+bucket. So, conceptually, it's very easy
+
+100
+00:06:54,938 --> 00:07:00,203
+to write down the what the running time of
+this unsuccessful lookup is. It's got two
+
+101
+00:07:00,203 --> 00:07:04,207
+parts. So, the first thing you do is you
+evaluate the hash function to figure out
+
+102
+00:07:04,207 --> 00:07:08,039
+the right bucket. And again, remember
+we're assuming that we have a simple of a
+
+103
+00:07:08,039 --> 00:07:12,405
+hash function and it takes constant time.
+Now, of course, the magic of hash
+
+104
+00:07:12,405 --> 00:07:16,185
+functions is that given that this hash
+value, we can zip right to where the
+
+105
+00:07:16,185 --> 00:07:20,586
+lenght list is to search for x using
+random access into our array of buckets.
+
+106
+00:07:20,586 --> 00:07:25,522
+So, we go straight to the appropriate
+place in our array of buckets and we just
+
+107
+00:07:25,522 --> 00:07:30,365
+search through the list ultimately failing
+to find what we're looking for s.
+
+108
+00:07:30,365 --> 00:07:34,853
+Traversing a link list, as you all know,
+it takes time proportional to the length
+
+109
+00:07:34,853 --> 00:07:39,642
+of the list. So, we find something that we
+discussed informally in the past which is
+
+110
+00:07:39,642 --> 00:07:44,333
+that's the running time of hash table
+operations implemented with chaining is
+
+111
+00:07:44,333 --> 00:07:48,929
+governed by the list lengths. So, that's
+really the key quantity we have to
+
+112
+00:07:48,929 --> 00:07:54,176
+understand. So, lets call this, lets give
+this a name, Capital L, it's important
+
+113
+00:07:54,176 --> 00:07:59,666
+enough to give a name. So, what I want you
+to appreciate at this point is that this
+
+114
+00:07:59,666 --> 00:08:04,761
+key quantity, Capital L, the list of the
+length in x's bucket is a random variable.
+
+115
+00:08:04,761 --> 00:08:09,170
+It is a function of which hash function
+little h, we wind up selecting in a real
+
+116
+00:08:09,170 --> 00:08:14,036
+time. So, for some choices of our hash
+function, little h, this list length might
+
+117
+00:08:14,036 --> 00:08:18,666
+be as small as zero but for other choices
+of this hash function h, this list, list
+
+118
+00:08:18,666 --> 00:08:23,232
+length could be bigger. So, this is
+exactly analogous too in Quicksort where
+
+119
+00:08:23,232 --> 00:08:27,337
+depending on the real time decision of
+which random pivot element you use, your
+
+120
+00:08:27,337 --> 00:08:31,573
+going to get a different number of
+comparisons, a different running time. So,
+
+121
+00:08:31,573 --> 00:08:37,019
+the list length and hence the time for the
+unsuccessful storage, depends on the hash
+
+122
+00:08:37,019 --> 00:08:42,009
+function little h, which we're choosing at
+random. So, let's recall what it is we're
+
+123
+00:08:42,009 --> 00:08:46,090
+trying to prove. We're trying to prove an
+upper bound on the running time of an
+
+124
+00:08:46,090 --> 00:08:52,004
+unsuccessful lookup on average, where the
+on average is over the choice of the hash
+
+125
+00:08:52,004 --> 00:08:56,725
+function little h. We've expressed that
+this lookup time in terms of the average
+
+126
+00:08:56,725 --> 00:09:02,011
+list length in x's bucket where again the
+average is over the random choice of h.
+
+127
+00:09:02,011 --> 00:09:06,096
+Summarizing, we've reduced what we care
+about, expected time for lookup to
+
+128
+00:09:06,096 --> 00:09:12,006
+understanding the expected value of this
+random variable Capital L, the average
+
+129
+00:09:12,006 --> 00:09:17,036
+list length in x's bucket. So, that's what
+we've got to do, we've got to compute the
+
+130
+00:09:17,036 --> 00:09:21,348
+expected value of this random variable,
+Capital L. Now to do that, I want to jog
+
+131
+00:09:21,348 --> 00:09:25,583
+your memory of a general technique for
+analyzing expectations which you haven't
+
+132
+00:09:25,583 --> 00:09:29,055
+seen in awhile. The last time we saw it, I
+believe, was when we were doing the
+
+133
+00:09:29,055 --> 00:09:33,037
+analysis of randomized Quicksort and
+counting its comparisons. So, here's a
+
+134
+00:09:33,037 --> 00:09:37,282
+general decomposition principle which
+we're now going to use in exactly the same
+
+135
+00:09:37,282 --> 00:09:41,673
+way as we did in Quicksort here to analyze
+the performance of hashing with chaining.
+
+136
+00:09:41,673 --> 00:09:47,036
+So, this is where you want to understand
+the expect, expectation of random variable
+
+137
+00:09:47,225 --> 00:09:52,093
+which is complicated but what you can
+express as the sum of much simpler random
+
+138
+00:09:52,093 --> 00:09:56,321
+variables. Ideally, 0,1 or indicator
+random variables. So, the first step is to
+
+139
+00:09:56,321 --> 00:10:01,156
+figure out the random variable, Capital Y,
+it's what I'm calling it here that you
+
+140
+00:10:01,156 --> 00:10:05,875
+really care about. Now, we finished the
+last slide, completing step one. What we
+
+141
+00:10:05,875 --> 00:10:10,331
+really care about is Capital L, the list
+length in x's bucket. So, that governs the
+
+142
+00:10:10,331 --> 00:10:15,139
+running time a bit unsuccessful Look up,
+clearly that's what we really care about.
+
+143
+00:10:15,139 --> 00:10:19,590
+Step two of the decomposition principle is
+well, you know, the random variable you
+
+144
+00:10:19,590 --> 00:10:24,693
+care about is complicated, hard to analyze
+directly but decompose it as a sum of 0,1
+
+145
+00:10:24,693 --> 00:10:29,011
+indicator random variable. So, that's what
+we're going to do in the beginning of the
+
+146
+00:10:29,011 --> 00:10:33,266
+next slide. Why is it useful to decompose
+a complicated random variable into the sum
+
+147
+00:10:33,266 --> 00:10:37,153
+of 0,1random variables? Well, then you're
+in the wheelhouse of linear of
+
+148
+00:10:37,153 --> 00:10:41,837
+expectations. You get that the expected
+value of the random variable that you care
+
+149
+00:10:41,837 --> 00:10:46,397
+about is just the sum of the expected
+values of the different indicator random
+
+150
+00:10:46,397 --> 00:10:50,792
+variables and those expectations are
+generally much easier to understand. And
+
+151
+00:10:50,792 --> 00:10:56,195
+that will again be the case here in this
+theorem about the performance of hash
+
+152
+00:10:56,195 --> 00:11:00,670
+tables with chaning. So, let's apply this
+three-step-decomposition principle to
+
+153
+00:11:00,670 --> 00:11:04,627
+complete the proof of the Carter-Wegman
+theorem. So, for the record, let me just
+
+154
+00:11:04,627 --> 00:11:08,512
+remind you about the random variable that
+we actually really care about, that's
+
+155
+00:11:08,512 --> 00:11:13,349
+Capital L. The reason that's a random
+variable is that because it depends on the
+
+156
+00:11:13,349 --> 00:11:17,085
+choice of the hash function, little h.
+This number could vary between zero and
+
+157
+00:11:17,085 --> 00:11:22,009
+something much, much bigger than zero,
+depending on which each you choose. So,
+
+158
+00:11:22,009 --> 00:11:26,033
+this is complicated, hard to analyze
+directly, so let's try to express it as
+
+159
+00:11:26,033 --> 00:11:31,013
+the sum of 0,1 random variables. So, here
+are the0,1 random variables that are going
+
+160
+00:11:31,013 --> 00:11:36,625
+to be the constituents of Capital L. We're
+going to have one such variable for each
+
+161
+00:11:36,625 --> 00:11:43,209
+object y in the data set. Now, remember
+this is an unsuccessful search, x is not
+
+162
+00:11:43,209 --> 00:11:49,102
+in the data set Capital S. So, if y is in
+the data set, x and y are necessarily
+
+163
+00:11:49,102 --> 00:11:56,440
+different. And we will define each random
+variable z sub y, as follows. We'll define
+
+164
+00:11:56,440 --> 00:12:04,141
+it as one if y collides with x under h and
+zero otherwise. So, for a given zy, we
+
+165
+00:12:04,141 --> 00:12:08,822
+have fixed objects x and y So, x is some
+IP address, say, y is some distinct IP
+
+166
+00:12:08,822 --> 00:12:13,819
+address, x is not in our hash table, y is
+in our hash table. And now, depending on
+
+167
+00:12:13,819 --> 00:12:18,637
+which hash function we wind up using,
+these two distinct IP addresses may or may
+
+168
+00:12:18,637 --> 00:12:23,106
+not get mapped to the same bucket of our
+hash table. So, this indicates a random
+
+169
+00:12:23,106 --> 00:12:27,648
+variable just indicating whether or not
+they collide, whether or not we unluckily
+
+170
+00:12:27,648 --> 00:12:32,484
+choose a hash function little h that sends
+these distinct IP addresses x and y to
+
+171
+00:12:32,484 --> 00:12:37,417
+exactly the same bucket. Okay, so, that's
+zy, clearly by definition, it's a 0,1
+
+172
+00:12:37,417 --> 00:12:42,458
+random variable. Now, here's what's cool
+about these random variables is that
+
+173
+00:12:42,458 --> 00:12:48,800
+Capital L, the list length that we care
+about decomposes precisely into the sum of
+
+174
+00:12:48,800 --> 00:12:55,025
+the zy's. That is, we can write capital L
+as being equal to the sum over the objects
+
+175
+00:12:55,025 --> 00:13:01,261
+in the hash table of zy. So, if you think
+about it, this equation is always true, no
+
+176
+00:13:01,261 --> 00:13:07,327
+matter what the hash function h is. That
+is if we choose some hash functions that
+
+177
+00:13:07,327 --> 00:13:12,139
+maps these IP address x to, say, bucket
+number seventeen, Capital L is just
+
+178
+00:13:12,139 --> 00:13:17,273
+counting how many other objects in the
+hash table wind up getting mapped to
+
+179
+00:13:17,273 --> 00:13:21,814
+bucket number seventeen. So, maybe ten
+different ob jects got mapped to bucket
+
+180
+00:13:21,814 --> 00:13:26,723
+number seventeen. Those are exactly the
+ten different values of y that will have
+
+181
+00:13:26,723 --> 00:13:32,015
+their zy equal to1, right? So, so l is
+just counting the number of objects in the
+
+182
+00:13:32,015 --> 00:13:37,500
+data set s that's collide with x. A given
+zy is just counting whether or not a given
+
+183
+00:13:37,500 --> 00:13:41,885
+object y in hash table is colliding with
+x. So, summing over all the possible
+
+184
+00:13:41,885 --> 00:13:46,657
+things that could collide with x, summing
+over the zy's, we of course get the total
+
+185
+00:13:46,657 --> 00:13:51,126
+number of things that collide with x which
+is exactly equal to the number, the
+
+186
+00:13:51,126 --> 00:13:55,019
+population of x's bucket in the hash
+table. Alright, so we've got all of our
+
+187
+00:13:55,019 --> 00:13:59,105
+ducks lined up in a row. Now, if we just
+remember all of the things we have going
+
+188
+00:13:59,105 --> 00:14:03,043
+for us, we can just follow our nose and
+nail the proof of this theorem. So, what
+
+189
+00:14:03,043 --> 00:14:07,657
+is it that we have going for us? Well, in
+addition to this decomposition of the list
+
+190
+00:14:07,657 --> 00:14:12,018
+length in to indicate random variables,
+we've got linear expectation going for us,
+
+191
+00:14:12,018 --> 00:14:16,195
+we've got the fact that our hash function
+is drawn from a universal family going for
+
+192
+00:14:16,195 --> 00:14:20,078
+us. And we've got the fact that we've
+chosen the number of buckets and to be
+
+193
+00:14:20,078 --> 00:14:24,740
+comparable to the data set size. So, we
+want to use all of those assumptions and
+
+194
+00:14:24,740 --> 00:14:29,282
+finish the proof that the expected
+performance is constant. So, we're going
+
+195
+00:14:29,282 --> 00:14:33,619
+to have a few inequalities and we're going
+to begin with the thing that we really
+
+196
+00:14:33,619 --> 00:14:37,993
+care about. We care about the average list
+length in x's bucket. Remember, we saw in
+
+197
+00:14:37,993 --> 00:14:42,613
+the previous slide, this is what governs
+the expected performance of the lookup. If
+
+198
+00:14:42,613 --> 00:14:46,583
+we can prove that the expected value of
+capital L is constant, we're done, we've
+
+199
+00:14:46,583 --> 00:14:50,416
+finished the theorem. So, the whole point
+of this decomposition principle is to
+
+200
+00:14:50,416 --> 00:14:55,075
+apply linear of expectation which says
+that the expected value of a sum of random
+
+201
+00:14:55,075 --> 00:14:59,644
+variables equals the sum of the expected
+values. So, because L can be expressed as
+
+202
+00:14:59,644 --> 00:15:05,065
+the sum of these zy's, we can reverse the
+summation and the expectation and we can
+
+203
+00:15:05,065 --> 00:15:11,043
+first sum over the y's, over the objects
+in the hash table and then take the
+
+204
+00:15:11,043 --> 00:15:16,085
+expected value of zy. Now, something which
+came up in our Quicksort an alysis but
+
+205
+00:15:16,085 --> 00:15:21,259
+which you might have forgotten is that 0,1
+random variables have particularly simple
+
+206
+00:15:21,259 --> 00:15:25,831
+expectations. So, the next quiz is just
+going to jog your memory about why 0,1
+
+207
+00:15:25,831 --> 00:15:30,403
+random variables are so nice in this
+context. Okay, so the answer to this quiz
+
+208
+00:15:30,403 --> 00:15:35,674
+is the third one, the expected value of zy
+is simply the probability that x and y
+
+209
+00:15:35,674 --> 00:15:40,557
+collide, that just follows from the
+definition of the random variable zy and
+
+210
+00:15:40,557 --> 00:15:45,650
+the definition of expectation, namely
+recall how do we define zy. This is just
+
+211
+00:15:45,650 --> 00:15:51,198
+this one, if this object y in the hash
+table happens to collide with the object x
+
+212
+00:15:51,198 --> 00:15:56,314
+that we are looking for under the hash
+function x and zero otherwise, again, this
+
+213
+00:15:56,314 --> 00:16:00,471
+will be, this will be one for some hash
+functions and zero for other hash
+
+214
+00:16:00,471 --> 00:16:06,006
+functions. And then we just have to
+compute expectations. So, one way to
+
+215
+00:16:06,006 --> 00:16:10,678
+compute the expected value of a 0,1 random
+variable is, you just say, well, you know,
+
+216
+00:16:10,678 --> 00:16:15,390
+there are the cases where the random
+variable evaluates to zero and then
+
+217
+00:16:15,390 --> 00:16:20,068
+there's the cases where the random
+variable evaluates to one, and of course
+
+218
+00:16:20,068 --> 00:16:25,276
+we can cancel the zero. So, this just
+equals the probability that zy = one. And
+
+219
+00:16:25,276 --> 00:16:30,023
+since zy being one is exactly the same
+thing as x and y colliding, that's what
+
+220
+00:16:30,023 --> 00:16:34,083
+gives us the answer. Okay, so it's the
+probability that x collides with y. So,
+
+221
+00:16:34,083 --> 00:16:39,819
+plenty of that into our derivation. Now,
+we again have the sum of all the objects y
+
+222
+00:16:39,819 --> 00:16:44,785
+in our hash table and the set of the
+expected value of zy what's right that in
+
+223
+00:16:44,785 --> 00:16:50,076
+the more interpretable form, the
+probability that this particular object in
+
+224
+00:16:50,076 --> 00:16:55,045
+the hash table y collides with the thing
+we are looking for x. Now, we know
+
+225
+00:16:55,045 --> 00:17:00,020
+something pretty cool about the
+probability that a given pair of distinct
+
+226
+00:17:00,020 --> 00:17:06,032
+elements like x and y collide with each
+other. What is it that we know? Okay, so I
+
+227
+00:17:06,032 --> 00:17:11,001
+hope you answered the second response to
+this quiz. This is really in some sense
+
+228
+00:17:11,001 --> 00:17:15,054
+the key point of the analysis. This is the
+role, that being a universal family of
+
+229
+00:17:15,054 --> 00:17:19,078
+hash functions plays in this performance
+guarantee. What does it mean to be
+
+230
+00:17:19,078 --> 00:17:23,091
+universal? It means for any pair of
+objects distinct like x and y in that
+
+231
+00:17:23,091 --> 00:17:27,098
+proof, if you make a random choice of a
+hash function, the probability of
+
+232
+00:17:27,098 --> 00:17:32,034
+collision is as good as with perfectly
+random hashing, hashing. Namely at most,
+
+233
+00:17:32,034 --> 00:17:38,004
+1/ n where n is the number of buckets. So,
+now I can return to the derivation. What
+
+234
+00:17:38,004 --> 00:17:42,583
+that quiz reminds you is that the
+definition of a universal family of hash
+
+235
+00:17:42,583 --> 00:17:48,034
+functions guarantees that this probability
+for each y is at most 1/n, where n is the
+
+236
+00:17:48,034 --> 00:17:53,955
+number of buckets in the hash table. So,
+let's just rewrite that. So, we've upper
+
+237
+00:17:53,955 --> 00:18:00,018
+bounded the expected list length by a sum
+over the objects in the data set of 1/n.
+
+238
+00:18:00,018 --> 00:18:07,748
+And this, of course, is just equal to the
+number of objects in the data set, the
+
+239
+00:18:07,748 --> 00:18:13,123
+[inaudible] of s divided by n. And what is
+this? This is simply the load, this is the
+
+240
+00:18:13,123 --> 00:18:18,845
+definition of the load alpha which we are
+assuming is constant. Remember, that was
+
+241
+00:18:18,845 --> 00:18:23,492
+the third caveat in the theorem. So,
+that's why as long as you have a hash
+
+242
+00:18:23,492 --> 00:18:28,377
+function which you can compute quickly in
+constant time. And as long as you keep the
+
+243
+00:18:28,377 --> 00:18:32,461
+load under control so the number of
+buckets is commensurate with the size of
+
+244
+00:18:32,461 --> 00:18:36,435
+the data set that you're storing. That's
+why, universal hash functions in a hash
+
+245
+00:18:36,435 --> 00:18:40,053
+table with chaining guarantee expected
+constant time performance.

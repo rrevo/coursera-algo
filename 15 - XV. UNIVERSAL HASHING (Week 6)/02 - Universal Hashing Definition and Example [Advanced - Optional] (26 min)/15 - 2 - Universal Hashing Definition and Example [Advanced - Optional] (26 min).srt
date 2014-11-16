@@ -1,0 +1,1689 @@
+1
+00:00:00,000 --> 00:00:03,028
+So now that we understand why we can't
+have a single hash function which always
+
+2
+00:00:03,028 --> 00:00:08,042
+does well at every single data set, that
+is every hash function is subject to a
+
+3
+00:00:08,042 --> 00:00:11,074
+pathological data sets. We'll discuss the
+randomize solution of how we can have a
+
+4
+00:00:11,074 --> 00:00:16,019
+family of hash functions and if you make a
+real time decision about which hash
+
+5
+00:00:16,019 --> 00:00:20,055
+function to use, you're guaranteed to do
+well on average, no matter what the data
+
+6
+00:00:20,055 --> 00:00:25,427
+is. So let me remind you of the three
+prong plan that I have for this part of
+
+7
+00:00:25,427 --> 00:00:29,539
+the material. So in this video, we'll be
+covering the first two. So part one, which
+
+8
+00:00:29,539 --> 00:00:33,936
+we'll accomplish in the next slide, will
+be to propose a mathematical definition of
+
+9
+00:00:33,936 --> 00:00:38,898
+a good random hash function. So formerly,
+we're going to define a universal family
+
+10
+00:00:38,898 --> 00:00:43,168
+of hash functions. Now, what makes this
+definition useful, well, two things. And
+
+11
+00:00:43,168 --> 00:00:48,617
+so, part two, we'll show that there are
+examples of simple and easy to compute
+
+12
+00:00:48,617 --> 00:00:52,906
+hash functions that meet this definition,
+that are universal in the sense described
+
+13
+00:00:52,906 --> 00:00:56,999
+on the next slide. So that's important.
+And in the third part, which we'll do in
+
+14
+00:00:56,999 --> 00:01:01,271
+the next video, will be the mathematical
+analysis of the performance of hashing,
+
+15
+00:01:01,271 --> 00:01:05,549
+specifically with chaining when you use
+universal hashing. And we'll show that if
+
+16
+00:01:05,549 --> 00:01:08,957
+you pick a random function from a
+universal family, then, the expected
+
+17
+00:01:08,957 --> 00:01:12,764
+performance of all of the operations are
+constant. Assuming, of course, of the
+
+18
+00:01:12,764 --> 00:01:17,172
+number of buckets is comparable to the
+number of objects in the hash table which
+
+19
+00:01:17,172 --> 00:01:21,939
+we saw earlier is a necessary condition
+for good performance. So let's go ahead
+
+20
+00:01:21,939 --> 00:01:26,157
+and get started and let's say what we mean
+by a good random hash function. So for
+
+21
+00:01:26,157 --> 00:01:30,965
+this definition, we'll assume that the
+universe is fixed. So maybe it's IP
+
+22
+00:01:30,965 --> 00:01:35,707
+addresses, maybe it's our friends names.
+Maybe it's configurations of a chessboard,
+
+23
+00:01:35,707 --> 00:01:40,143
+whatever. But there's some fixed universe
+u and we'll also assume we've decided on
+
+24
+00:01:40,143 --> 00:01:47,322
+the number of buckets n. And we call the
+set H universal if and only if it meets
+
+25
+00:01:47,322 --> 00:01:52,977
+the following condition. In English, the
+condition says that for each pair of
+
+26
+00:01:52,977 --> 00:01:58,163
+distinct elements, the probab ility that
+they collide should be no larger than with
+
+27
+00:01:58,163 --> 00:02:03,520
+the gold standard of perfectly uniform
+random hashing. So for all distinct keys
+
+28
+00:02:03,520 --> 00:02:09,854
+from the universe, call them x and y, what
+we want is that the probability if we
+
+29
+00:02:09,854 --> 00:02:16,382
+choose a random hash function, h, from the
+set script h, the probability that x and y
+
+30
+00:02:16,382 --> 00:02:22,176
+collide. And again, just to be clear, what
+that means is that, x and y hash to
+
+31
+00:02:22,176 --> 00:02:30,961
+exactly the same bucket under this hash
+function h, this should be no more than
+
+32
+00:02:30,961 --> 00:02:38,334
+1/n, and don't forget n is the number of
+buckets. Again, to interpret this, you
+
+33
+00:02:38,334 --> 00:02:42,835
+know, 1/n, where does this come from? So,
+we said earlier that an impractical but in
+
+34
+00:02:42,835 --> 00:02:47,820
+some sense, gold standard hash function
+would be to just independently for each
+
+35
+00:02:47,820 --> 00:02:53,007
+key, assign it bucket uniformly and random
+with different keys being assigned
+
+36
+00:02:53,007 --> 00:02:56,055
+independently. Remember the reason this is
+not a practical hash function is because,
+
+37
+00:02:56,055 --> 00:02:59,006
+you'd have to remember where everybody
+went. And then that would basically
+
+38
+00:02:59,006 --> 00:03:02,033
+require maintaining a list which would
+devolve to the list solution, so you don't
+
+39
+00:03:02,033 --> 00:03:05,070
+want that. You want hash functions where
+you have to store almost nothing and we
+
+40
+00:03:05,070 --> 00:03:10,044
+can evaluate them in constant time. But,
+if we throw out those requirements of
+
+41
+00:03:10,044 --> 00:03:13,093
+small space and small time then, random
+function should spread stuff out pretty
+
+42
+00:03:13,093 --> 00:03:17,054
+evenly, right? I mean that's what they are
+doing. They're throwing darts completely
+
+43
+00:03:17,054 --> 00:03:21,003
+at random at these n buckets. So what
+would be the collision probability of two
+
+44
+00:03:21,003 --> 00:03:24,034
+given keys say, of Alice and of Bob if you
+are doing everything independently and
+
+45
+00:03:24,034 --> 00:03:28,084
+uniformly at random. Well, you know, first
+Alice shows up and it goes to some totally
+
+46
+00:03:28,084 --> 00:03:32,062
+random bucket, say, bucket number
+seventeen. Now, Bob shows up. So, what's
+
+47
+00:03:32,062 --> 00:03:37,218
+the probability that it collides with
+Alice? Well, we have these n buckets that
+
+48
+00:03:37,218 --> 00:03:40,765
+Bob could go to, each is equally likely,
+and there's a collision between Alice and
+
+49
+00:03:40,765 --> 00:03:45,551
+Bob if and only if Bob goes to bucket
+seventeen. Since, each bucket's equally
+
+50
+00:03:45,551 --> 00:03:49,522
+likely, that's only a one in n
+probability. So really what this condition
+
+51
+00:03:49,522 --> 00:03:53,696
+is saying, is that, for each pair of
+elements, the collision probability should
+
+52
+00:03:53,696 --> 00:03:59,899
+be as small, as good as with the holy
+grail of perfectly random hashing. So this
+
+53
+00:03:59,899 --> 00:04:04,704
+is a pretty subtle definition, perhaps the
+most subtle one that we see in this entire
+
+54
+00:04:04,704 --> 00:04:09,443
+course. So, to help you get some facility
+with this, and to force you to think about
+
+55
+00:04:09,443 --> 00:04:13,684
+it a little deeply, the next quiz which is
+probably harder than a typical in class
+
+56
+00:04:13,684 --> 00:04:17,535
+quiz, asks you to compare this definition
+of universal hashing with another
+
+57
+00:04:17,535 --> 00:04:21,719
+definition and ask you to figure out to
+what extent they're the same definition.
+
+58
+00:04:21,719 --> 00:04:26,676
+So the correct answer to this quiz
+question is the third one that there are
+
+59
+00:04:26,676 --> 00:04:32,211
+hash function families h, that satisfy the
+condition on this slide that are not
+
+60
+00:04:32,211 --> 00:04:37,138
+universal. On the other hand, there are
+hash function families H, which satisfy
+
+61
+00:04:37,138 --> 00:04:42,708
+this property and are universal. So, I'm
+going to give you an example of each. I'd
+
+62
+00:04:42,708 --> 00:04:47,618
+encourage you to think carefully about why
+this is an example and a non-example
+
+63
+00:04:47,798 --> 00:04:52,547
+offline. So an easy example to show that
+sometimes the answer is yes, you have
+
+64
+00:04:52,547 --> 00:04:57,659
+universal hash function families h, which
+also satisfy this property of the slide,
+
+65
+00:04:57,659 --> 00:05:02,832
+would be to just take H to be the set of
+all functions from mapping the universe to
+
+66
+00:05:02,832 --> 00:05:08,030
+the number of buckets. So that's an awful
+lot of functions, that's a huge set, but
+
+67
+00:05:08,030 --> 00:05:12,448
+it's a set nonetheless. And, by symmetry
+of having all of the functions, it both
+
+68
+00:05:12,448 --> 00:05:16,504
+satisfies the property of this slide. It
+is indeed true that exactly a one on one
+
+69
+00:05:16,504 --> 00:05:21,604
+refraction of all functions, map arbitrary
+key k to arbitrary bucket i. And by the
+
+70
+00:05:21,604 --> 00:05:26,715
+same reasoning, by the same symmetry
+properties, this is universal. So really,
+
+71
+00:05:26,715 --> 00:05:31,414
+if you think about it choosing a function
+at random function from H, is now just
+
+72
+00:05:31,414 --> 00:05:34,707
+choosing a completely random function. So
+it's exactly what we've been calling
+
+73
+00:05:34,707 --> 00:05:38,302
+perfect, random hashing. And as we
+discussed in the last slide, that would
+
+74
+00:05:38,302 --> 00:05:44,039
+indeed have a collision probability of
+exactly 1/n for each pair of distinct
+
+75
+00:05:44,039 --> 00:05:47,639
+keys. So, this shows sometimes you can
+have both this property and be universal.
+
+76
+00:05:47,639 --> 00:05:52,049
+An example where you have the property in
+this slide, but you're not universa l,
+
+77
+00:05:52,049 --> 00:05:56,937
+would be to take h to be a quite small
+family, a family of exactly n functions,
+
+78
+00:05:56,937 --> 00:06:01,269
+each of which is a constant function. So
+it's going to be one function which always
+
+79
+00:06:01,269 --> 00:06:05,020
+maps everything to bucket zero, that's a
+totally stupid hash function. There's
+
+80
+00:06:05,020 --> 00:06:09,034
+going to be another hash function which
+always maps everything to bucket number
+
+81
+00:06:09,034 --> 00:06:13,504
+one, that's a different but also totally
+stupid hash function, and so on. And then
+
+82
+00:06:13,504 --> 00:06:18,031
+the end function will be the constant
+function that always maps everything to
+
+83
+00:06:18,031 --> 00:06:23,488
+bucket n-1. And if you think about it,
+this very silly set H does indeed satisfy
+
+84
+00:06:23,488 --> 00:06:28,750
+this very reasonable looking property on
+this slide. Fix any key, fix any bucket,
+
+85
+00:06:28,750 --> 00:06:33,133
+you know say bucket number 31 what's the
+probability that you pick a hash function
+
+86
+00:06:33,133 --> 00:06:37,193
+that maps this key to bucket number 31?
+Well, independent of what the key is, it's
+
+87
+00:06:37,193 --> 00:06:40,669
+going to be the probability that you pick
+the constant hash function whose output is
+
+88
+00:06:40,669 --> 00:06:43,544
+always 31. Since there's n different
+constant functions, there's a one in n
+
+89
+00:06:43,544 --> 00:06:48,192
+probability. So, that's an example showing
+that in some sense, this is not as useful
+
+90
+00:06:48,192 --> 00:06:52,107
+a property as the property of universal
+hashing. So this is really not what you
+
+91
+00:06:52,107 --> 00:06:55,759
+wanted. This is not strong enough.
+Universal hashing, that's what you want
+
+92
+00:06:55,759 --> 00:06:59,862
+for strong guarantees. So now that we've
+spent some time trying to assimilate
+
+93
+00:06:59,862 --> 00:07:03,413
+probably the subtlest definition we've
+seen so far in this class, let me let you
+
+94
+00:07:03,413 --> 00:07:07,423
+in on a little secret about the role of
+definitions in mathematics. So on the one
+
+95
+00:07:07,423 --> 00:07:12,415
+hand, I think mathematical definitions
+often get short shrift, especially in, you
+
+96
+00:07:12,415 --> 00:07:16,206
+know, the popular discussion of
+mathematical research. That said, you
+
+97
+00:07:16,206 --> 00:07:20,572
+know, it's easy to come up with one reason
+why that's true, which is that any schmo
+
+98
+00:07:20,572 --> 00:07:24,800
+can come up and write down an mathematical
+definition. Nobody's stopping you. So,
+
+99
+00:07:24,800 --> 00:07:29,626
+what you really need to do is you need to
+prove that a mathematical definition is
+
+100
+00:07:29,626 --> 00:07:33,715
+useful. So how do you indicate usefulness
+of a definition? Well you gotta do two
+
+101
+00:07:33,715 --> 00:07:38,301
+things. First of all, you have to show
+that the definition is satisfied by
+
+102
+00:07:38,301 --> 00:07:42,532
+objects of interest. For us right now,
+objects of interest, are hash functions,
+
+103
+00:07:42,532 --> 00:07:46,594
+we might imagine implementing. So they
+should be easy to store, easy to evaluate.
+
+104
+00:07:46,594 --> 00:07:50,596
+So there better be such hash functions
+meaning, that complicated universal hash
+
+105
+00:07:50,596 --> 00:07:55,678
+function definition. The second thing is,
+is something good better happen if you
+
+106
+00:07:55,678 --> 00:07:59,072
+meet the definition. And in the context of
+hashing, what good thing do we want to
+
+107
+00:07:59,072 --> 00:08:02,092
+have happen? We want to have good
+performance. So those are the two things
+
+108
+00:08:02,092 --> 00:08:06,035
+that I owe you in these lectures. First of
+all, a construction of practical hash
+
+109
+00:08:06,035 --> 00:08:09,056
+functions that meet that definition,
+that's what we'll start on right now.
+
+110
+00:08:09,056 --> 00:08:13,078
+Second of all, why meeting that definition
+is a sufficient condition for good hash
+
+111
+00:08:13,078 --> 00:08:18,096
+table performance. That will be the next
+video. So in this example, I'm going to
+
+112
+00:08:18,096 --> 00:08:24,023
+focus on IP addresses although the hash
+function construction is general, as I
+
+113
+00:08:24,023 --> 00:08:30,025
+hope will be reasonably clear. And as many
+of you know, an IP address is 32 bit
+
+114
+00:08:30,025 --> 00:08:35,009
+integer consisting of four different eight
+bit parts. So let's just go ahead and
+
+115
+00:08:35,009 --> 00:08:39,081
+think of an IP address as a four two fold,
+the way you often see it. And since each
+
+116
+00:08:39,081 --> 00:08:45,386
+of the four parts is eight bits, it's
+going to be a number between zero and 255.
+
+117
+00:08:45,386 --> 00:08:49,072
+And the hash function that we're going to
+construct, it's really not going to be so
+
+118
+00:08:49,072 --> 00:08:51,855
+different than the quick and dirty
+functions as we talked about in the last
+
+119
+00:08:51,855 --> 00:08:56,843
+video although in this case we'll be able
+to prove that the hash function family is
+
+120
+00:08:56,843 --> 00:08:59,819
+in fact, universal. And we're again going
+to use the same compression function.
+
+121
+00:08:59,819 --> 00:09:02,879
+We're going to take the modulas with
+respect to a prime number of buckets. The
+
+122
+00:09:02,879 --> 00:09:08,088
+only difference is we're going to multiply
+these xi's by a random set of
+
+123
+00:09:08,088 --> 00:09:11,851
+coefficients. We're going to take a, a
+random linear combination of x1, x2, x3
+
+124
+00:09:11,851 --> 00:09:16,002
+and x4. So I'm going to be a little more
+precise. So we're going to choose a number
+
+125
+00:09:16,002 --> 00:09:19,589
+of buckets, n, and as we say over and
+over, the number of buckets should be
+
+126
+00:09:19,589 --> 00:09:24,482
+chosen so it's in the same ball park of
+the number of objects you are storing. So
+
+127
+00:09:24,482 --> 00:09:27,499
+you know, let's say that n should be
+roughly double the number of objects that
+
+128
+00:09:27,499 --> 00:09:32,449
+you are storing as initial rule of thumb.
+So, for example, maybe we only want to
+
+129
+00:09:32,449 --> 00:09:37,049
+maintain something in the ball park of 500
+IP addresses and we can choose n to be a
+
+130
+00:09:37,049 --> 00:09:43,003
+prime like 997. So here's the
+construction. Remember, we want to produce
+
+131
+00:09:43,003 --> 00:09:47,091
+not just one hash function, but the
+definition is about a universal family of
+
+132
+00:09:47,091 --> 00:09:52,074
+hash functions. So we need a whole set of
+hash functions that we're ultimately going
+
+133
+00:09:52,074 --> 00:09:58,004
+to chose one member from, at random. So,
+how do we construct a whole bunch of hash
+
+134
+00:09:58,004 --> 00:10:04,064
+functions in a simple way? Here's how we
+do it. So you define one hash function,
+
+135
+00:10:04,064 --> 00:10:11,081
+which I'm going to note by h sub a, a here
+is a four tuple. The components of which
+
+136
+00:10:11,081 --> 00:10:19,089
+I'm going to call a1, a2, a3 and a4. And,
+all of the components of a are integers
+
+137
+00:10:19,089 --> 00:10:26,089
+between zero and n-1. So they're exactly
+in correspondence with the indices of the
+
+138
+00:10:26,089 --> 00:10:32,009
+buckets. So if we have 997 buckets, then
+each of these ai's is an integer between
+
+139
+00:10:32,009 --> 00:10:37,014
+zero and 996. So it's clear that this
+defines, you know, a whole bunch of
+
+140
+00:10:37,014 --> 00:10:42,062
+functions. So in fact, for each of the
+four coefficients, that's four independent
+
+141
+00:10:42,062 --> 00:10:47,278
+choices, you have n options. Okay so each
+of the integers between zero and n-1 for
+
+142
+00:10:47,278 --> 00:10:52,062
+each of the four coefficients. So that's
+fine, not giving a name to end of the four
+
+143
+00:10:52,062 --> 00:10:56,084
+different functions, but what is any given
+function? How do you actually evaluate one
+
+144
+00:10:56,084 --> 00:11:00,048
+of these functions? Just remember what a
+hash function is supposed to do. Remember
+
+145
+00:11:00,048 --> 00:11:04,035
+you know, how it type checks it takes as
+input something from the universe in this
+
+146
+00:11:04,035 --> 00:11:09,013
+case an IP address, and outputs a bucket
+number. And the way we evaluate the hash
+
+147
+00:11:09,013 --> 00:11:14,558
+function h sub a, and remember a here is a
+4-tuple. And remember IP address is also a
+
+148
+00:11:14,558 --> 00:11:19,258
+4-tuple, okay, so each component of the IP
+address is between zero and 255. Each
+
+149
+00:11:19,258 --> 00:11:25,095
+component of a is between zero and n-1, so
+for example, between zero and 996. And
+
+150
+00:11:25,095 --> 00:11:29,469
+what we do is just take the dot products
+or the inner products of the vector a and
+
+151
+00:11:29,469 --> 00:11:34,369
+the vector x, and then we take the modulus
+with respect the number of buckets. So
+
+152
+00:11:34,369 --> 00:11:45,773
+that is we take a1  x1 + a2  x2 + a3 
+x3 +a4  x4. Now of course, remember the
+
+153
+00:11:45,773 --> 00:11:49,982
+x's lie be tween zero and 255, the ai's
+lie between the zero and n-1, so say zero
+
+154
+00:11:49,982 --> 00:11:54,743
+and 996, you know, so you do these form of
+multiplications now make it a pretty big
+
+155
+00:11:54,743 --> 00:11:59,734
+number, you might well over shoot the
+number of buckets n. So to get back in the
+
+156
+00:11:59,734 --> 00:12:04,163
+range of what the buckets are actually
+indexed that in the end we take the
+
+157
+00:12:04,163 --> 00:12:07,628
+module, modulus the number of buckets. So
+in the end we do output, a number between
+
+158
+00:12:07,628 --> 00:12:13,294
+zero and n-1 as desired. So that's a set
+of a whole bunch of hash functions, n to
+
+159
+00:12:13,294 --> 00:12:17,310
+the fourth hash functions. And each one
+meets the criteria of being a good hash
+
+160
+00:12:17,310 --> 00:12:21,053
+function from an implementation
+perspective, right? So remember, we don't
+
+161
+00:12:21,053 --> 00:12:25,097
+want to have to store much to evaluate a
+function. And for a given hash function in
+
+162
+00:12:25,097 --> 00:12:30,013
+this family, all we gotta remember are the
+coefficients, a1, a2, a3 and a4. So you
+
+163
+00:12:30,013 --> 00:12:34,051
+just gotta remember these four numbers.
+And then to evaluate a hash function on an
+
+164
+00:12:34,051 --> 00:12:38,041
+IP address, we clearly do a constant
+amount of work. We just do these four
+
+165
+00:12:38,041 --> 00:12:42,065
+multiplications, the three additions, and
+then taking the modulus by the number of
+
+166
+00:12:42,065 --> 00:12:47,008
+buckets n. So it's constant time to
+evaluate, constant space to store. And
+
+167
+00:12:47,008 --> 00:12:51,084
+what's cool is, using just these very
+simple hash functions which are constant
+
+168
+00:12:51,084 --> 00:12:56,291
+time to evaluate and constant space to
+store, this is already enough to meet the
+
+169
+00:12:56,291 --> 00:13:01,020
+definition of a universal family of hash
+functions. So this fulfills the first
+
+170
+00:13:01,020 --> 00:13:05,005
+promise that I owed you, after subjecting
+you to that definition of universal
+
+171
+00:13:05,005 --> 00:13:08,071
+hashing. Remember the first promise was,
+there are simple, there are useful
+
+172
+00:13:08,071 --> 00:13:12,037
+examples that meet the definition, and
+then of course, I still owe you why.
+
+173
+00:13:12,037 --> 00:13:16,032
+Meaning this definition is useful, why
+does it leave the good performance. But I
+
+174
+00:13:16,032 --> 00:13:20,038
+want to conclude, this video of actually
+proving this theorem to you, arguing that
+
+175
+00:13:20,038 --> 00:13:24,117
+this is, in fact, a universal family of
+hash functions. Right. So this should be a
+
+176
+00:13:24,117 --> 00:13:28,010
+mostly complete proof and certainly will
+have all of the conceptual ingredients of
+
+177
+00:13:28,010 --> 00:13:31,482
+why the proof works There will be one spot
+where I'm a little hand-wavy because we
+
+178
+00:13:31,482 --> 00:13:34,438
+need a little number theory, and I don't
+want to have a big detour into number
+
+179
+00:13:34,438 --> 00:13:38,363
+theory. And if you think about it, you
+shouldn't be surprised that basic number
+
+180
+00:13:38,363 --> 00:13:42,153
+theory plays at least some role. Like as I
+said, we should choose the number of
+
+181
+00:13:42,153 --> 00:13:46,212
+buckets to be prime. So that means at some
+point in the proof, you should expect us
+
+182
+00:13:46,212 --> 00:13:50,046
+to use the assumption that n is prime. And
+pretty much always you're going to use
+
+183
+00:13:50,046 --> 00:13:53,099
+that assumption will involve at least
+elementary number theory, okay? But I'll
+
+184
+00:13:53,099 --> 00:13:57,693
+be clear about where I'm being hand-wavy.
+So what do we have to prove? Let's just
+
+185
+00:13:57,693 --> 00:14:02,420
+quickly review a definition of a universal
+hash function. So we have our set h that
+
+186
+00:14:02,420 --> 00:14:05,450
+we, that we know exactly what it is. What
+does it mean that it's universal? It means
+
+187
+00:14:05,450 --> 00:14:10,090
+for each pair of distinct keys, so in our
+context it's for each pair of IP
+
+188
+00:14:10,090 --> 00:14:15,083
+addresses, the probability that a random
+hash function from our family script h
+
+189
+00:14:15,083 --> 00:14:19,077
+causes a collision, maps these two IP
+addresses to the same bucket should be no
+
+190
+00:14:19,077 --> 00:14:24,811
+worse than with perfectly random hashing.
+So no worse than 1/n where n is the number
+
+191
+00:14:24,811 --> 00:14:29,500
+of buckets, say like 997. So, the
+definition we need to meet is a condition
+
+192
+00:14:29,500 --> 00:14:33,692
+for every pair of distinct keys. So let's
+just start by fixing two distinct keys. So
+
+193
+00:14:33,692 --> 00:14:39,461
+I'm going to assume for this proof that
+these two IP addresses differ in their
+
+194
+00:14:39,461 --> 00:14:43,580
+fourth component. That is that I'm going
+to assume that x4 is different than y4. So
+
+195
+00:14:43,580 --> 00:14:47,409
+I hope that it's intuitively clear that,
+you know, it shouldn't matter, you know,
+
+196
+00:14:47,409 --> 00:14:50,834
+which, which set of 8-bits I'm looking at.
+So they're different IP addresses. They
+
+197
+00:14:50,834 --> 00:14:54,724
+differ somewhere. If I really wanted, I
+could have four cases that were totally
+
+198
+00:14:54,724 --> 00:14:57,975
+identical depending on whether they differ
+in the first eight bits, the next 8-bits,
+
+199
+00:14:57,975 --> 00:15:01,543
+the next 8-bits, or the last 8-bits. I'm
+going to show you one case, because the
+
+200
+00:15:01,543 --> 00:15:04,871
+other three are the same. So let's just
+think of the last 8-bits as being
+
+201
+00:15:04,871 --> 00:15:08,123
+different. And now, remember what the
+definition asked us to prove. It asked us
+
+202
+00:15:08,123 --> 00:15:12,784
+to prove that the probability that these
+two IP addresses are going to collide is
+
+203
+00:15:12,784 --> 00:15:17,891
+at most, 1/n. So we need an upper bound on
+the collision probability w ith respect to
+
+204
+00:15:17,891 --> 00:15:22,336
+a random hash function from our set of n
+to the fourth hash functions. So I want to
+
+205
+00:15:22,336 --> 00:15:27,023
+be clear on the quantifiers. We're
+thinking about two fixed IP addresses. So
+
+206
+00:15:27,023 --> 00:15:32,008
+for example, the IP address for the New
+York Times website and the IP address for
+
+207
+00:15:32,008 --> 00:15:37,216
+the CNN website. We're asking for these
+two fixed IP addresses, what fraction of
+
+208
+00:15:37,216 --> 00:15:42,610
+our hash functions cause them to collide,
+right? We'll have some hash functions
+
+209
+00:15:42,610 --> 00:15:47,188
+which map the New York Times and CNN IP
+addresses to the same bucket, and we'll
+
+210
+00:15:47,188 --> 00:15:51,590
+have other hash functions which do not map
+those two IP addresses to the same bucket.
+
+211
+00:15:51,590 --> 00:15:55,135
+And we're trying to say, that the
+overwhelming majority, sends them to
+
+212
+00:15:55,135 --> 00:16:00,025
+different buckets, only a 1/n fraction at
+most, sends them to the same bucket. So
+
+213
+00:16:00,025 --> 00:16:06,049
+we're asking about the probability for the
+choice of a random hash function from our
+
+214
+00:16:06,049 --> 00:16:11,047
+set h that the function maps the two IP
+addresses to the same place. So the next
+
+215
+00:16:11,047 --> 00:16:16,032
+step is just algebra. I'm just going to
+take this equation which indicates when
+
+216
+00:16:16,032 --> 00:16:20,086
+the two IP addresses collide over a hash
+function. I'm going to expand the
+
+217
+00:16:20,086 --> 00:16:24,150
+definition of a hash function, remember
+it's just this inner product modulo the
+
+218
+00:16:24,150 --> 00:16:28,919
+number of buckets n, and I am going to
+rewrite this condition in a more
+
+219
+00:16:28,919 --> 00:16:33,266
+convenient way. Alright, so after the
+algebra, and the dust has settled. We're
+
+220
+00:16:33,266 --> 00:16:38,249
+left with this equation being equivalent
+to the two IP addresses colliding. So
+
+221
+00:16:38,249 --> 00:16:42,817
+again, we're interested in the fraction of
+choices of a1, a2, a3, and a4, such that
+
+222
+00:16:42,817 --> 00:16:47,329
+this condition holds, right? Sometimes
+it'll hold for some choices of the ai's,
+
+223
+00:16:47,329 --> 00:16:51,460
+sometimes it won't hold for other choices
+and we're going to show that it almost
+
+224
+00:16:51,460 --> 00:16:56,814
+never holds. Okay, so it fails for all but
+a 1/n fraction of the choices of the ai's.
+
+225
+00:16:56,814 --> 00:16:59,676
+So next we're going to do something a
+little sneaky. This trick is sometimes
+
+226
+00:16:59,676 --> 00:17:03,273
+called the Principle of Deferred
+Decisions. And the idea is when you have a
+
+227
+00:17:03,273 --> 00:17:08,504
+bunch of random coin flips, it's sometimes
+convenient to flip some but not all of
+
+228
+00:17:08,504 --> 00:17:12,552
+them. So sometimes fixing parts of the
+randomness clarifies the role that the
+
+229
+00:17:12,552 --> 00:17:16,347
+remaining randomness is going to play .
+That's what's going to happen here. So
+
+230
+00:17:16,347 --> 00:17:21,266
+let's go ahead and flip the coins, which
+tell us the random choice of a1, a2, and
+
+231
+00:17:21,266 --> 00:17:25,560
+a3. So again remember, in the definition
+of a universal hash function, you analyze
+
+232
+00:17:25,560 --> 00:17:30,090
+collision probability under a random
+choice of a hash function. What does it
+
+233
+00:17:30,090 --> 00:17:35,172
+mean to choose a random hash function for
+us? It means a random choice of a1, and
+
+234
+00:17:35,172 --> 00:17:39,104
+a2, and a3, and a4. So we're making four
+random choices. And what I'm saying is,
+
+235
+00:17:39,104 --> 00:17:44,893
+let's condition on the outcomes of the
+first three. Suppose we knew, that a1
+
+236
+00:17:44,893 --> 00:17:52,422
+turns up 173, a2 shows up 122 and a3 shows
+up 723, but we don't know what a4 is. A4
+
+237
+00:17:52,422 --> 00:17:56,908
+is still equally likely to be any of zero,
+one, two all the way up to n-1. So
+
+238
+00:17:56,908 --> 00:18:02,552
+remember that what we want to prove is
+that at most 1/n fraction of the choices
+
+239
+00:18:02,552 --> 00:18:07,001
+of a1, a2, a3, and a4, cause this
+underlined equation to be true, cause a
+
+240
+00:18:07,001 --> 00:18:12,003
+collision. So what we're going to show is
+that for each fixed choice of a1, a2, and
+
+241
+00:18:12,003 --> 00:18:18,062
+a3, at most a 1/n fraction of the choices
+of a4 cause this equation to hold. And if
+
+242
+00:18:18,062 --> 00:18:23,543
+we can show that for every single choice
+of a1, a2, and a3, no matter how those
+
+243
+00:18:23,543 --> 00:18:28,378
+random coin flips come out, almost a 1/n
+fraction of the remaining outcomes satisfy
+
+244
+00:18:28,378 --> 00:18:32,364
+the equation, then we're done. That means
+that at most of 1/n fraction of the
+
+245
+00:18:32,364 --> 00:18:36,403
+overall outcomes can cause the equation to
+be true. So if you haven't seen the
+
+246
+00:18:36,403 --> 00:18:39,718
+principle of, for these decisions before,
+you might want to think about this a
+
+247
+00:18:39,718 --> 00:18:43,022
+little bit offline, but it's easily
+justified by just say two lines of
+
+248
+00:18:43,022 --> 00:18:47,261
+algebra. Okay, so we're done with the
+setup and we're ready for the meat of the
+
+249
+00:18:47,261 --> 00:18:51,934
+argument. So we have done is, we've
+identified an equation which is now in
+
+250
+00:18:51,934 --> 00:18:57,637
+green, which occurs if and only if we have
+a collision between the two IP addresses.
+
+251
+00:18:57,637 --> 00:19:02,938
+And the question we need to ask is, for a
+fixed choices of a1, a2 and a3, how
+
+252
+00:19:02,938 --> 00:19:08,033
+frequently will the choice of a4 cause
+this equation to be satisfied? Cause a
+
+253
+00:19:08,033 --> 00:19:12,973
+collision? Now, here is why we did this
+trick of the Principle of Deferred
+
+254
+00:19:12,973 --> 00:19:19,196
+Decisions. By fixing a1, a2, and a3, the
+right hand side of this equation is now
+
+255
+00:19:19,196 --> 00:19:25,619
+just some fixed number b etween zero and
+n-1. So maybe this is 773, right? The xi's
+
+256
+00:19:25,619 --> 00:19:30,891
+were fixed upfront, the yi's were fixed
+upfront. We fixed a1, a2, a3 at the
+
+257
+00:19:30,891 --> 00:19:35,613
+beginning, at the end of the last slide,
+and those were the only ones involved in
+
+258
+00:19:35,613 --> 00:19:41,512
+the right hand side. So this is 773 and
+over on the left hand side, x4 is fixed,
+
+259
+00:19:41,512 --> 00:19:48,239
+y4 is fixed but a4 is still random. This
+is an integer equally likely to be any
+
+260
+00:19:48,239 --> 00:19:53,653
+value between zero and n-1. Now here's the
+key claim, which is that the left-hand
+
+261
+00:19:53,653 --> 00:20:00,028
+side of this green equation is equally
+likely to be any number between zero and
+
+262
+00:20:00,028 --> 00:20:05,554
+n-1. And I'll tell you the reasons why
+this key claim is true. Although this is
+
+263
+00:20:05,554 --> 00:20:08,525
+the point where we need a little bit of
+number theory, so I'll be kind of
+
+264
+00:20:08,525 --> 00:20:12,061
+hand-wavy about it. So there's three
+things we have going for us, the first is
+
+265
+00:20:12,061 --> 00:20:16,044
+that x4 and y4 are different. Remember our
+assumption at the beginning of the proof
+
+266
+00:20:16,044 --> 00:20:19,373
+was that, you know, the IP addresses
+differ somewhere so why not just assume
+
+267
+00:20:19,373 --> 00:20:23,115
+that they differ in the last 8-bits of the
+proof. Again this is not important if you
+
+268
+00:20:23,115 --> 00:20:26,648
+really wanted to be pedantic you could
+have three other cases depending on the
+
+269
+00:20:26,648 --> 00:20:30,418
+other possible bits in which the IP
+addresses might differ. But anyway, so,
+
+270
+00:20:30,418 --> 00:20:36,409
+because x4 and y4 are different, what that
+means is that x4 - y4 is not zero. And in
+
+271
+00:20:36,409 --> 00:20:41,662
+fact, now that I write this, it's jogging
+my memory of something that I should have
+
+272
+00:20:41,662 --> 00:20:45,988
+told you earlier, and forgot, which is
+that the number of buckets n should be at
+
+273
+00:20:45,988 --> 00:20:50,777
+least as large as the maximum coeffcient
+value. So for example, we definitely want
+
+274
+00:20:50,777 --> 00:20:53,574
+the number of buckets n in this equation
+to be bigger than x4, and bigger than y4.
+
+275
+00:20:53,574 --> 00:20:57,752
+And the reason is, otherwise you could
+have x4 and y4 being different from each
+
+276
+00:20:57,752 --> 00:21:03,597
+other, but they still, the difference
+still winds up being zero mod-n. So for
+
+277
+00:21:03,597 --> 00:21:08,319
+example, suppose n was four, and x4 was
+six and y4 was ten. Then x4-10 would be
+
+278
+00:21:08,319 --> 00:21:11,563
+-four and that's actually zero modulo
+four. So that's getting now what you want.
+
+279
+00:21:11,563 --> 00:21:15,614
+You want to make sure that if x4 and y4
+are different, then they're difference is
+
+280
+00:21:15,614 --> 00:21:19,721
+non-zero modulo n. And the way you ensure
+that is that you just make sure n is
+
+281
+00:21:19,721 --> 00:21:23,669
+bigger than each. So you should choose a
+number of buckets bigger than the maximum
+
+282
+00:21:23,669 --> 00:21:26,577
+value of the coefficient. So in our IP
+address example, remember that the
+
+283
+00:21:26,577 --> 00:21:31,802
+coefficient don't get bigger than 255. And
+I was suggesting a number of buckets equal
+
+284
+00:21:31,802 --> 00:21:35,681
+the same 997. Now, in general, this is
+never a big deal in practice, if you only
+
+285
+00:21:35,681 --> 00:21:39,752
+wanted to use say, 100 buckets, you didn't
+want to use 1000, you wanted 100, well,
+
+286
+00:21:39,752 --> 00:21:42,660
+then you could just use smaller
+coefficients, right, you could just break
+
+287
+00:21:42,660 --> 00:21:45,694
+up the IP address, instead of into 8-bit
+chunks, you could break it into 6-bit
+
+288
+00:21:45,694 --> 00:21:49,721
+chunks, or 4-bit chunks, and that would
+keep the coefficient size smaller than the
+
+289
+00:21:49,721 --> 00:21:54,004
+number of buckets, okay? So you could
+choose the buckets first, and then you
+
+290
+00:21:54,004 --> 00:21:57,080
+choose how many bits to chunk your data
+into, and that's how you make sure this is
+
+291
+00:21:57,080 --> 00:22:00,093
+satisfied. So back to the three things we
+have going for us in trying to prove this
+
+292
+00:22:00,093 --> 00:22:06,025
+key claim. So x4 and y4 are different, so
+their difference is non-zero modulo n. So
+
+293
+00:22:06,025 --> 00:22:10,243
+second of all, n is prime, that was part
+of the definition, part of the
+
+294
+00:22:10,243 --> 00:22:15,458
+construction. And then third, a4, this
+final coefficient is equally likely to
+
+295
+00:22:15,458 --> 00:22:19,908
+take on any value between zero and n-1.
+So, just as a plausibility argument, let
+
+296
+00:22:19,908 --> 00:22:24,053
+me give you a proof by example. Again, I
+don't want to detour into elementary
+
+297
+00:22:24,053 --> 00:22:28,045
+number theory, although it's beautiful
+stuff, so you know, I encourage those of
+
+298
+00:22:28,045 --> 00:22:32,052
+you who are interested to go learn some
+and figure out exactly how you prove it.
+
+299
+00:22:32,052 --> 00:22:36,045
+You really only need the barest elementary
+number theory to give a formal proof of
+
+300
+00:22:36,045 --> 00:22:39,739
+this. But just to show you that is true in
+some simple examples, so let's think about
+
+301
+00:22:39,739 --> 00:22:44,486
+a very small prime. Let's just say there's
+seven buckets and let's suppose that the
+
+302
+00:22:44,486 --> 00:22:48,667
+difference between x4 and y4 is two. Okay,
+so having chosen the parameters of set n =
+
+303
+00:22:48,667 --> 00:22:52,984
+seven, I've set the difference equal to
+two. What I want to do is I want to step
+
+304
+00:22:52,984 --> 00:22:57,319
+through the seven possible choices of a4,
+and look at what we get in this blue
+
+305
+00:22:57,319 --> 00:23:01,910
+circle quantity, on the left hand side of
+the green equation. So, we want to say the
+
+306
+00:23:01,910 --> 00:23:05,371
+left hand's equally likely to be any of
+the seven numbers between zero and six, so
+
+307
+00:23:05,371 --> 00:23:10,454
+that means that as we try our seven
+different choices for a4, we better get
+
+308
+00:23:10,454 --> 00:23:15,359
+the seven different possible numbers as
+output. So, for example, if we set a4 =
+
+309
+00:23:15,359 --> 00:23:20,421
+zero, then the blue circled quantity is
+certainly itself zero. If we set it equal
+
+310
+00:23:20,421 --> 00:23:24,602
+to one, then it's one  two, so we hit
+two. For two, we get two  two which is
+
+311
+00:23:24,602 --> 00:23:30,529
+four. For three, we get three  two which
+is six. Now, when we set a4 = four, we get
+
+312
+00:23:30,529 --> 00:23:30,731
+four  two which is eight, modulo seven is
+one. Five  two - seven is three. Six
+
+313
+00:23:30,731 --> 00:23:31,438
+two - seven is five. So as we cycle
+through a4, zero through six, we get the
+
+314
+00:23:31,438 --> 00:23:31,438
+value zero, two, four, six, one, three,
+five. So indeed we cycle through the seven
+
+315
+00:23:31,438 --> 00:23:31,640
+possible outcomes one by one. So if a4 is
+chosen uniformly and random, then indeed
+
+316
+00:23:31,640 --> 00:23:31,640
+this blue circled quantity will also be
+uniformly random. So just to give another
+
+317
+00:23:31,640 --> 00:00:00,000
+quick example, we could also keep n =
+seven, and think about the difference of
+
+318
+00:00:00,000 --> 00:00:00,000
+x4 and y4. Again, we have no idea what it
+is, other than that its non-zero. So, you
+
+319
+00:00:00,000 --> 00:00:00,000
+know, maybe instead of three, maybe, maybe
+instead of two, it's three. So now again,
+
+320
+00:00:00,000 --> 00:00:00,000
+let's stop through the seven choices of
+a4, and see what we get. So now we're
+
+321
+00:00:00,000 --> 00:00:00,000
+going to get zero, then three, then six,
+then two, then five, and then one, and
+
+322
+00:00:00,000 --> 00:00:00,000
+then four. So again, stepping through the
+seven choices of a4, we get all of the
+
+323
+00:00:00,000 --> 00:00:00,000
+seven different possibilities of this left
+hand side. And it's not an accident that
+
+324
+00:00:00,000 --> 00:00:00,000
+these choices are parameters. As long as n
+is prime, x4 and y4 are different, and y
+
+325
+00:00:00,000 --> 00:00:00,000
+ranges over all possibilities, so will the
+value on the left-hand side. So by
+
+326
+00:00:00,000 --> 00:00:00,000
+choosing a four uniformly random, indeed,
+the left-hand side is equally likely to be
+
+327
+00:00:00,000 --> 00:00:00,000
+any of its possible values, zero, one, two
+up to n-1. And so, what does that mean?
+
+328
+00:00:00,000 --> 00:00:00,000
+Well, basically it means that we're done
+with our proof cuz remember, the
+
+329
+00:00:00,000 --> 00:00:00,000
+right-hand side that circled in pink is
+fixed. We fixed a1, a2, and the a3. The
+
+330
+00:00:00,000 --> 00:00:00,000
+x's and y's have been fixed all along so
+this is just some number, like 773. And
+
+331
+00:00:00,000 --> 00:00:00,000
+so, we know that there's exactly one
+choice of a4 that will cause the left-hand
+
+332
+00:00:00,000 --> 00:00:00,000
+side to also be equal to 773. Now a4 has n
+different possible values and it's equally
+
+333
+00:00:00,000 --> 00:00:00,000
+likely to take one on becaus e only a
+one-end chance that we're going to get the
+
+334
+00:00:00,000 --> 00:00:00,000
+unlucky choice of a4 that causes the
+left-hand side to be equal to 773 and of
+
+335
+00:00:00,000 --> 00:00:00,000
+course, there's nothing special about 773.
+Doesn't matter how the right-hand side
+
+336
+00:00:00,000 --> 00:00:00,000
+comes out. We have only one-hand chance of
+being unlucky and having a collision and
+
+337
+00:00:00,000 --> 00:00:00,000
+that is exactly the condition we are
+trying to prove and that establishes the
+
+338
+00:00:00,000 --> 00:00:00,000
+universality of this function each of n^4,
+very simple, very easy to evaluate hash
