@@ -1,0 +1,705 @@
+1
+00:00:00,012 --> 00:00:03,962
+So, this set of lectures will be the 
+final application of the Greedy algorithm 
+
+2
+00:00:03,962 --> 00:00:06,712
+design paradigm. 
+It's going to be to an application in 
+
+3
+00:00:06,712 --> 00:00:09,302
+compression. 
+Specifically, I'll show you a Greedy 
+
+4
+00:00:09,302 --> 00:00:13,257
+algorithm for constructing a certain kind 
+of prefix free binary codes known as 
+
+5
+00:00:13,257 --> 00:00:16,087
+Huffman codes. 
+So, we're going to spend this video sort 
+
+6
+00:00:16,087 --> 00:00:19,297
+of setting the stage. 
+So, let's begin by just defining a binary 
+
+7
+00:00:19,297 --> 00:00:21,602
+code. 
+So, a binary code is just a way to write 
+
+8
+00:00:21,602 --> 00:00:25,546
+down symbols from gen, some general 
+alphabet in a manner that can computers 
+
+9
+00:00:25,546 --> 00:00:29,714
+can understand that is just a function 
+mapping each symbol from an alphabet 
+
+10
+00:00:29,714 --> 00:00:33,053
+capital sigma to a binary string, a 
+sequence of 0's and 1's. 
+
+11
+00:00:33,053 --> 00:00:37,357
+So this alphabet capital sigma could be 
+any number of things but you know its a 
+
+12
+00:00:37,357 --> 00:00:42,138
+simple example you could imagine its the 
+letters a through z's in lower case plus 
+
+13
+00:00:42,138 --> 00:00:44,950
+may be the space, character and some 
+punctuation. 
+
+14
+00:00:44,950 --> 00:00:49,110
+So may be for a set of size 32 overall. 
+And if you have 32 symbols you need to 
+
+15
+00:00:49,110 --> 00:00:53,525
+encode in binary, well an obvious way to 
+do it is that happens to be 32 different 
+
+16
+00:00:53,525 --> 00:00:57,696
+binary strings of length 5, so why not 
+just use one of each of those for your 
+
+17
+00:00:57,696 --> 00:00:58,898
+symbol. 
+Symbols. 
+
+18
+00:00:58,898 --> 00:01:02,889
+So this would be a fixed length code in 
+the sense we're using exactly the same 
+
+19
+00:01:02,889 --> 00:01:06,766
+number of bits, namely five to encode 
+each of the symbols in our alphabet. 
+
+20
+00:01:06,766 --> 00:01:09,859
+This is pretty similar to what's going on 
+with ASCII codes. 
+
+21
+00:01:09,859 --> 00:01:13,843
+And of course it's a mantra of this class 
+to ask when can we do better than the 
+
+22
+00:01:13,843 --> 00:01:16,961
+obvious solution. 
+So in this context, when can we do better 
+
+23
+00:01:16,961 --> 00:01:20,314
+than fixed-length codes. 
+Sometimes we can in the important case 
+
+24
+00:01:20,314 --> 00:01:23,521
+when some symbols are much more likely to 
+appear than others. 
+
+25
+00:01:23,521 --> 00:01:28,299
+In that case, we can encode information. 
+Using fewer bits by deploying variable 
+
+26
+00:01:28,299 --> 00:01:31,591
+length codes. 
+And this is, in fact, a very practical 
+
+27
+00:01:31,591 --> 00:01:34,369
+idea. 
+The variable length codes are used all 
+
+28
+00:01:34,369 --> 00:01:37,981
+the time in practice. 
+One example is in encoding mp3 audio 
+
+29
+00:01:37,981 --> 00:01:40,740
+files. 
+So if you look at the standard for mp3 
+
+30
+00:01:40,740 --> 00:01:45,851
+encoding, there's this initial phase in 
+which you do analog to digital conversion 
+
+31
+00:01:45,851 --> 00:01:50,055
+but then once you're in the digital 
+domain you do apply Huffman codes. 
+
+32
+00:01:50,055 --> 00:01:53,846
+What I'm going to teach you in this video 
+to compress the length of the files even 
+
+33
+00:01:53,846 --> 00:01:56,213
+further. 
+And as you know compression, especially 
+
+34
+00:01:56,213 --> 00:01:59,012
+loss less compression like Huffman codes, 
+is a good thing. 
+
+35
+00:01:59,012 --> 00:02:02,497
+You want to download a file, you want it 
+to happen as fast as possible or you want 
+
+36
+00:02:02,497 --> 00:02:07,113
+to make file as small as possible. 
+So a new issue arises when you pass from 
+
+37
+00:02:07,113 --> 00:02:10,277
+fixed length codes to variable length 
+codes. 
+
+38
+00:02:10,277 --> 00:02:13,647
+So let me illustrate that with a simple 
+example. 
+
+39
+00:02:13,647 --> 00:02:18,699
+Suppose our alphabet sigma is just four 
+characters A, B, C, D So the obvious 
+
+40
+00:02:18,699 --> 00:02:23,501
+fixed length encoding of these characters 
+would just be 00, 01, 10, and 11. 
+
+41
+00:02:23,501 --> 00:02:28,445
+Well suppose we wanted to use fewer bits 
+and we wanted to use a variable length 
+
+42
+00:02:28,445 --> 00:02:31,489
+encoding. 
+An obvious idea would be to try to get 
+
+43
+00:02:31,489 --> 00:02:34,913
+away with only 1 bit for a couple of 
+these characters. 
+
+44
+00:02:34,913 --> 00:02:39,765
+So suppose instead of using a 00 for A 
+just use a single 0 and instead of using 
+
+45
+00:02:39,765 --> 00:02:45,105
+a double 1 for D we just use a single 1. 
+So, that's only fewer bits, and it seems 
+
+46
+00:02:45,105 --> 00:02:50,097
+like that can only get getter. 
+But now, here's the question. Suppose 
+
+47
+00:02:50,097 --> 00:02:55,126
+someone handed you and encoded 
+transmission consisting of the digits 
+
+48
+00:02:55,126 --> 00:02:57,918
+001. 
+What would have been the original 
+
+49
+00:02:57,918 --> 00:03:03,887
+sequence of symbols that led to that 
+encoded version? Alright so the answer is 
+
+50
+00:03:03,887 --> 00:03:07,297
+D, 
+there is not enough information to know 
+
+51
+00:03:07,297 --> 00:03:10,782
+what 001 was supposed to be an encoding 
+of. 
+
+52
+00:03:10,782 --> 00:03:17,097
+The reason is, is that having passed to a 
+variable length encoding there is now 
+
+53
+00:03:17,097 --> 00:03:20,780
+ambiguity. 
+There is more than one sequence of 
+
+54
+00:03:20,780 --> 00:03:27,258
+original symbols that could of lead under 
+this encoding to the output 001. 
+
+55
+00:03:27,258 --> 00:03:32,794
+Specifically, answers A and C would both 
+lead to 001. 
+
+56
+00:03:32,794 --> 00:03:40,077
+The letter A would give you a 0, the 
+letter B would give you a 01, so that 
+
+57
+00:03:40,077 --> 00:03:44,164
+would give you 001. 
+On the other hand, AAD would also give 
+
+58
+00:03:44,164 --> 00:03:46,224
+you 001, 
+so there's no way to know. 
+
+59
+00:03:46,224 --> 00:03:50,557
+Contrast this with fixed length encoding, 
+if you're given a sequence of bits with a 
+
+60
+00:03:50,557 --> 00:03:54,491
+fixed length code. Of course, you know 
+where one letter ends and the next one 
+
+61
+00:03:54,491 --> 00:03:57,078
+begins. 
+For example, if every symbol was encoded 
+
+62
+00:03:57,078 --> 00:04:00,834
+with 5 bits, you would just read 5 bits, 
+you'd know which symbol it was. 
+
+63
+00:04:00,834 --> 00:04:04,652
+You'd read the next 5 bits, and so on 
+with variable length codes. 
+
+64
+00:04:04,652 --> 00:04:08,910
+Without further precautions it's unclear 
+where one symbol starts and the next one 
+
+65
+00:04:08,910 --> 00:04:11,440
+begins. 
+So that's an additional in issue we have 
+
+66
+00:04:11,440 --> 00:04:14,268
+to make sure we take care of with 
+variable length codes. 
+
+67
+00:04:15,772 --> 00:04:20,193
+So to solve this problem that with 
+variable length codes and without further 
+
+68
+00:04:20,193 --> 00:04:24,703
+precautions it's unclear where one symbol 
+ends and where the next one begins. 
+
+69
+00:04:24,703 --> 00:04:28,740
+We're going to insist that our variable 
+length codes are prefix free. 
+
+70
+00:04:28,740 --> 00:04:33,261
+So what this means is when we encode a 
+bunch of symbols we're going to make sure 
+
+71
+00:04:33,261 --> 00:04:38,194
+that for each pair of symbols i and j 
+from the original alphabet sigma. 
+
+72
+00:04:38,194 --> 00:04:43,007
+The corresponding encoding's will have 
+the property that neither one is a prefix 
+
+73
+00:04:43,007 --> 00:04:46,013
+of the other. 
+So going back to the previous slide, 
+
+74
+00:04:46,013 --> 00:04:48,969
+you'll see that that example was not 
+prefix free. 
+
+75
+00:04:48,969 --> 00:04:51,447
+For example, we used 0 was a prefix of 
+01. 
+
+76
+00:04:51,447 --> 00:04:55,031
+That led to ambiguity. 
+Similarly 1, the encoding for D was a 
+
+77
+00:04:55,031 --> 00:04:59,218
+prefix of 10, the encoding for C, 
+and that also leads to an ambiguity. 
+
+78
+00:04:59,218 --> 00:05:01,910
+So if you don't have prefixes for each 
+other. 
+
+79
+00:05:01,910 --> 00:05:05,963
+And we'll develop this more shortly. 
+Then there's no ambiguity. 
+
+80
+00:05:05,963 --> 00:05:10,554
+Then there's a unique way to decode, to 
+reconstruct what the original sequence of 
+
+81
+00:05:10,554 --> 00:05:12,949
+symbols was given just the zeros and 
+ones. 
+
+82
+00:05:12,949 --> 00:05:17,379
+So lest you think this is too strong a 
+property, certainly interesting and 
+
+83
+00:05:17,379 --> 00:05:21,862
+useful variable-length codes exist that 
+satisfy the prefix-free property. 
+
+84
+00:05:21,862 --> 00:05:25,646
+So one simple example again, just encode 
+the letters A, B, C, D. 
+
+85
+00:05:25,646 --> 00:05:30,476
+We can get away with encoding the symbol 
+a, just using a single bit, just using a 
+
+86
+00:05:30,476 --> 00:05:33,029
+zero. 
+Now, o course to be prefix-free, it 
+
+87
+00:05:33,029 --> 00:05:37,817
+better be the case that our encodings of 
+b and c and d all start with the bit one. 
+
+88
+00:05:37,817 --> 00:05:40,496
+Otherwise we don't, we're not 
+prefix-free. 
+
+89
+00:05:40,496 --> 00:05:45,332
+But, we can get away with that so let's 
+encode a b with one and then an zero. 
+
+90
+00:05:45,332 --> 00:05:50,246
+And now both C and D, better have the 
+property that they start neither with 
+
+91
+00:05:50,246 --> 00:05:54,051
+zero, nor with 10. 
+That is they better start with 11, but 
+
+92
+00:05:54,051 --> 00:05:57,486
+lets just encode C using 110 and D using 
+111. 
+
+93
+00:05:57,486 --> 00:06:02,346
+So that would be a variable length code, 
+the number of bits varies between 1 and 
+
+94
+00:06:02,346 --> 00:06:06,082
+3, but it is prefix free. 
+And again, the reason we might want to do 
+
+95
+00:06:06,082 --> 00:06:10,252
+this, the reason we might want to use a 
+variable link in coding, is to take 
+
+96
+00:06:10,252 --> 00:06:14,309
+advantage of non-uniform frequencies of 
+symbols from a given alphabet. 
+
+97
+00:06:14,309 --> 00:06:18,913
+So, let me show you a concrete example of 
+the benefits you can get from these kinds 
+
+98
+00:06:18,913 --> 00:06:23,707
+of codes, on the next slide. 
+So let's continue with just our four 
+
+99
+00:06:23,707 --> 00:06:29,557
+symbol alphabet A, B, C, and D. 
+And let's suppose we have good statistics 
+
+100
+00:06:29,557 --> 00:06:36,052
+in our application domain, about exactly 
+how frequent each of these symbols are. 
+
+101
+00:06:36,052 --> 00:06:42,262
+So in particular, let's assume we know 
+that A is by far the most likely symbol, 
+
+102
+00:06:42,262 --> 00:06:46,012
+let's say 60% of the symbols are going to 
+be As. 
+
+103
+00:06:46,012 --> 00:06:48,450
+Whereas 25% are Bs, 10% are Cs, and 5% 
+are Ds. 
+
+104
+00:06:48,450 --> 00:06:52,869
+So, why would you know these statistics? 
+Well, some, in some domains, you're just 
+
+105
+00:06:52,869 --> 00:06:56,351
+going to have a lot of expertise. 
+In genomics, you're going to know the 
+
+106
+00:06:56,351 --> 00:07:00,787
+usual frequencies of As, Cs, Gs, and Ts. 
+For something like an mp3 file, well, you 
+
+107
+00:07:00,787 --> 00:07:04,965
+can literally just take an intermediate 
+version of the file, after you've done 
+
+108
+00:07:04,965 --> 00:07:09,317
+the analog to digital transformation, and 
+just count the number of occurrences of 
+
+109
+00:07:09,317 --> 00:07:12,555
+each of the symbols. 
+So then you know exact frequencies and 
+
+110
+00:07:12,555 --> 00:07:15,526
+you're good to go. 
+So let's compare the performance of the, 
+
+111
+00:07:15,526 --> 00:07:19,224
+just sort of obvious fixed-length code 
+where you use two bits for each of the 
+
+112
+00:07:19,224 --> 00:07:23,300
+four characters with that of the variable 
+length code that's also prefix free that 
+
+113
+00:07:23,300 --> 00:07:26,462
+we mentioned on the previous slide. 
+And we're going to measure the 
+
+114
+00:07:26,462 --> 00:07:30,397
+performance of these codes by looking, on 
+average, how many bits do you need to 
+
+115
+00:07:30,397 --> 00:07:33,401
+encode a character? 
+Where the average is over the frequencies 
+
+116
+00:07:33,401 --> 00:07:37,752
+of the four different symbols. 
+So for the fixed length encoding, of 
+
+117
+00:07:37,752 --> 00:07:41,632
+course, it's two bits per symbol. 
+We don't even need the average, just 
+
+118
+00:07:41,632 --> 00:07:44,282
+whatever the symbol is it uses exactly 
+two bits. 
+
+119
+00:07:44,282 --> 00:07:48,232
+So, what about the variable length 
+encoding that's shown on the right in 
+
+120
+00:07:48,232 --> 00:07:52,772
+pink? How many bits, on average, for an 
+average character given these frequencies 
+
+121
+00:07:52,772 --> 00:07:57,807
+the differnet symbols are needed to 
+encode a character of the alphabet sigma. 
+
+122
+00:07:57,807 --> 00:08:01,008
+Okay, so the correct answer is the second 
+one. 
+
+123
+00:08:01,008 --> 00:08:06,694
+It's on average, 1.55 bits per character. 
+So what's the computation? Well, 60% of 
+
+124
+00:08:06,694 --> 00:08:11,995
+the time, it's going to use only 1 bit. 
+And that's where the big savings comes 
+
+125
+00:08:11,995 --> 00:08:15,017
+from. 
+1 bit is all that's needed whenever we 
+
+126
+00:08:15,017 --> 00:08:18,934
+see an A, 
+and most of the characters are A's. 
+
+127
+00:08:18,934 --> 00:08:23,394
+We don't do to bad when we see a B either 
+which is 25% of the time, we're only 
+
+128
+00:08:23,394 --> 00:08:26,896
+using 2 bits for each B. 
+Now it is true that C's and D's were 
+
+129
+00:08:26,896 --> 00:08:31,636
+paying the price, we're having to use 3 
+bits for each of those, but their aren't 
+
+130
+00:08:31,636 --> 00:08:36,051
+very many only 10% of the time is it a C, 
+and only 5% of the time is it a D. 
+
+131
+00:08:36,051 --> 00:08:40,821
+And if you added the result that's taking 
+the average over the simple frequencies 
+
+132
+00:08:40,821 --> 00:08:44,796
+we get the result of 1.55. 
+So, this example draws our attention to a 
+
+133
+00:08:44,796 --> 00:08:49,046
+very neat algorithmic like opportunity. 
+So, namely given a offer that and 
+
+134
+00:08:49,046 --> 00:08:52,326
+frequencies of the symbols which in 
+general not uniform. 
+
+135
+00:08:52,326 --> 00:08:57,121
+We now know that the obvious solution 
+fixed length codes need not be optimal. 
+
+136
+00:08:57,121 --> 00:08:59,982
+We can improve upon them using variable 
+length. 
+
+137
+00:08:59,982 --> 00:09:02,879
+The prefix free codes. 
+So the computational problem you want to 
+
+138
+00:09:02,879 --> 00:09:06,170
+solve is which one is the best. 
+How do we get optimal compression? Which 
+
+139
+00:09:06,170 --> 00:09:09,901
+variable length code gives us the minimum 
+average encoding length of a symbol from 
+
+140
+00:09:09,901 --> 00:09:12,921
+this alphabet. So Huffman codes are the 
+solution to that problem. 
+
+141
+00:09:12,921 --> 00:09:13,461
+We'll start developing them in the next 
+video. 
+

@@ -1,0 +1,664 @@
+1
+00:00:00,012 --> 00:00:03,663
+So I hope that pretty much all of you had 
+heard about the P vs. 
+
+2
+00:00:03,663 --> 00:00:06,345
+NP question before you enrolled in this 
+class. 
+
+3
+00:00:06,345 --> 00:00:10,160
+But if you haven't you can pretty much 
+guess what that question is. 
+
+4
+00:00:10,160 --> 00:00:13,333
+I've defined for you both of these 
+classes of problems. 
+
+5
+00:00:13,333 --> 00:00:17,592
+P is the class of problems that are 
+polynomial time solvable Whereas the 
+
+6
+00:00:17,592 --> 00:00:22,908
+problems in NP have the property that, at 
+least given a solution, you can quickly 
+
+7
+00:00:22,908 --> 00:00:25,834
+verify that it is indeed a correct 
+solution. 
+
+8
+00:00:25,834 --> 00:00:30,931
+It's widely conjectured that P is not 
+equal to NP, that is, merely the ability 
+
+9
+00:00:30,931 --> 00:00:35,196
+to efficiently verify purported 
+solutions, is not sufficient to 
+
+10
+00:00:35,196 --> 00:00:37,816
+guarantee. 
+Polynomial time solvability. 
+
+11
+00:00:37,816 --> 00:00:41,663
+Indeed, Edmunds, back in 1965, before we 
+even had the vocabulary in P. 
+
+12
+00:00:41,663 --> 00:00:46,125
+Remember, that came along only in '71. 
+Edmunds, already, in '65, was essentially 
+
+13
+00:00:46,125 --> 00:00:50,031
+conjecturing that p is not = to np. 
+In the form that he was conjecturing, 
+
+14
+00:00:50,031 --> 00:00:55,118
+there's no polynomial time algorithm that 
+solves the traveling salesman problem. 
+
+15
+00:00:55,118 --> 00:00:57,694
+. 
+But, let me emphasize. 
+
+16
+00:00:57,694 --> 00:01:01,137
+We genuinely do not know the answer to 
+this question. 
+
+17
+00:01:01,137 --> 00:01:04,627
+There is no proof of this conjecture. 
+. 
+
+18
+00:01:04,627 --> 00:01:08,139
+P vs. 
+NP question is arguably the open question 
+
+19
+00:01:08,139 --> 00:01:11,798
+in computer science. 
+It's also certainly one of the most 
+
+20
+00:01:11,798 --> 00:01:15,720
+important and deepest open questions in 
+all of mathematics. 
+
+21
+00:01:15,720 --> 00:01:20,750
+For example, in 2000 The Clay Mathematics 
+Institute published a list of seven 
+
+22
+00:01:20,750 --> 00:01:23,132
+millenium prize problems. 
+The P vs. 
+
+23
+00:01:23,132 --> 00:01:25,517
+NP question is one of those seven 
+problems. 
+
+24
+00:01:25,517 --> 00:01:29,452
+All of these problems are extremely 
+difficult and extremely important. 
+
+25
+00:01:29,452 --> 00:01:33,727
+The only one that's been solve to date is 
+the Poincaré conjecture, the Riemann 
+
+26
+00:01:33,727 --> 00:01:36,147
+hypothesis is another example on that 
+list. 
+
+27
+00:01:36,147 --> 00:01:41,262
+And they're not called the millennium 
+prize problems for nothing. If you solve 
+
+28
+00:01:41,262 --> 00:01:45,562
+one of these mathematical problems, you 
+get a cash prize or $1 million. 
+
+29
+00:01:45,562 --> 00:01:50,837
+Now, while $1 million is obviously 
+nothing to sneeze at, I think it sort of 
+
+30
+00:01:50,837 --> 00:01:54,642
+understates the importance of a 
+mathematical question like, P vs NP. 
+
+31
+00:01:54,642 --> 00:01:59,012
+And the advance in our knowledge that a 
+solution to the question would provide,I 
+
+32
+00:01:59,012 --> 00:02:02,122
+think would be much more significant than 
+a price check. 
+
+33
+00:02:02,122 --> 00:02:07,174
+So how come so many people think that P 
+is not equal to NP, rather than the 
+
+34
+00:02:07,174 --> 00:02:11,502
+opposite that P = NP. 
+Well I think the dominant reason is a 
+
+35
+00:02:11,502 --> 00:02:17,774
+psychological reason, mainly that if it 
+were the case that P = NP, than all you'd 
+
+36
+00:02:17,774 --> 00:02:22,122
+have to do to remember is exibit. 
+A polynomial time algorithm for just one 
+
+37
+00:02:22,122 --> 00:02:25,182
+NP complete problem. 
+And, there are tons of NP complete 
+
+38
+00:02:25,182 --> 00:02:27,952
+problems. 
+And a lot of extremely smart people have 
+
+39
+00:02:27,952 --> 00:02:32,322
+had NP complete problems that they've 
+really cared about, and either on purpose 
+
+40
+00:02:32,322 --> 00:02:36,727
+or accidentally, they've been trying to 
+develop efficient algorithms for them. 
+
+41
+00:02:36,727 --> 00:02:40,852
+No one has ever succeded in over a half 
+century of serious computational. 
+
+42
+00:02:40,852 --> 00:02:42,844
+Work. 
+The second reason is sort of 
+
+43
+00:02:42,844 --> 00:02:46,088
+philosophical. 
+P = NP just doesn't seem to jive with the 
+
+44
+00:02:46,088 --> 00:02:49,599
+way the world works. 
+Think about, for example, when you do a 
+
+45
+00:02:49,599 --> 00:02:54,198
+homework problem in a class like this 
+one, and consider three different tasks. 
+
+46
+00:02:54,198 --> 00:02:58,205
+The first task is I give you. 
+A question, and I ask you to come up with 
+
+47
+00:02:58,205 --> 00:03:02,050
+a correct solution, say a proof, of some 
+mathematical statement. 
+
+48
+00:03:02,050 --> 00:03:06,062
+The second task would be just grade 
+somebody else's suggested proof. 
+
+49
+00:03:06,062 --> 00:03:09,942
+Well, generally, it seems a lot harder to 
+actually come up with. 
+
+50
+00:03:09,942 --> 00:03:14,866
+With a correct argument from scratch, 
+compared to just verifying a correct 
+
+51
+00:03:14,866 --> 00:03:19,865
+solution provided by somebody else. 
+And yet P = NP would be saying that these 
+
+52
+00:03:19,865 --> 00:03:24,912
+2 tasks have exactly the same complexity. 
+It's just as easy to solve homework 
+
+53
+00:03:24,912 --> 00:03:29,192
+problems as it is to just read and verify 
+the correct solutions. 
+
+54
+00:03:29,192 --> 00:03:33,387
+So I don't know about you, but it's 
+always seemed to me to be a lot harder to 
+
+55
+00:03:33,387 --> 00:03:37,891
+come up with a mathematical argument from 
+scratch, as opposed to simply grading 
+
+56
+00:03:37,891 --> 00:03:41,601
+somebody else's solution. 
+Somehow it seems to require a degree of 
+
+57
+00:03:41,601 --> 00:03:45,584
+creativity to pluck out from this 
+exponentially big space of proofs, a 
+
+58
+00:03:45,584 --> 00:03:49,468
+correct one for the statement at hand. 
+Yet P=NP would suggest that that 
+
+59
+00:03:49,468 --> 00:03:53,272
+creativity. 
+Could be efficiently automated. 
+
+60
+00:03:53,272 --> 00:03:57,662
+But, of course, you know, P vs. 
+NP being a mathematical question. 
+
+61
+00:03:57,662 --> 00:04:01,812
+We'd really like some mathematical 
+evidence of which way it goes. 
+
+62
+00:04:01,812 --> 00:04:06,252
+For example, that p is not = to np. 
+And here, we really know shockingly 
+
+63
+00:04:06,252 --> 00:04:09,042
+little. 
+There just isn't that much concrete 
+
+64
+00:04:09,042 --> 00:04:12,862
+evidence at this point. 
+That, for example, p is not = to np. 
+
+65
+00:04:12,862 --> 00:04:17,420
+Now maybe it seems bizarre to you that 
+we're struggling to prove that P is not 
+
+66
+00:04:17,420 --> 00:04:20,558
+equal to NP. 
+Maybe it just seems sort of obvious that 
+
+67
+00:04:20,558 --> 00:04:24,909
+there's no way that you can always 
+construct proofs in time polynomial in 
+
+68
+00:04:24,909 --> 00:04:29,162
+what you need to verify proofs. 
+But, the reason this is so hard to prove 
+
+69
+00:04:29,162 --> 00:04:33,886
+mathmatically, is because of the insane 
+richness of the space of Polynomial time 
+
+70
+00:04:33,886 --> 00:04:36,406
+algorithms. 
+And indeed it's this richness that we've 
+
+71
+00:04:36,406 --> 00:04:40,097
+been exploiting all along in these design 
+and analysis of algorithms classes. 
+
+72
+00:04:40,097 --> 00:04:42,515
+Think, for example, about matrix 
+multiplication. 
+
+73
+00:04:42,515 --> 00:04:46,409
+Had I not shown you Strassen's algorithm, 
+I probably could have convinced you more 
+
+74
+00:04:46,409 --> 00:04:50,074
+or less that there was no way to solve 
+matrix multiplication faster than cubic 
+
+75
+00:04:50,074 --> 00:04:52,160
+time. 
+You just look at the definition of the 
+
+76
+00:04:52,160 --> 00:04:54,602
+problem and it seems like you have to do 
+cubic work. 
+
+77
+00:04:54,602 --> 00:04:58,630
+Yet, Strassen's algorithm and other 
+follow up show you can do fundamentally 
+
+78
+00:04:58,630 --> 00:05:03,835
+better than the naive cubic running time 
+algorithm for matrix multiplication. 
+
+79
+00:05:03,835 --> 00:05:08,247
+So there really are some quite counter 
+intuitive and hard to discover unusually 
+
+80
+00:05:08,247 --> 00:05:12,598
+efficient algorithms with in the 
+landscape of polynomial time solutions. 
+
+81
+00:05:12,598 --> 00:05:16,999
+And who's to say that there aren't some 
+more exotic species in this landscape of 
+
+82
+00:05:16,999 --> 00:05:21,552
+polynomial time solvability that have yet 
+to be discovered, which can make any. 
+
+83
+00:05:21,552 --> 00:05:27,111
+Roads even on NP complete problem. 
+At this point we really don't know, and 
+
+84
+00:05:27,111 --> 00:05:32,416
+the very least are currently primitive 
+understanding of the fauna within the 
+
+85
+00:05:32,416 --> 00:05:37,463
+complexity class p is an intimidating 
+obstruction to a proof that p is not 
+
+86
+00:05:37,463 --> 00:05:40,661
+equal Equal to NP. 
+I should also mention that as an 
+
+87
+00:05:40,661 --> 00:05:45,446
+interesting counterpoint to Edmond's 
+Conjecture in '65, was a conjecture by 
+
+88
+00:05:45,446 --> 00:05:48,412
+Godel. 
+This is the same logician Kurt Godel, of 
+
+89
+00:05:48,412 --> 00:05:51,667
+Godel's Completeness and Incompleteness 
+theorems. 
+
+90
+00:05:51,667 --> 00:05:56,621
+He wrote a letter to John von Neumann in 
+1956, where he actually conjectured the 
+
+91
+00:05:56,621 --> 00:06:00,039
+opposite. 
+That P = NP, so who knows? So I've tried 
+
+92
+00:06:00,039 --> 00:06:05,369
+to highlight for you the most important 
+things that an algorithm designer and 
+
+93
+00:06:05,369 --> 00:06:10,264
+serious programmer should know about NP 
+problems and NP completeness. 
+
+94
+00:06:10,264 --> 00:06:15,490
+One thing I haven't explained which you 
+might be wondering about is, what on 
+
+95
+00:06:15,490 --> 00:06:21,885
+earth does NP stand for? Anyways. 
+A common guess would be not polynomial, 
+
+96
+00:06:21,885 --> 00:06:28,387
+but this is not what it stands for. 
+The answer's going to be a little more 
+
+97
+00:06:28,387 --> 00:06:34,686
+obscured, and indeed it to a bit of an 
+anachronism; non deterministic 
+
+98
+00:06:34,686 --> 00:06:38,078
+polynomial. 
+So this is referring to a different but 
+
+99
+00:06:38,078 --> 00:06:42,231
+mathematically equivalent way to define 
+the complexity class NP in terms of an 
+
+100
+00:06:42,231 --> 00:06:45,936
+abstract machine model known as 
+non-deterministic turning machines. 
+
+101
+00:06:45,936 --> 00:06:50,014
+But generally for somebody's who's 
+thinking about algorithms it's generally 
+
+102
+00:06:50,014 --> 00:06:53,236
+for the programmer. 
+I would advise against thinking about 
+
+103
+00:06:53,236 --> 00:06:57,323
+problems in NP in terms of this original 
+definition with this abstract machine 
+
+104
+00:06:57,323 --> 00:06:59,885
+model. 
+And I'd instead strongly encourage you to 
+
+105
+00:06:59,885 --> 00:07:04,161
+think about the definition I gave you, in 
+terms of the efficient recognition, the 
+
+106
+00:07:04,161 --> 00:07:06,705
+efficient verification of purported 
+solutions. 
+
+107
+00:07:06,705 --> 00:07:11,305
+Again, they're mathematically equivalent 
+and I think efficient verification makes 
+
+108
+00:07:11,305 --> 00:07:13,834
+more sense to the. 
+The algorithm designer. 
+
+109
+00:07:13,834 --> 00:07:16,899
+. 
+Maybe you're thinking that NP is, 
+
+110
+00:07:16,899 --> 00:07:21,254
+perhaps, not that good in somewhat 
+inscrutable definition for what's a super 
+
+111
+00:07:21,254 --> 00:07:24,803
+important concept. 
+but it's not for lack of discussion and 
+
+112
+00:07:24,803 --> 00:07:28,774
+effort on the community's part. 
+So very soon after the work of Cook and 
+
+113
+00:07:28,774 --> 00:07:31,380
+Carp. 
+It was clear to everybody working in the 
+
+114
+00:07:31,380 --> 00:07:35,760
+west on algorithms and computation, that 
+this was a super important concept. 
+
+115
+00:07:35,760 --> 00:07:39,012
+And people needed to straighten out the 
+vocabulary asap. 
+
+116
+00:07:39,012 --> 00:07:42,367
+So Don Knuth ran a poll amongst members 
+of the community. 
+
+117
+00:07:42,367 --> 00:07:47,162
+He reported on the results in his SIGACT 
+news article from 1974, a Terminological 
+
+118
+00:07:47,162 --> 00:07:49,922
+Proposal. 
+And NP completeness was the winner. 
+
+119
+00:07:49,922 --> 00:07:54,717
+And that was then adopted in the landmark 
+book, Design and Analysis of Algorithms 
+
+120
+00:07:54,717 --> 00:07:58,912
+by Aho, Hopcroft, and Ullman. 
+And that's the way it's been ever since. 
+
+121
+00:07:58,912 --> 00:08:03,627
+There is one suggestion that was passed 
+over, which I find quite amusing, let me 
+
+122
+00:08:03,627 --> 00:08:09,190
+tell you about. 
+The suggestion was PET. So, what is PET 
+
+123
+00:08:09,190 --> 00:08:16,586
+an acronym for? Well, it's flexible. 
+So, initially, the interpretation would 
+
+124
+00:08:16,586 --> 00:08:23,047
+be Possibly Exponential Time Problem. 
+Now, suppose if some day people that P is 
+
+125
+00:08:23,047 --> 00:08:28,248
+not equal to NP, then the meaning would 
+change to Provably Exponential Time. 
+
+126
+00:08:28,248 --> 00:08:33,447
+So its not the time to nit pick with the 
+suggestion that you could prove P not 
+
+127
+00:08:33,447 --> 00:08:38,956
+equal to NP without actually proving an 
+exponential lower bound, merely a super 
+
+128
+00:08:38,956 --> 00:08:43,133
+polynomial bound. 
+Lets leave objections like that aside and 
+
+129
+00:08:43,133 --> 00:08:48,112
+ask, what would happen if P actually 
+turned out to be equal to NP? 
+
+130
+00:08:48,112 --> 00:08:53,052
+Well then you could call PET, Previously 
+Exponential Time problems. 
+
+131
+00:08:53,052 --> 00:08:58,387
+But of course at this point, PET is 
+nothing more than an amusing historical 
+
+132
+00:08:58,387 --> 00:09:01,997
+footnote. 
+NP complete is the phrase that you gotta 
+
+133
+00:09:01,997 --> 00:09:02,330
+know. 
+

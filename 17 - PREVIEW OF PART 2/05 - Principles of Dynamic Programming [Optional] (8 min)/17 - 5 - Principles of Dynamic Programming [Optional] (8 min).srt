@@ -1,0 +1,619 @@
+1
+00:00:00,012 --> 00:00:04,374
+Hey, so guess what? We just designed our 
+first dynamic programming algorithm that 
+
+2
+00:00:04,374 --> 00:00:08,584
+linear time algorithm for computing the 
+max rate in the penance set in the path 
+
+3
+00:00:08,584 --> 00:00:12,399
+is indeed an extenciation of the general 
+dynamic programming paradox. 
+
+4
+00:00:12,399 --> 00:00:16,382
+Now defer articulating the general 
+principle of the paradox home now but I 
+
+5
+00:00:16,382 --> 00:00:20,576
+think they're best understood through 
+comparate examples now that we have one 
+
+6
+00:00:20,576 --> 00:00:24,836
+to relate them to let me tell you about 
+these guiding principles, we will in the 
+
+7
+00:00:24,836 --> 00:00:27,905
+coming lectures see many more examples. 
+Examples. 
+
+8
+00:00:29,437 --> 00:00:36,587
+So, the key that unlocks the potential of 
+the dynamic programming paradigm for 
+
+9
+00:00:36,587 --> 00:00:43,317
+solving a problem, is to identify a 
+suitable collection of subproblems. 
+
+10
+00:00:43,317 --> 00:00:49,062
+And these subproblems have to satisfy a 
+number of properties. 
+
+11
+00:00:49,062 --> 00:00:53,876
+In our algorithm for computing maximum 
+independent sets in path graphs. 
+
+12
+00:00:53,876 --> 00:00:57,581
+We had n + 1 subproblems. 
+1 for each prefix of the graph. 
+
+13
+00:00:57,581 --> 00:01:01,531
+So formally, our i-th supbroblem in our 
+algorithm. 
+
+14
+00:01:01,531 --> 00:01:06,248
+It was to compute the max weight 
+independence set of g sub i of the path 
+
+15
+00:01:06,248 --> 00:01:09,362
+graph consisting only of the first I 
+vertices. 
+
+16
+00:01:09,362 --> 00:01:13,613
+So, the first property that you want your 
+collection of subproblems to possess is 
+
+17
+00:01:13,613 --> 00:01:16,820
+it shouldn't be too big. 
+It shouldn't have too many different 
+
+18
+00:01:16,820 --> 00:01:19,489
+subproblems. 
+The reason being is, in the best case 
+
+19
+00:01:19,489 --> 00:01:21,887
+scenario. 
+You're going to be spending constant 
+
+20
+00:01:21,887 --> 00:01:26,081
+times solving each of those subproblems. 
+So the number of subproblems is a lower 
+
+21
+00:01:26,081 --> 00:01:29,443
+bound than the running time of your 
+algorithm. 
+
+22
+00:01:29,443 --> 00:01:32,668
+Now, in the maximum independence set 
+example, we did great. 
+
+23
+00:01:32,668 --> 00:01:35,097
+We had merely a linear number of 
+subproblems. 
+
+24
+00:01:35,097 --> 00:01:38,803
+And we did indeed, get away with mere 
+constant work for each of those 
+
+25
+00:01:38,803 --> 00:01:42,152
+subproblems, giving us our linear running 
+time bound overall. 
+
+26
+00:01:42,152 --> 00:01:46,463
+The second property you want, and this 
+one's really the kicker is there should 
+
+27
+00:01:46,463 --> 00:01:49,613
+be a notion of smaller subproblems and 
+larger subproblems. 
+
+28
+00:01:49,613 --> 00:01:52,962
+In the context of independent sets of 
+path graphs. 
+
+29
+00:01:52,962 --> 00:01:57,028
+This was really easy to understand. 
+The subproblems were prefixes of the 
+
+30
+00:01:57,028 --> 00:02:00,713
+original graph and the more vertices you 
+had the bigger the subproblem. 
+
+31
+00:02:00,713 --> 00:02:04,429
+So in general in dynamic programming you 
+systematically solve all of the 
+
+32
+00:02:04,429 --> 00:02:07,037
+subproblems. 
+Beginning with the smallest ones and 
+
+33
+00:02:07,037 --> 00:02:09,309
+moving on to larger and larger 
+subproblems. 
+
+34
+00:02:09,309 --> 00:02:13,967
+And for this to work it better be the 
+case that at a given subproblem, given 
+
+35
+00:02:13,967 --> 00:02:18,462
+the solutions to all of the smaller sub 
+problems, it's easy to infer what the 
+
+36
+00:02:18,462 --> 00:02:22,622
+solution of the current subproblem is. 
+That is, solutions to previous 
+
+37
+00:02:22,622 --> 00:02:27,342
+subproblems are sufficient to quickly and 
+correctly compute the solution to the 
+
+38
+00:02:27,342 --> 00:02:32,690
+current subproblem. 
+The way this relationship between larger 
+
+39
+00:02:32,690 --> 00:02:36,460
+and smaller subproblems is usually 
+expressed is via recurrence. 
+
+40
+00:02:36,460 --> 00:02:41,020
+And it states what the optimal solution 
+to a given subproblem is, as a function 
+
+41
+00:02:41,020 --> 00:02:43,908
+of the optimal solutions to smaller 
+subproblems. 
+
+42
+00:02:43,908 --> 00:02:48,354
+And this is exactly how things played out 
+in our independence set algorithm. 
+
+43
+00:02:48,354 --> 00:02:52,772
+We did, indeed, have a recurrence. 
+It just said that the optimal value, the 
+
+44
+00:02:52,772 --> 00:02:57,740
+maximum independent set value for g sub i 
+was the better of two candidates, and we 
+
+45
+00:02:57,740 --> 00:03:00,294
+justified this using our thought 
+experiment. 
+
+46
+00:03:00,294 --> 00:03:04,559
+Either you just inherit the maximum 
+independent set value from the preceding 
+
+47
+00:03:04,559 --> 00:03:09,376
+sub problem, from the i - 1 sub problem, 
+or you take the optimal solution from two 
+
+48
+00:03:09,376 --> 00:03:13,888
+sub problems back, from Gi - 2 and you 
+extend it by the current vertex b sub i. 
+
+49
+00:03:13,888 --> 00:03:19,201
+That is, you add the i-th vertices weight 
+to the weight of the optimal solution 
+
+50
+00:03:19,201 --> 00:03:23,367
+from 2 sub-problems back. 
+So this is a pattern we're going to see 
+
+51
+00:03:23,367 --> 00:03:27,217
+over and over again. 
+We'll define sub-problems for various 
+
+52
+00:03:27,217 --> 00:03:32,100
+computational problems and we'll use 
+recurrence to express how the optimal 
+
+53
+00:03:32,100 --> 00:03:36,648
+solution of a given sub-problem depends 
+only on the solutions to smaller 
+
+54
+00:03:36,648 --> 00:03:39,772
+sub-problems. 
+So, just like in our independent set 
+
+55
+00:03:39,772 --> 00:03:44,000
+example, once you have such a recurrence, 
+it naturally leads to a table filling 
+
+56
+00:03:44,000 --> 00:03:48,294
+algorithm where each entry in your table 
+corresponds to the optimal solution to 1 
+
+57
+00:03:48,294 --> 00:03:51,121
+sub problem. 
+And you use your recurrence to just fill 
+
+58
+00:03:51,121 --> 00:03:54,732
+it in, moving from the smaller sub 
+problems to the larger ones. 
+
+59
+00:03:54,732 --> 00:03:58,554
+So the third property, you probably won't 
+have to worry about much. 
+
+60
+00:03:58,554 --> 00:04:03,071
+Usually, this just takes care of itself, 
+but needless to say, after you've done 
+
+61
+00:04:03,071 --> 00:04:06,893
+the work of solving all of your 
+subproblems, you'd better be able to 
+
+62
+00:04:06,893 --> 00:04:08,789
+answer the original. 
+Qeustion. 
+
+63
+00:04:08,789 --> 00:04:13,461
+This property's usually automatically 
+satisfied because in most cases, not all, 
+
+64
+00:04:13,461 --> 00:04:17,616
+but in most cases, the original problem 
+is simply the biggest of all your 
+
+65
+00:04:17,616 --> 00:04:20,827
+subproblems. 
+Notice, this is exactly how things worked 
+
+66
+00:04:20,827 --> 00:04:24,365
+in independent sets. 
+Our biggest subproblem, g sub n was just 
+
+67
+00:04:24,365 --> 00:04:27,827
+the orginal graph. 
+So once we fill up the whole table Boom. 
+
+68
+00:04:27,827 --> 00:04:32,712
+Waiting for us in the final entry was the 
+desired solution to the original problem. 
+
+69
+00:04:32,712 --> 00:04:36,492
+So I realize, you know, this is a little 
+abstract at the moment. 
+
+70
+00:04:36,492 --> 00:04:40,962
+We only have one concrete example to 
+relate to these abstract concepts. 
+
+71
+00:04:40,962 --> 00:04:45,367
+I encourage you to revisit this again 
+after we see more examples and we will 
+
+72
+00:04:45,367 --> 00:04:50,546
+see many more examples. 
+Something all of the forthcoming examples 
+
+73
+00:04:50,546 --> 00:04:55,445
+should make clear is the power and 
+flexibitlity of the dynamic programming 
+
+74
+00:04:55,445 --> 00:04:58,761
+paradigm. 
+This is really just a technique that you 
+
+75
+00:04:58,761 --> 00:05:02,075
+have got to know. 
+Now when you're trying to devise your own 
+
+76
+00:05:02,075 --> 00:05:06,336
+dynamic programming algorithms, the key, 
+the heart of the matter is to figure out 
+
+77
+00:05:06,336 --> 00:05:10,663
+what the right sub-problems are, if you 
+nail the sub-problems usually everything 
+
+78
+00:05:10,663 --> 00:05:13,233
+else falls into place in a fairly 
+formulaic way. 
+
+79
+00:05:13,233 --> 00:05:17,428
+Now if you've got a black belt in dynamic 
+programming, you might be able to just 
+
+80
+00:05:17,428 --> 00:05:21,267
+stare at a the problem and intuitively 
+know what the right collection of sub 
+
+81
+00:05:21,267 --> 00:05:23,466
+problems are. 
+boom, you're off to the races. 
+
+82
+00:05:23,466 --> 00:05:27,635
+But, of course, you know, for white belts 
+in dynamic programing there's still a lot 
+
+83
+00:05:27,635 --> 00:05:30,612
+of training to be done. 
+So rather in the forth coming examples 
+
+84
+00:05:30,612 --> 00:05:34,120
+rather than just plucking the sub 
+problems from the sky We're going to go 
+
+85
+00:05:34,120 --> 00:05:37,927
+through this same kind of process we did 
+from independent sets and try to figure 
+
+86
+00:05:37,927 --> 00:05:41,576
+out how you would ever come up with these 
+sub problems in the first place, by 
+
+87
+00:05:41,576 --> 00:05:44,116
+reasoning about the structure of optimal 
+solutions. 
+
+88
+00:05:44,116 --> 00:05:47,767
+That's a process you should be able to 
+mimic in your own attempts at applying 
+
+89
+00:05:47,767 --> 00:05:50,832
+this para dine, the problems that come up 
+in your own projects. 
+
+90
+00:05:50,832 --> 00:05:56,998
+So perhaps you were hoping that once you 
+saw the ingredients of dynamic 
+
+91
+00:05:56,998 --> 00:06:04,154
+programming all would become clear why on 
+Earth it's called dynamic programming, 
+
+92
+00:06:04,154 --> 00:06:09,553
+and probably it's not. 
+So, this is an anachronistic use of the 
+
+93
+00:06:09,553 --> 00:06:15,115
+word programming, it doesn't mean coding. 
+In the way I'm sure almost all of you 
+
+94
+00:06:15,115 --> 00:06:17,755
+think of it. 
+it's the same anachronism and phrases 
+
+95
+00:06:17,755 --> 00:06:21,512
+like mathematical or linear programming 
+it more refers to a planning process. 
+
+96
+00:06:21,512 --> 00:06:25,396
+But you know for the full story let's go 
+ahead and turn to Richard Bellman himself 
+
+97
+00:06:25,396 --> 00:06:28,038
+he's more or less the inventor of dynamic 
+programming. 
+
+98
+00:06:28,038 --> 00:06:31,766
+You will see his Bellman-Ford algorithm a 
+little bit later in the course. 
+
+99
+00:06:31,766 --> 00:06:34,232
+So he answers this question in his 
+autobiography. 
+
+100
+00:06:34,232 --> 00:06:37,382
+And he say, he talks about when he 
+invented it, in the 1950s. 
+
+101
+00:06:37,382 --> 00:06:40,652
+And he says those were not good years for 
+mathematical research. 
+
+102
+00:06:40,652 --> 00:06:44,322
+He was working at a place called RAND. 
+He says, we had a very interesting 
+
+103
+00:06:44,322 --> 00:06:47,842
+gentlemen in Washington named Wilson 
+who's the secretary of defense. 
+
+104
+00:06:47,842 --> 00:06:51,572
+and he actually had a pathological fear 
+and hatred of the word, research. 
+
+105
+00:06:51,572 --> 00:06:54,402
+I'm not using the term lightly, I'm using 
+it precisely. 
+
+106
+00:06:54,402 --> 00:06:56,577
+His face would suffuse, it would turn 
+red. 
+
+107
+00:06:56,577 --> 00:06:59,152
+And he would get violent if people used 
+the term. 
+
+108
+00:06:59,152 --> 00:07:02,551
+Research in his presence. 
+You can imagine how he felt then about 
+
+109
+00:07:02,551 --> 00:07:05,983
+the term, mathematical. 
+So The Rand Corporation was employed by 
+
+110
+00:07:05,983 --> 00:07:08,943
+the Air Force. 
+And the Air Force had Wilson as its boss, 
+
+111
+00:07:08,943 --> 00:07:11,679
+essentially. 
+Hence, I felt I had to do something to 
+
+112
+00:07:11,679 --> 00:07:15,940
+shield Wilson and the Air Force from the 
+fact that I was really doing mathematics 
+
+113
+00:07:15,940 --> 00:07:19,679
+inside the Rand Corporation. 
+What title, what name could I choose? In 
+
+114
+00:07:19,679 --> 00:07:23,252
+the first place, I was interested in 
+planning and decision making. 
+
+115
+00:07:23,252 --> 00:07:26,332
+But planning, it's not a good word for 
+various reasons. 
+
+116
+00:07:26,332 --> 00:07:29,181
+I decided therefore to use the word 
+programming. 
+
+117
+00:07:29,181 --> 00:07:33,794
+Dynamic has a very interesting property 
+as an adjective in that it's impossible 
+
+118
+00:07:33,794 --> 00:07:36,476
+to use the word dynamic in a pejorative 
+sense. 
+
+119
+00:07:36,476 --> 00:07:40,680
+Try thinking of some combination that 
+will possibly give it a pejorative 
+
+120
+00:07:40,680 --> 00:07:41,872
+meaning. 
+Meaning. 
+
+121
+00:07:41,872 --> 00:07:45,647
+It's impossible. 
+Thus, I thought Dynamic Programming was a 
+
+122
+00:07:45,647 --> 00:07:48,837
+good name. 
+It was something not even a congressman 
+
+123
+00:07:48,837 --> 00:07:52,057
+could object to. 
+So, I used it as an umbrella for my 
+
+124
+00:07:52,057 --> 00:07:52,630
+activity. 
+
